@@ -1,0 +1,1435 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html>
+<html b:version='2' class='v2' expr:dir='data:blog.languageDirection'
+  xmlns='http://www.w3.org/1999/xhtml'
+  xmlns:b='http://www.google.com/2005/gml/b'
+  xmlns:data='http://www.google.com/2005/gml/data'
+  xmlns:expr='http://www.google.com/2005/gml/expr'>
+
+<head>
+  <meta content='width=device-width, initial-scale=1, maximum-scale=1' name='viewport'/>
+  <b:include data='blog' name='all-head-content'/>
+
+  <!-- Google Fonts -->
+  <link href='https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&amp;family=JetBrains+Mono:wght@400;500&amp;display=swap' rel='stylesheet'/>
+
+  <!-- Title -->
+  <title>
+    <b:if cond='data:blog.pageType == &quot;index&quot;'>
+      <data:blog.pageTitle/>
+    <b:else/>
+      <b:if cond='data:blog.pageType != &quot;error_page&quot;'>
+        <data:blog.pageName/> — <data:blog.title/>
+      <b:else/>
+        404 — <data:blog.title/>
+      </b:if>
+    </b:if>
+  </title>
+
+  <!-- SEO Meta -->
+  <b:if cond='data:blog.pageType == &quot;index&quot;'>
+    <meta content='Sandeep Hakki — Solution Architect, Azure Cloud Expert, Technical Blogger from Bangalore, India.' name='description'/>
+  </b:if>
+  <meta content='Sandeep Hakki, Solution Architect, Azure, Cloud, Data Engineering, .NET, Technical Blog, hakki.in' name='keywords'/>
+  <b:if cond='data:blog.pageType == &quot;item&quot;'>
+    <meta expr:content='data:blog.pageName' property='og:title'/>
+    <meta expr:content='data:blog.canonicalUrl' property='og:url'/>
+    <meta content='article' property='og:type'/>
+  </b:if>
+  <b:if cond='data:blog.postImageUrl'>
+    <meta expr:content='data:blog.postImageUrl' property='og:image'/>
+  </b:if>
+  <meta expr:content='data:blog.title' property='og:site_name'/>
+
+  <b:include data='blog' name='google-analytics'/>
+
+  <b:template-skin>
+  <![CDATA[
+  /* =============================================
+     hakki.in — Custom Blogger Template
+     Author: Sandeep Hakki
+     Site: https://hakki.in
+  ============================================= */
+
+  /* === Reset === */
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { overflow-x: hidden; scroll-behavior: smooth; }
+  a { text-decoration: none; color: inherit; }
+  img { max-width: 100%; vertical-align: middle; border: 0; }
+  ul, ol { list-style: none; }
+  .quickedit, .home-link, .Attribution, .feed-links,
+  .post-footer-line, .item-control, h2.date-header, h4.date-header,
+  #navbar-iframe, .navbar, .status-msg-wrap { display: none !important; }
+
+  /* === Variables === */
+  :root {
+    --primary: #0062FF;
+    --primary-dark: #0047CC;
+    --accent: #00C2A8;
+    --bg: #F7F8FC;
+    --surface: #FFFFFF;
+    --border: #E8ECF4;
+    --text: #1A1F36;
+    --text-secondary: #6B7494;
+    --font: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    --mono: 'JetBrains Mono', monospace;
+    --radius: 12px;
+    --shadow: 0 2px 16px rgba(0,98,255,0.07);
+    --shadow-hover: 0 8px 32px rgba(0,98,255,0.14);
+    --max-width: 1100px;
+    --transition: all 0.25s ease;
+  }
+
+  /* === Base === */
+  body {
+    font-family: var(--font);
+    font-size: 15px;
+    color: var(--text);
+    background: var(--bg);
+    line-height: 1.7;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* === Preloader === */
+  #hk-preloader {
+    position: fixed; inset: 0; z-index: 9999;
+    background: var(--text);
+    display: flex; align-items: center; justify-content: center;
+    transition: opacity 0.5s ease;
+  }
+  .hk-loader-ring {
+    width: 40px; height: 40px;
+    border: 3px solid rgba(255,255,255,0.15);
+    border-top-color: var(--primary);
+    border-radius: 50%;
+    animation: hk-spin 0.8s linear infinite;
+  }
+  @keyframes hk-spin { to { transform: rotate(360deg); } }
+
+  /* === Layout === */
+  #hk-outer { max-width: 100%; }
+  .hk-container { max-width: var(--max-width); margin: 0 auto; padding: 0 24px; }
+
+  /* === Top Bar === */
+  #hk-topbar {
+    background: var(--text);
+    color: rgba(255,255,255,0.55);
+    font-size: 12px;
+    padding: 8px 0;
+  }
+  .hk-topbar-inner {
+    display: flex; align-items: center; justify-content: space-between;
+  }
+  .hk-topbar-email a { color: rgba(255,255,255,0.55); }
+  .hk-topbar-email a:hover { color: #fff; }
+
+  /* === Nav === */
+  #hk-nav {
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+    position: sticky; top: 0; z-index: 100;
+    box-shadow: var(--shadow);
+  }
+  .hk-nav-inner {
+    display: flex; align-items: center; justify-content: space-between;
+    height: 64px;
+  }
+  .hk-logo {
+    display: flex; align-items: center; gap: 10px;
+    font-size: 20px; font-weight: 700; color: var(--text);
+    letter-spacing: -0.5px;
+  }
+  .hk-logo-dot { color: var(--primary); }
+  .hk-logo img { height: 36px; width: auto; }
+  .hk-nav-links { display: flex; gap: 4px; }
+  .hk-nav-links a {
+    padding: 8px 14px; border-radius: 8px;
+    font-size: 14px; font-weight: 500; color: var(--text-secondary);
+    transition: var(--transition);
+  }
+  .hk-nav-links a:hover { background: var(--bg); color: var(--primary); }
+  .hk-nav-cta {
+    background: var(--primary); color: #fff !important;
+    padding: 8px 18px; border-radius: 8px;
+    font-size: 14px; font-weight: 600;
+    transition: var(--transition);
+  }
+  .hk-nav-cta:hover { background: var(--primary-dark) !important; color: #fff !important; }
+
+  /* Mobile Nav Toggle */
+  .hk-nav-toggle {
+    display: none; background: none; border: none;
+    cursor: pointer; padding: 8px;
+    flex-direction: column; gap: 5px;
+  }
+  .hk-nav-toggle span {
+    display: block; width: 22px; height: 2px;
+    background: var(--text); border-radius: 2px;
+    transition: var(--transition);
+  }
+
+  /* === Hero Section === */
+  #hk-hero {
+    background: linear-gradient(135deg, #0A0F1E 0%, #0D2040 50%, #0A1628 100%);
+    padding: 80px 0 60px;
+    position: relative; overflow: hidden;
+  }
+  #hk-hero::before {
+    content: '';
+    position: absolute; top: -200px; right: -200px;
+    width: 500px; height: 500px;
+    background: radial-gradient(circle, rgba(0,98,255,0.15) 0%, transparent 70%);
+    pointer-events: none;
+  }
+  #hk-hero::after {
+    content: '';
+    position: absolute; bottom: -100px; left: -100px;
+    width: 350px; height: 350px;
+    background: radial-gradient(circle, rgba(0,194,168,0.1) 0%, transparent 70%);
+    pointer-events: none;
+  }
+  .hk-hero-inner {
+    display: flex; align-items: center; gap: 60px;
+    position: relative; z-index: 1;
+  }
+  .hk-hero-photo {
+    flex-shrink: 0; position: relative;
+  }
+  .hk-hero-photo img {
+    width: 220px; height: 220px; border-radius: 50%;
+    object-fit: cover; object-position: top;
+    border: 4px solid rgba(0,98,255,0.4);
+    box-shadow: 0 0 0 8px rgba(0,98,255,0.1);
+  }
+  .hk-hero-badge {
+    position: absolute; bottom: 10px; right: -5px;
+    background: var(--accent); color: #fff;
+    font-size: 11px; font-weight: 600; letter-spacing: 0.5px;
+    padding: 4px 10px; border-radius: 20px;
+    box-shadow: 0 2px 8px rgba(0,194,168,0.4);
+  }
+  .hk-hero-content { flex: 1; }
+  .hk-hero-greeting {
+    font-size: 13px; font-weight: 600; letter-spacing: 2px;
+    text-transform: uppercase; color: var(--accent);
+    margin-bottom: 10px; display: block;
+  }
+  .hk-hero-name {
+    font-size: 48px; font-weight: 700; color: #fff;
+    letter-spacing: -1.5px; line-height: 1.1; margin-bottom: 8px;
+  }
+  .hk-hero-title {
+    font-size: 18px; font-weight: 400; color: rgba(255,255,255,0.6);
+    margin-bottom: 24px; line-height: 1.4;
+  }
+  .hk-hero-title strong { color: rgba(255,255,255,0.9); font-weight: 600; }
+  .hk-hero-tags {
+    display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 28px;
+  }
+  .hk-tag {
+    background: rgba(0,98,255,0.15); color: rgba(255,255,255,0.75);
+    border: 1px solid rgba(0,98,255,0.3);
+    padding: 4px 12px; border-radius: 20px; font-size: 12px; font-weight: 500;
+  }
+  .hk-hero-actions { display: flex; gap: 12px; flex-wrap: wrap; }
+  .hk-btn {
+    display: inline-flex; align-items: center; gap: 8px;
+    padding: 11px 24px; border-radius: 10px;
+    font-size: 14px; font-weight: 600;
+    transition: var(--transition); cursor: pointer;
+  }
+  .hk-btn-primary { background: var(--primary); color: #fff; }
+  .hk-btn-primary:hover { background: var(--primary-dark); transform: translateY(-1px); box-shadow: 0 6px 20px rgba(0,98,255,0.35); }
+  .hk-btn-outline {
+    background: transparent; color: rgba(255,255,255,0.8);
+    border: 1px solid rgba(255,255,255,0.2);
+  }
+  .hk-btn-outline:hover { background: rgba(255,255,255,0.08); color: #fff; }
+
+  /* === Stats Bar === */
+  #hk-stats {
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+  }
+  .hk-stats-inner {
+    display: grid; grid-template-columns: repeat(4, 1fr);
+    divide: var(--border);
+  }
+  .hk-stat-item {
+    padding: 20px 24px; text-align: center;
+    border-right: 1px solid var(--border);
+  }
+  .hk-stat-item:last-child { border-right: none; }
+  .hk-stat-number { font-size: 28px; font-weight: 700; color: var(--primary); line-height: 1; }
+  .hk-stat-label { font-size: 12px; color: var(--text-secondary); margin-top: 4px; font-weight: 500; }
+
+  /* === Section Titles === */
+  .hk-section { padding: 64px 0; }
+  .hk-section-alt { background: var(--surface); }
+  .hk-section-title {
+    font-size: 13px; font-weight: 700; letter-spacing: 2px;
+    text-transform: uppercase; color: var(--primary);
+    margin-bottom: 8px;
+  }
+  .hk-section-heading {
+    font-size: 30px; font-weight: 700; color: var(--text);
+    letter-spacing: -0.5px; margin-bottom: 40px; line-height: 1.2;
+  }
+  .hk-section-heading span { color: var(--primary); }
+
+  /* === About === */
+  .hk-about-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 48px; align-items: start; }
+  .hk-about-text p { color: var(--text-secondary); line-height: 1.8; margin-bottom: 16px; }
+  .hk-about-text p:last-child { margin-bottom: 0; }
+  .hk-info-list { display: flex; flex-direction: column; gap: 12px; }
+  .hk-info-item {
+    display: grid; grid-template-columns: 140px 1fr; gap: 12px;
+    padding: 14px 0; border-bottom: 1px solid var(--border); align-items: start;
+  }
+  .hk-info-item:last-child { border-bottom: none; }
+  .hk-info-key { font-size: 12px; font-weight: 600; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 1px; padding-top: 2px; }
+  .hk-info-val { font-size: 14px; color: var(--text); line-height: 1.5; }
+  .hk-info-val a { color: var(--primary); }
+  .hk-info-val a:hover { text-decoration: underline; }
+
+  /* === Skills === */
+  .hk-skills-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; }
+  .hk-skill-card {
+    background: var(--bg); border: 1px solid var(--border);
+    border-radius: var(--radius); padding: 20px;
+  }
+  .hk-skill-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
+  .hk-skill-name { font-size: 14px; font-weight: 600; color: var(--text); }
+  .hk-skill-pct { font-size: 13px; font-weight: 700; color: var(--primary); }
+  .hk-skill-bar { height: 6px; background: var(--border); border-radius: 3px; overflow: hidden; }
+  .hk-skill-fill { height: 100%; background: linear-gradient(90deg, var(--primary), var(--accent)); border-radius: 3px; transition: width 1s ease; }
+
+  /* Certs */
+  .hk-certs { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 32px; }
+  .hk-cert-badge {
+    display: flex; align-items: center; gap: 8px;
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: 8px; padding: 8px 14px; font-size: 13px; font-weight: 500;
+    color: var(--text);
+  }
+  .hk-cert-badge::before {
+    content: '✦'; color: var(--primary); font-size: 10px;
+  }
+
+  /* === Timeline === */
+  .hk-timeline { position: relative; }
+  .hk-timeline::before {
+    content: ''; position: absolute; left: 50%; top: 0; bottom: 0;
+    width: 2px; background: var(--border); transform: translateX(-50%);
+  }
+  .hk-timeline-group { margin-bottom: 48px; }
+  .hk-timeline-era {
+    text-align: center; position: relative; margin-bottom: 32px;
+  }
+  .hk-timeline-era-label {
+    display: inline-block; background: var(--primary); color: #fff;
+    padding: 6px 20px; border-radius: 20px; font-size: 13px; font-weight: 600;
+    position: relative; z-index: 1;
+  }
+  .hk-timeline-items { display: flex; flex-direction: column; gap: 24px; }
+  .hk-tl-item {
+    display: grid; grid-template-columns: 1fr 40px 1fr; gap: 0; align-items: start;
+  }
+  .hk-tl-item.left .hk-tl-content { grid-column: 1; padding-right: 36px; }
+  .hk-tl-item.left .hk-tl-dot { grid-column: 2; }
+  .hk-tl-item.left .hk-tl-empty { grid-column: 3; }
+  .hk-tl-item.right .hk-tl-empty { grid-column: 1; }
+  .hk-tl-item.right .hk-tl-dot { grid-column: 2; }
+  .hk-tl-item.right .hk-tl-content { grid-column: 3; padding-left: 36px; }
+  .hk-tl-dot {
+    display: flex; align-items: flex-start; justify-content: center;
+    padding-top: 16px;
+  }
+  .hk-tl-dot-inner {
+    width: 12px; height: 12px; border-radius: 50%;
+    background: var(--primary); border: 3px solid var(--surface);
+    box-shadow: 0 0 0 2px var(--primary);
+    flex-shrink: 0;
+  }
+  .hk-tl-card {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: var(--radius); padding: 20px 24px;
+    box-shadow: var(--shadow);
+    transition: var(--transition);
+  }
+  .hk-tl-card:hover { box-shadow: var(--shadow-hover); transform: translateY(-2px); }
+  .hk-tl-date {
+    font-size: 11px; font-weight: 700; letter-spacing: 1.5px;
+    text-transform: uppercase; color: var(--primary); margin-bottom: 6px;
+  }
+  .hk-tl-card h3 {
+    font-size: 16px; font-weight: 700; color: var(--text); margin-bottom: 4px; line-height: 1.3;
+  }
+  .hk-tl-card h3 a { color: var(--primary); }
+  .hk-tl-card h3 a:hover { text-decoration: underline; }
+  .hk-tl-card p { font-size: 13px; color: var(--text-secondary); line-height: 1.7; margin-top: 8px; }
+  .hk-tl-card ul { margin-top: 8px; padding-left: 0; }
+  .hk-tl-card ul li {
+    font-size: 13px; color: var(--text-secondary); line-height: 1.6;
+    padding: 2px 0 2px 16px; position: relative;
+  }
+  .hk-tl-card ul li::before {
+    content: '→'; position: absolute; left: 0; color: var(--primary); font-size: 11px;
+  }
+  .hk-tl-img {
+    display: block; width: 100%; margin-top: 12px;
+    border-radius: 8px; object-fit: cover;
+    max-height: 200px;
+  }
+
+  /* === Blog Grid === */
+  #hk-blog { padding: 64px 0; }
+  .hk-blog-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; }
+  .post-grid-item { /* used by Blogger */ }
+  .hk-post-card {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: var(--radius); overflow: hidden;
+    transition: var(--transition); height: 100%;
+  }
+  .hk-post-card:hover { box-shadow: var(--shadow-hover); transform: translateY(-3px); }
+  .hk-post-thumb {
+    width: 100%; height: 180px; object-fit: cover; display: block;
+    background: linear-gradient(135deg, #e8ecf4, #d0d7e8);
+  }
+  .hk-post-body { padding: 20px; }
+  .hk-post-labels { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 10px; }
+  .hk-post-label {
+    font-size: 11px; font-weight: 600; letter-spacing: 0.5px;
+    text-transform: uppercase; color: var(--primary);
+    background: rgba(0,98,255,0.08); padding: 3px 8px; border-radius: 4px;
+  }
+  .hk-post-title {
+    font-size: 16px; font-weight: 700; color: var(--text);
+    line-height: 1.4; margin-bottom: 8px;
+  }
+  .hk-post-title a { color: inherit; }
+  .hk-post-title a:hover { color: var(--primary); }
+  .hk-post-snippet { font-size: 13px; color: var(--text-secondary); line-height: 1.7; margin-bottom: 14px; }
+  .hk-post-meta { font-size: 12px; color: var(--text-secondary); display: flex; align-items: center; gap: 8px; }
+  .hk-post-read-more {
+    display: inline-flex; align-items: center; gap: 4px;
+    font-size: 13px; font-weight: 600; color: var(--primary);
+    margin-top: 12px; transition: var(--transition);
+  }
+  .hk-post-read-more:hover { gap: 8px; }
+
+  /* Single post / article page */
+  .item #hk-content-layout { display: grid; grid-template-columns: 1fr 300px; gap: 32px; align-items: start; }
+  .post-body, .post-outer {
+    background: var(--surface); border-radius: var(--radius);
+    padding: 32px; margin-bottom: 24px; border: 1px solid var(--border);
+  }
+  .post-title { font-size: 28px; font-weight: 700; color: var(--text); margin-bottom: 12px; line-height: 1.3; }
+  .post-title a { color: inherit; }
+  .post-header-line { font-size: 13px; color: var(--text-secondary); margin-bottom: 20px; }
+  .post-body p { margin-bottom: 16px; line-height: 1.8; color: var(--text-secondary); }
+  .post-body h2, .post-body h3, .post-body h4 { color: var(--text); font-weight: 700; margin: 24px 0 10px; }
+  .post-body code { font-family: var(--mono); background: var(--bg); padding: 2px 6px; border-radius: 4px; font-size: 13px; }
+  .post-body pre { background: #0A0F1E; color: #e8ecf4; padding: 20px; border-radius: 10px; overflow-x: auto; margin: 20px 0; }
+  .post-body pre code { background: none; padding: 0; color: inherit; }
+  .post-body img { border-radius: 8px; margin: 16px 0; }
+  .post-body blockquote {
+    border-left: 3px solid var(--primary); padding: 12px 20px;
+    background: rgba(0,98,255,0.04); border-radius: 0 8px 8px 0;
+    margin: 20px 0; font-style: italic; color: var(--text-secondary);
+  }
+  .post-body a { color: var(--primary); text-decoration: underline; }
+
+  /* Sidebar */
+  #hk-sidebar .hk-widget {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: var(--radius); padding: 20px; margin-bottom: 20px;
+  }
+  #hk-sidebar .hk-widget-title {
+    font-size: 11px; font-weight: 700; letter-spacing: 2px;
+    text-transform: uppercase; color: var(--text-secondary);
+    margin-bottom: 14px; padding-bottom: 10px; border-bottom: 1px solid var(--border);
+  }
+  /* Popular Posts */
+  .PopularPosts .item-thumbnail { width: 60px; height: 60px; float: left; margin-right: 12px; border-radius: 8px; overflow: hidden; }
+  .PopularPosts .item-thumbnail img { width: 60px; height: 60px; object-fit: cover; }
+  .PopularPosts .item-title { font-size: 13px; font-weight: 600; line-height: 1.4; }
+  .PopularPosts .item-title a { color: var(--text); }
+  .PopularPosts .item-title a:hover { color: var(--primary); }
+  .PopularPosts .widget-content ul li { overflow: hidden; padding: 10px 0; border-bottom: 1px solid var(--border); }
+  .PopularPosts .widget-content ul li:last-child { border-bottom: none; padding-bottom: 0; }
+  /* Labels */
+  .cloud-label-widget-content { display: flex; flex-wrap: wrap; gap: 6px; }
+  .cloud-label-widget-content .label-size a {
+    background: var(--bg); color: var(--text-secondary);
+    padding: 4px 10px; border-radius: 6px; font-size: 12px; font-weight: 500;
+    border: 1px solid var(--border); display: block;
+    transition: var(--transition);
+  }
+  .cloud-label-widget-content .label-size a:hover { background: var(--primary); color: #fff; border-color: var(--primary); }
+  .label-count { display: none; }
+  /* Blog Archive */
+  .BlogArchive ul li { padding: 6px 0; border-bottom: 1px solid var(--border); }
+  .BlogArchive ul li:last-child { border-bottom: none; }
+  .BlogArchive ul li a { font-size: 13px; color: var(--text-secondary); }
+  .BlogArchive ul li a:hover { color: var(--primary); }
+
+  /* Pagination */
+  #blog-pager { text-align: center; padding: 32px 0; }
+  #blog-pager a {
+    display: inline-block; padding: 10px 24px; border-radius: 8px;
+    border: 1px solid var(--border); font-size: 14px; font-weight: 600;
+    color: var(--text); margin: 0 4px; transition: var(--transition);
+  }
+  #blog-pager a:hover { background: var(--primary); color: #fff; border-color: var(--primary); }
+
+  /* Related Posts */
+  .related { display: flex; gap: 16px; list-style: none; margin: 24px 0; flex-wrap: wrap; }
+  .related li { width: calc(33% - 12px); }
+  .related-thumb { height: 120px; border-radius: 8px; overflow: hidden; margin-bottom: 8px; }
+  .related-img { display: block; width: 100%; height: 100%; background-size: cover !important; border-radius: 8px; }
+  .related-title a { font-size: 13px; font-weight: 600; color: var(--text); line-height: 1.4; }
+  .related-title a:hover { color: var(--primary); }
+
+  /* Comments */
+  .comment-form iframe { width: 100% !important; border: none; border-radius: var(--radius); }
+  .comments-section { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 24px; margin-top: 24px; }
+  .comments h4 { font-size: 18px; font-weight: 700; color: var(--text); margin-bottom: 20px; }
+  .comment-block { padding: 16px 0; border-bottom: 1px solid var(--border); }
+  .comment-block:last-child { border-bottom: none; }
+  .comment-author { font-weight: 600; font-size: 14px; color: var(--text); }
+  .comment-content { font-size: 13px; color: var(--text-secondary); margin-top: 4px; line-height: 1.6; }
+  .comment-header { font-size: 12px; color: var(--text-secondary); margin-bottom: 4px; }
+
+  /* Share */
+  .share-art { display: flex; gap: 10px; flex-wrap: wrap; margin: 20px 0; }
+  .share-art a {
+    display: inline-flex; align-items: center; gap: 6px;
+    padding: 8px 14px; border-radius: 8px; font-size: 13px; font-weight: 500;
+    border: 1px solid var(--border); color: var(--text);
+    transition: var(--transition);
+  }
+  .share-art a:hover { background: var(--primary); color: #fff; border-color: var(--primary); }
+  .goog-inline-block.share-button { display: inline-block; }
+
+  /* === Footer === */
+  #hk-footer {
+    background: var(--text);
+    color: rgba(255,255,255,0.55);
+    padding: 48px 0 0;
+  }
+  .hk-footer-grid { display: grid; grid-template-columns: 2fr 1fr 1fr; gap: 40px; margin-bottom: 40px; }
+  .hk-footer-brand .hk-logo { color: #fff; margin-bottom: 12px; }
+  .hk-footer-tagline { font-size: 13px; line-height: 1.7; margin-bottom: 16px; }
+  .hk-footer-social { display: flex; gap: 10px; }
+  .hk-footer-social a {
+    width: 36px; height: 36px; border-radius: 8px;
+    background: rgba(255,255,255,0.07); border: 1px solid rgba(255,255,255,0.1);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 14px; color: rgba(255,255,255,0.6);
+    transition: var(--transition);
+  }
+  .hk-footer-social a:hover { background: var(--primary); border-color: var(--primary); color: #fff; }
+  .hk-footer-col h4 {
+    font-size: 12px; font-weight: 700; letter-spacing: 2px;
+    text-transform: uppercase; color: rgba(255,255,255,0.9);
+    margin-bottom: 16px;
+  }
+  .hk-footer-col ul { display: flex; flex-direction: column; gap: 8px; }
+  .hk-footer-col ul a { font-size: 13px; color: rgba(255,255,255,0.5); transition: var(--transition); }
+  .hk-footer-col ul a:hover { color: #fff; }
+  .hk-footer-bottom {
+    border-top: 1px solid rgba(255,255,255,0.07);
+    padding: 20px 0; text-align: center; font-size: 12px;
+  }
+  .hk-footer-bottom a { color: rgba(255,255,255,0.5); }
+  .hk-footer-bottom a:hover { color: #fff; }
+
+  /* === 404 === */
+  .post-404 { text-align: center; padding: 80px 24px; }
+  .title-404 { font-size: 120px; font-weight: 700; color: var(--border); line-height: 1; }
+  .ops-404 { font-size: 20px; color: var(--text-secondary); margin: 16px 0 32px; }
+  .link-404 a { background: var(--primary); color: #fff; padding: 12px 28px; border-radius: 10px; font-weight: 600; }
+
+  /* === Scroll-to-top === */
+  #hk-scrolltop {
+    position: fixed; bottom: 32px; right: 32px; z-index: 500;
+    width: 44px; height: 44px; border-radius: 10px;
+    background: var(--primary); color: #fff;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 18px; cursor: pointer; opacity: 0; pointer-events: none;
+    transition: var(--transition); box-shadow: 0 4px 16px rgba(0,98,255,0.3);
+    border: none;
+  }
+  #hk-scrolltop.visible { opacity: 1; pointer-events: all; }
+  #hk-scrolltop:hover { background: var(--primary-dark); transform: translateY(-2px); }
+
+  /* === Responsive === */
+  @media (max-width: 1024px) {
+    .hk-hero-name { font-size: 38px; }
+    .hk-blog-grid { grid-template-columns: repeat(2, 1fr); }
+    .hk-timeline::before { display: none; }
+    .hk-tl-item { grid-template-columns: 1fr; }
+    .hk-tl-item.left .hk-tl-content,
+    .hk-tl-item.right .hk-tl-content { grid-column: 1; padding: 0; }
+    .hk-tl-item.left .hk-tl-dot,
+    .hk-tl-item.right .hk-tl-dot,
+    .hk-tl-item.left .hk-tl-empty,
+    .hk-tl-item.right .hk-tl-empty { display: none; }
+    .hk-about-grid { grid-template-columns: 1fr; gap: 32px; }
+    .item #hk-content-layout { grid-template-columns: 1fr; }
+    .hk-footer-grid { grid-template-columns: 1fr 1fr; }
+  }
+  @media (max-width: 768px) {
+    .hk-hero-inner { flex-direction: column; text-align: center; gap: 32px; }
+    .hk-hero-tags { justify-content: center; }
+    .hk-hero-actions { justify-content: center; }
+    .hk-hero-name { font-size: 32px; }
+    .hk-stats-inner { grid-template-columns: repeat(2, 1fr); }
+    .hk-stat-item { border-right: none; border-bottom: 1px solid var(--border); }
+    .hk-blog-grid { grid-template-columns: 1fr; }
+    .hk-skills-grid { grid-template-columns: 1fr; }
+    .hk-nav-links { display: none; }
+    .hk-nav-links.open { display: flex; flex-direction: column; position: absolute; top: 64px; left: 0; right: 0; background: var(--surface); border-bottom: 1px solid var(--border); padding: 8px 16px 16px; z-index: 99; }
+    .hk-nav-toggle { display: flex; }
+    .hk-footer-grid { grid-template-columns: 1fr; }
+    .hk-container { padding: 0 16px; }
+    .hk-section { padding: 48px 0; }
+    .hk-hero-photo img { width: 160px; height: 160px; }
+    .related li { width: 100%; }
+  }
+  ]]>
+  </b:template-skin>
+
+  <script type='text/javascript'>
+  //<![CDATA[
+  var no_image = "https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEg6W-gyZgTmpNVxJArUEtF235wyLB03N9n55rz23W9gOHAlwnRuFSOEqTLNDlEZ4Oo6KIS1sHsBGgmLnLLbEIdNG1P-EYUqk9kXoESmdPXqkjpJ1ZK1W7RZ-mE9bDtUFd6abxWRID2fYWo/s1600-r/nth.png";
+  var month_format = [, "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+  var more_text = "Read More";
+  var comments_text = "Post a Comment";
+  var pagenav_prev = "← Newer";
+  var pagenav_next = "Older →";
+  //]]>
+  </script>
+</head>
+
+<body expr:class='data:blog.pageType'>
+
+<!-- Preloader -->
+<div id='hk-preloader'>
+  <div class='hk-loader-ring'></div>
+</div>
+
+<div id='hk-outer'>
+
+  <!-- ====== TOP BAR ====== -->
+  <div id='hk-topbar'>
+    <div class='hk-container'>
+      <div class='hk-topbar-inner'>
+        <div class='hk-topbar-email'>
+          <a href='mailto:sandeep@hakki.in'>✉ sandeep@hakki.in</a>
+        </div>
+        <div style='font-size:12px;'>
+          Azure Certified · AZ-900 · AZ-303 · AZ-304
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ====== NAVIGATION ====== -->
+  <nav id='hk-nav'>
+    <div class='hk-container'>
+      <div class='hk-nav-inner'>
+
+        <!-- Logo -->
+        <div class='scroll-header' id='head-trigger'>
+          <b:section class='header' id='header' maxwidgets='1' name='Logo' showaddelement='no'>
+            <b:widget id='Header1' locked='true' title='Hakki' type='Header' version='1'>
+              <b:widget-settings>
+                <b:widget-setting name='displayUrl'>https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEhO4DjKky1BVmf5UHdkNKYcQNooSXbHdzevtulF3dpmZbF2aNOU-RG-Rn1zSveD99Iunjfq7HEtenYB0Exb4OBJGpxemlyaTa5k_dRdjVvuyfmSLIEInz6_FXvysjf3PTgmZUH_VHGSyJeq/s320/HakkiLogo.png</b:widget-setting>
+                <b:widget-setting name='displayHeight'>36</b:widget-setting>
+                <b:widget-setting name='useImage'>true</b:widget-setting>
+                <b:widget-setting name='shrinkToFit'>false</b:widget-setting>
+                <b:widget-setting name='imagePlacement'>REPLACE</b:widget-setting>
+                <b:widget-setting name='displayWidth'>120</b:widget-setting>
+              </b:widget-settings>
+              <b:includable id='main'>
+                <a class='hk-logo' expr:href='data:blog.homepageUrl'>
+                  <b:if cond='data:useImage'>
+                    <img alt='Hakki.in' expr:height='data:displayHeight' expr:src='data:displayUrl' expr:width='data:displayWidth'/>
+                  <b:else/>
+                  hakki<span class='hk-logo-dot'>.</span>in
+                  </b:if>
+                </a>
+              </b:includable>
+            </b:widget>
+          </b:section>
+        </div>
+
+        <!-- Nav Links -->
+        <div class='tm-menu' id='hk-nav-menu-wrap'>
+          <div class='menu-wrap'>
+            <nav class='hk-nav-links' id='hk-nav-links'>
+              <a expr:href='data:blog.homepageUrl'>Home</a>
+              <a href='#about'>About</a>
+              <a href='#experience'>Experience</a>
+              <a href='#blog-section'>Blog</a>
+              <a class='hk-nav-cta' href='https://drive.google.com/file/d/10cZkBQjM8cUhp2u7VslhpvSh_Ki6iByQ/view' target='_blank'>Download CV</a>
+            </nav>
+            <button aria-label='Toggle menu' class='hk-nav-toggle' id='hk-nav-toggle' onclick='document.getElementById(&quot;hk-nav-links&quot;).classList.toggle(&quot;open&quot;)'>
+              <span></span><span></span><span></span>
+            </button>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </nav>
+
+  <!-- ====== HERO (only on homepage) ====== -->
+  <b:if cond='data:blog.pageType != &quot;static_page&quot;'>
+    <b:if cond='data:blog.pageType != &quot;item&quot;'>
+      <b:if cond='data:blog.pageType != &quot;error_page&quot;'>
+
+        <section id='hk-hero'>
+          <div class='hk-container'>
+            <div class='hk-hero-inner'>
+
+              <div class='hk-hero-photo'>
+                <img alt='Sandeep Hakki'
+                  src='https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEjiCNRsMk1dmFHe7GrpSuVTau9GrsocwiFve3gKQ4OYEXEmUB9YIldZHL6xC53GvTMsV-Fzm0Ab0nz9PPWIrgv30iECxbU3ho9Oy-aX5aBru5Nnv8whLTJSeXBjJ9j_SJ1Iaco26OsWHuqz/s1891/Sandeep+Hakki.jpg'/>
+                <span class='hk-hero-badge'>Open to Connect</span>
+              </div>
+
+              <div class='hk-hero-content'>
+                <span class='hk-hero-greeting'>Hello, I&#8217;m</span>
+                <h1 class='hk-hero-name'>Sandeep Hakki</h1>
+                <p class='hk-hero-title'>
+                  <strong>Technical Architect</strong> at Nokia India &amp; Technical Blogger
+                </p>
+                <div class='hk-hero-tags'>
+                  <span class='hk-tag'>Azure Cloud</span>
+                  <span class='hk-tag'>Data Engineering</span>
+                  <span class='hk-tag'>Solution Architecture</span>
+                  <span class='hk-tag'>AI / ML</span>
+                  <span class='hk-tag'>Microsoft .NET</span>
+                  <span class='hk-tag'>14+ Years</span>
+                </div>
+                <div class='hk-hero-actions'>
+                  <a class='hk-btn hk-btn-primary' href='https://drive.google.com/file/d/10cZkBQjM8cUhp2u7VslhpvSh_Ki6iByQ/view' target='_blank'>
+                    ↓ Download CV
+                  </a>
+                  <a class='hk-btn hk-btn-outline' href='https://docs.google.com/document/d/1czyRxWznXaFaTVVExQkRxmwv-dhIUrXFQqS78F8Pkag/mobilebasic' target='_blank'>
+                    ☁ White Paper on Cloud
+                  </a>
+                  <a class='hk-btn hk-btn-outline' href='#blog-section'>
+                    ✍ Read My Blog
+                  </a>
+                </div>
+              </div>
+
+            </div>
+          </div>
+        </section>
+
+        <!-- Stats Bar -->
+        <div id='hk-stats'>
+          <div class='hk-container'>
+            <div class='hk-stats-inner'>
+              <div class='hk-stat-item'>
+                <div class='hk-stat-number'>14+</div>
+                <div class='hk-stat-label'>Years Experience</div>
+              </div>
+              <div class='hk-stat-item'>
+                <div class='hk-stat-number'>6</div>
+                <div class='hk-stat-label'>Industries Served</div>
+              </div>
+              <div class='hk-stat-item'>
+                <div class='hk-stat-number'>3</div>
+                <div class='hk-stat-label'>Azure Certifications</div>
+              </div>
+              <div class='hk-stat-item'>
+                <div class='hk-stat-number'>∞</div>
+                <div class='hk-stat-label'>Still Learning</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- About -->
+        <section class='hk-section' id='about'>
+          <div class='hk-container'>
+            <p class='hk-section-title'>About Me</p>
+            <h2 class='hk-section-heading'>Architect. Builder. <span>Blogger.</span></h2>
+            <div class='hk-about-grid'>
+              <div class='hk-about-text'>
+                <p>I&#8217;m Sandeep Hakki — a Solution Architect and IT professional with 14+ years of experience across the Microsoft technology stack, specialising in Azure cloud architecture, AI/ML solutioning, and data integration using modern ETL platforms.</p>
+                <p>I design and deliver scalable, cloud-native solutions that drive real business impact — blending technical depth with project leadership and client engagement.</p>
+                <p>I&#8217;ve led end-to-end digital transformation projects, managed RFP responses, and architected data pipelines and AI workloads using Azure Data Factory, Azure Data Lake, Databricks, SSIS, and Talend.</p>
+                <p>I&#8217;m also a published author on cloud computing and currently exploring a multi-cloud integration concept called <em>&#8220;One Cloud&#8221;</em> to help reduce vendor dependency. Actively participating in Microsoft events for the last 8 years and contributing to the community.</p>
+                <div class='hk-certs'>
+                  <span class='hk-cert-badge'>AZ-900 Fundamentals</span>
+                  <span class='hk-cert-badge'>AZ-303 Architect</span>
+                  <span class='hk-cert-badge'>AZ-304 Design</span>
+                  <span class='hk-cert-badge'>Published Author</span>
+                </div>
+              </div>
+              <div class='hk-info-list'>
+                <div class='hk-info-item'>
+                  <span class='hk-info-key'>Role</span>
+                  <span class='hk-info-val'>Technical Architect at Nokia India</span>
+                </div>
+                <div class='hk-info-item'>
+                  <span class='hk-info-key'>Experience</span>
+                  <span class='hk-info-val'>14+ Years</span>
+                </div>
+                <div class='hk-info-item'>
+                  <span class='hk-info-key'>Domains</span>
+                  <span class='hk-info-val'>Telecom, Healthcare, Retail, Online Learning, Banking, IoT, Home Automation</span>
+                </div>
+                <div class='hk-info-item'>
+                  <span class='hk-info-key'>Email</span>
+                  <span class='hk-info-val'><a href='mailto:sandeep@hakki.in'>sandeep@hakki.in</a></span>
+                </div>
+                <div class='hk-info-item'>
+                  <span class='hk-info-key'>Expertise</span>
+                  <span class='hk-info-val'>Azure PaaS · ADF · Databricks · SSIS · Talend · .NET · AI/ML · DevOps</span>
+                </div>
+                <div class='hk-info-item'>
+                  <span class='hk-info-key'>Location</span>
+                  <span class='hk-info-val'>Bangalore, Karnataka, India</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Skills -->
+        <section class='hk-section hk-section-alt'>
+          <div class='hk-container'>
+            <p class='hk-section-title'>Skills</p>
+            <h2 class='hk-section-heading'>Professional <span>Expertise</span></h2>
+            <div class='hk-skills-grid'>
+              <div class='hk-skill-card'>
+                <div class='hk-skill-header'><span class='hk-skill-name'>Microsoft .NET &amp; Azure</span><span class='hk-skill-pct'>85%</span></div>
+                <div class='hk-skill-bar'><div class='hk-skill-fill' style='width:85%'></div></div>
+              </div>
+              <div class='hk-skill-card'>
+                <div class='hk-skill-header'><span class='hk-skill-name'>Solution Architecture</span><span class='hk-skill-pct'>80%</span></div>
+                <div class='hk-skill-bar'><div class='hk-skill-fill' style='width:80%'></div></div>
+              </div>
+              <div class='hk-skill-card'>
+                <div class='hk-skill-header'><span class='hk-skill-name'>Data Engineering (ADF / Databricks / SSIS)</span><span class='hk-skill-pct'>75%</span></div>
+                <div class='hk-skill-bar'><div class='hk-skill-fill' style='width:75%'></div></div>
+              </div>
+              <div class='hk-skill-card'>
+                <div class='hk-skill-header'><span class='hk-skill-name'>AI / ML Solutioning</span><span class='hk-skill-pct'>65%</span></div>
+                <div class='hk-skill-bar'><div class='hk-skill-fill' style='width:65%'></div></div>
+              </div>
+              <div class='hk-skill-card'>
+                <div class='hk-skill-header'><span class='hk-skill-name'>Team Leadership &amp; Mentoring</span><span class='hk-skill-pct'>75%</span></div>
+                <div class='hk-skill-bar'><div class='hk-skill-fill' style='width:75%'></div></div>
+              </div>
+              <div class='hk-skill-card'>
+                <div class='hk-skill-header'><span class='hk-skill-name'>Technical Writing &amp; Blogging</span><span class='hk-skill-pct'>70%</span></div>
+                <div class='hk-skill-bar'><div class='hk-skill-fill' style='width:70%'></div></div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Experience Timeline -->
+        <section class='hk-section' id='experience'>
+          <div class='hk-container'>
+            <p class='hk-section-title'>Experience</p>
+            <h2 class='hk-section-heading'>My <span>Journey</span></h2>
+
+            <div class='hk-timeline'>
+
+              <!-- Work Experience -->
+              <div class='hk-timeline-group'>
+                <div class='hk-timeline-era'><span class='hk-timeline-era-label'>Technical Experience</span></div>
+                <div class='hk-timeline-items'>
+
+                  <div class='hk-tl-item left'>
+                    <div class='hk-tl-content'>
+                      <div class='hk-tl-card'>
+                        <div class='hk-tl-date'>2021 — Present</div>
+                        <h3>Solution Architect at <a href='https://www.nokia.com/' target='_blank'>Nokia</a></h3>
+                        <ul>
+                          <li>Designed end-to-end application architecture using Azure PaaS services, focusing on scalability and cost-efficiency.</li>
+                          <li>Built and maintained Azure CI/CD pipelines across all environments using Azure DevOps.</li>
+                          <li>Planned and executed production deployment strategies with minimal downtime.</li>
+                          <li>Resolved post-deployment Azure security issues including configuration hardening and access policies.</li>
+                          <li>Managed critical Azure resources — SSL certificates, App Registrations, Key Vault secrets.</li>
+                          <li>Conducted training workshops on Azure services and DevOps best practices.</li>
+                        </ul>
+                      </div>
+                    </div>
+                    <div class='hk-tl-dot'><div class='hk-tl-dot-inner'></div></div>
+                    <div class='hk-tl-empty'></div>
+                  </div>
+
+                  <div class='hk-tl-item right'>
+                    <div class='hk-tl-empty'></div>
+                    <div class='hk-tl-dot'><div class='hk-tl-dot-inner'></div></div>
+                    <div class='hk-tl-content'>
+                      <div class='hk-tl-card'>
+                        <div class='hk-tl-date'>2019 — 2021</div>
+                        <h3>Technical Lead at <a href='https://www.hcltech.com/' target='_blank'>HCL Technologies</a></h3>
+                        <ul>
+                          <li>Led process automation initiative replacing a 4-year manual Excel analytics workflow.</li>
+                          <li>Used Talend ETL and Python scripting to automate data extraction and reporting.</li>
+                          <li>Implemented ML models to automate RFP proposal categorisation.</li>
+                        </ul>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class='hk-tl-item left'>
+                    <div class='hk-tl-content'>
+                      <div class='hk-tl-card'>
+                        <div class='hk-tl-date'>2015 — 2019</div>
+                        <h3>Senior Software Engineer at <a href='https://www.wipro.com/' target='_blank'>Wipro</a></h3>
+                        <ul>
+                          <li>Developed ASP.NET MVC applications with Entity Framework using Agile SCRUM.</li>
+                          <li>Part of architecting the application — developed HLD, LLD, unit test cases.</li>
+                          <li>Migrated legacy .NET applications to latest frameworks without affecting production.</li>
+                          <li>Trained 10-member team on MVC; participated in technical interview panels.</li>
+                        </ul>
+                      </div>
+                    </div>
+                    <div class='hk-tl-dot'><div class='hk-tl-dot-inner'></div></div>
+                    <div class='hk-tl-empty'></div>
+                  </div>
+
+                  <div class='hk-tl-item right'>
+                    <div class='hk-tl-empty'></div>
+                    <div class='hk-tl-dot'><div class='hk-tl-dot-inner'></div></div>
+                    <div class='hk-tl-content'>
+                      <div class='hk-tl-card'>
+                        <div class='hk-tl-date'>2014 — 2015</div>
+                        <h3>Software Developer at <a href='https://www.trigent.com/' target='_blank'>Trigent Software Inc</a></h3>
+                        <ul>
+                          <li>Built School Management System on ASP.NET MVC 5, EF6, Code First, Bootstrap.</li>
+                          <li>Developed Online Reading Program on ASP.NET, C#, ADO.NET, SQL, SSRS, and DNN.</li>
+                        </ul>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class='hk-tl-item left'>
+                    <div class='hk-tl-content'>
+                      <div class='hk-tl-card'>
+                        <div class='hk-tl-date'>2013 — 2014</div>
+                        <h3>Software Developer at <a href='https://www.ef.com/' target='_blank'>EF Education First</a></h3>
+                        <p>In-house web development on ASP.NET MVC, Entity Framework, and SiteCore CMS.</p>
+                      </div>
+                    </div>
+                    <div class='hk-tl-dot'><div class='hk-tl-dot-inner'></div></div>
+                    <div class='hk-tl-empty'></div>
+                  </div>
+
+                  <div class='hk-tl-item right'>
+                    <div class='hk-tl-empty'></div>
+                    <div class='hk-tl-dot'><div class='hk-tl-dot-inner'></div></div>
+                    <div class='hk-tl-content'>
+                      <div class='hk-tl-card'>
+                        <div class='hk-tl-date'>2011 — 2013</div>
+                        <h3>Associate Software Consultant at <a href='https://www.asthrasoft.com/' target='_blank'>Asthrasoft</a></h3>
+                        <ul>
+                          <li>Built end-to-end reference POC/Framework for clients with thorough functional and non-functional testing.</li>
+                          <li>Worked on Windows 8 Metro applications and multi-tier .NET systems.</li>
+                          <li>Built SQL BI reports (SSRS, SSIS) hosted in IIS.</li>
+                        </ul>
+                      </div>
+                    </div>
+                  </div>
+
+                </div>
+              </div>
+
+              <!-- Speaker -->
+              <div class='hk-timeline-group'>
+                <div class='hk-timeline-era'><span class='hk-timeline-era-label'>Speaker &amp; Trainer</span></div>
+                <div class='hk-timeline-items'>
+                  <div class='hk-tl-item left'>
+                    <div class='hk-tl-content'>
+                      <div class='hk-tl-card'>
+                        <h3>Webinar — Cloud Technology</h3>
+                        <p>Delivered a webinar to BLDE Engineering College students on cloud technology.</p>
+                        <img class='hk-tl-img' src='https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEhf2SrTqxNiM2MRT3bpy1JXEMLPt2JOpVuSd0UAu2Jt7QV6d5c3qr4WbM3P4GTS7DDViHcFa1Zh6oKRISAaA8q4laF3h714VvQqzaNUZRYG61a3sFHrL9h-RXaKpSkznDRl8AABVBVcBuEr/s1080/WhatsApp+Image+2021-05-28+at+2.28.29+PM.jpeg' alt='Webinar Session'/>
+                      </div>
+                    </div>
+                    <div class='hk-tl-dot'><div class='hk-tl-dot-inner'></div></div>
+                    <div class='hk-tl-empty'></div>
+                  </div>
+                  <div class='hk-tl-item right'>
+                    <div class='hk-tl-empty'></div>
+                    <div class='hk-tl-dot'><div class='hk-tl-dot-inner'></div></div>
+                    <div class='hk-tl-content'>
+                      <div class='hk-tl-card'>
+                        <h3>Session on Azure Cloud</h3>
+                        <p>Delivered a session on Azure cloud to an audience of engineers and developers.</p>
+                        <img class='hk-tl-img' src='https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEjtC648gaG1oa39Qo25zTFnbzwAQ3HGNqUyvc36yBN04zTZExcZHHoOMczqxMMPbGsODTvKM9iSDyooP8syave_XUmPvEGU9i2O-vPIj77V8g23Ej4W2k/s1280/20190509_071923000_iOS.jpg' alt='Azure Session'/>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Education -->
+              <div class='hk-timeline-group'>
+                <div class='hk-timeline-era'><span class='hk-timeline-era-label'>Education</span></div>
+                <div class='hk-timeline-items'>
+                  <div class='hk-tl-item left'>
+                    <div class='hk-tl-content'>
+                      <div class='hk-tl-card'>
+                        <div class='hk-tl-date'>2007 — 2010</div>
+                        <h3>BE — Electronics &amp; Communication</h3>
+                        <p>B.L.D.E.A&#8217;s V.P. Dr. P.G. Halakatti College of Engineering &amp; Technology, Bijapur, Karnataka, India.</p>
+                      </div>
+                    </div>
+                    <div class='hk-tl-dot'><div class='hk-tl-dot-inner'></div></div>
+                    <div class='hk-tl-empty'></div>
+                  </div>
+                  <div class='hk-tl-item right'>
+                    <div class='hk-tl-empty'></div>
+                    <div class='hk-tl-dot'><div class='hk-tl-dot-inner'></div></div>
+                    <div class='hk-tl-content'>
+                      <div class='hk-tl-card'>
+                        <div class='hk-tl-date'>2004 — 2007</div>
+                        <h3>Diploma — Electronics &amp; Communication</h3>
+                        <p>B.L.D.E.A&#8217;s Polytechnic, Bijapur, Karnataka, India.</p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+            </div>
+          </div>
+        </section>
+
+        <!-- Blog Section Heading -->
+        <div id='blog-section' style='background:var(--surface);padding:40px 0 0;'>
+          <div class='hk-container'>
+            <p class='hk-section-title'>Blog</p>
+            <h2 class='hk-section-heading'>From the <span>Blog</span></h2>
+          </div>
+        </div>
+
+      </b:if>
+    </b:if>
+  </b:if>
+
+  <!-- ====== MAIN CONTENT ====== -->
+  <div style='background:var(--surface);padding:32px 0 64px;'>
+    <div class='hk-container'>
+
+      <div class='hk-row' id='hk-content-layout'>
+
+        <!-- Main Blog Column -->
+        <div id='main-wrapper'>
+          <b:section class='main' id='main' showaddelement='yes'>
+
+            <b:widget id='Blog1' locked='true' title='Blog Posts' type='Blog' version='1'>
+              <b:widget-settings>
+                <b:widget-setting name='showDateHeader'>false</b:widget-setting>
+                <b:widget-setting name='showShareButtons'>true</b:widget-setting>
+                <b:widget-setting name='showCommentLink'>true</b:widget-setting>
+                <b:widget-setting name='showAuthor'>false</b:widget-setting>
+                <b:widget-setting name='showAuthorProfile'>false</b:widget-setting>
+                <b:widget-setting name='showLabels'>true</b:widget-setting>
+                <b:widget-setting name='showLocation'>false</b:widget-setting>
+                <b:widget-setting name='showTimestamp'>true</b:widget-setting>
+                <b:widget-setting name='showBacklinks'>false</b:widget-setting>
+                <b:widget-setting name='showReactions'>false</b:widget-setting>
+              </b:widget-settings>
+
+              <b:includable id='main' var='top'>
+                <b:if cond='!data:mobile'>
+                  <div class='blog-posts hfeed'>
+                    <b:include data='top' name='status-message'/>
+                    <div class='post-grid hk-blog-grid'>
+                      <b:loop values='data:posts' var='post'>
+                        <div class='post-grid-item'>
+                          <b:include data='post' name='post'/>
+                          <b:include cond='data:blog.pageType in {&quot;static_page&quot;,&quot;item&quot;}' data='post' name='comment_picker'/>
+                        </div>
+                      </b:loop>
+                    </div>
+                  </div>
+                  <b:include name='nextprev'/>
+                  <b:include name='feedLinks'/>
+                <b:else/>
+                  <b:include name='mobile-main'/>
+                </b:if>
+              </b:includable>
+
+              <b:includable id='post' var='post'>
+                <b:if cond='data:blog.pageType == &quot;item&quot;'>
+                  <!-- Single Post Page -->
+                  <article class='post-outer' expr:id='&quot;post-&quot; + data:post.id' itemscope='itemscope' itemtype='http://schema.org/BlogPosting'>
+                    <h1 class='post-title' itemprop='name'>
+                      <data:post.title/>
+                    </h1>
+                    <div class='post-header-line'>
+                      <time expr:datetime='data:post.timestampISO8601' itemprop='datePublished'>
+                        <data:post.timestamp/>
+                      </time>
+                      <b:if cond='data:post.labels'>
+                        &#160;·&#160;
+                        <b:loop values='data:post.labels' var='label'>
+                          <a class='hk-post-label' expr:href='data:label.url'><data:label.name/></a>
+                        </b:loop>
+                      </b:if>
+                    </div>
+                    <div class='post-body entry-content' itemprop='articleBody'>
+                      <data:post.body/>
+                    </div>
+                    <!-- Share Buttons -->
+                    <b:if cond='data:top.showShareButtons'>
+                      <div class='share-art'>
+                        <b:include data='post' name='shareButtons'/>
+                      </div>
+                    </b:if>
+                    <!-- Related Posts -->
+                    <div id='related-posts'><data:post.labels/></div>
+                  </article>
+                  <!-- Comments -->
+                  <div class='comments-section'>
+                    <b:include data='post' name='comment_picker'/>
+                  </div>
+                <b:else/>
+                  <!-- Blog Index Card -->
+                  <div class='hk-post-card'>
+                    <b:if cond='data:post.thumbnailUrl'>
+                      <a expr:href='data:post.url'>
+                        <img alt='' class='hk-post-thumb' expr:src='data:post.thumbnailUrl'/>
+                      </a>
+                    </b:if>
+                    <div class='hk-post-body'>
+                      <b:if cond='data:post.labels'>
+                        <div class='hk-post-labels'>
+                          <b:loop values='data:post.labels' var='label'>
+                            <a class='hk-post-label' expr:href='data:label.url'><data:label.name/></a>
+                          </b:loop>
+                        </div>
+                      </b:if>
+                      <h2 class='hk-post-title'>
+                        <a expr:href='data:post.url'><data:post.title/></a>
+                      </h2>
+                      <p class='hk-post-snippet'>
+                        <data:post.snippet/>
+                      </p>
+                      <div class='hk-post-meta'>
+                        <time expr:datetime='data:post.timestampISO8601'><data:post.timestamp/></time>
+                      </div>
+                      <a class='hk-post-read-more' expr:href='data:post.url'>Read More →</a>
+                    </div>
+                  </div>
+                </b:if>
+              </b:includable>
+
+              <b:includable id='status-message'>
+                <b:if cond='data:navMessage'>
+                  <div class='status-msg-wrap'>
+                    <b:if cond='data:blog.pageType == &quot;error_page&quot;'>
+                      <div class='post-404'>
+                        <div class='title-404'>404</div>
+                        <div class='ops-404'>Sorry, the page you were looking for doesn&#8217;t exist.</div>
+                        <div class='link-404'>
+                          <a href='/'>← Back to Home</a>
+                        </div>
+                      </div>
+                    </b:if>
+                  </div>
+                </b:if>
+              </b:includable>
+
+              <b:includable id='nextprev'>
+                <div id='blog-pager'>
+                  <b:if cond='data:newerPageUrl'>
+                    <a class='blog-pager-newer-link' expr:href='data:newerPageUrl'><data:newerPageTitle/></a>
+                  </b:if>
+                  <b:if cond='data:olderPageUrl'>
+                    <a class='blog-pager-older-link' expr:href='data:olderPageUrl'><data:olderPageTitle/></a>
+                  </b:if>
+                </div>
+              </b:includable>
+
+              <b:includable id='feedLinks'/>
+              <b:includable id='backlinks' var='post'/>
+              <b:includable id='backlinkDeleteIcon' var='backlink'/>
+              <b:includable id='postQuickEdit' var='post'>
+                <b:if cond='data:post.editUrl'>
+                  <span expr:class='&quot;item-control &quot; + data:post.adminClass'>
+                    <a expr:href='data:post.editUrl' expr:title='data:top.editPostMsg'>
+                      <img alt='' height='18' src='https://resources.blogblog.com/img/icon18_edit_allbkg.gif' width='18'/>
+                    </a>
+                  </span>
+                </b:if>
+              </b:includable>
+
+              <b:includable id='shareButtons' var='post'>
+                <b:if cond='data:top.showEmailButton'><a class='goog-inline-block share-button sb-email' expr:href='data:post.sharePostUrl + &quot;&amp;target=email&quot;' target='_blank'>Email</a></b:if>
+                <b:if cond='data:top.showTwitterButton'><a class='goog-inline-block share-button sb-twitter' expr:href='data:post.sharePostUrl + &quot;&amp;target=twitter&quot;' target='_blank'>X / Twitter</a></b:if>
+                <b:if cond='data:top.showFacebookButton'><a class='goog-inline-block share-button sb-facebook' expr:href='data:post.sharePostUrl + &quot;&amp;target=facebook&quot;' target='_blank'>Facebook</a></b:if>
+                <b:if cond='data:top.showLinkedinButton'><a class='goog-inline-block share-button sb-linkedin' expr:href='data:post.sharePostUrl + &quot;&amp;target=linkedin&quot;' target='_blank'>LinkedIn</a></b:if>
+              </b:includable>
+
+              <b:includable id='comment_picker' var='post'>
+                <b:if cond='data:post.embedCommentForm'>
+                  <b:include data='post' name='threaded-comment-form'/>
+                <b:else/>
+                  <b:include data='post' name='comment-form'/>
+                </b:if>
+              </b:includable>
+
+              <b:includable id='comment-form' var='post'>
+                <div class='comment-form'>
+                  <a name='comment-form'/>
+                  <h4 id='comment-post-message'><data:postCommentMsg/></h4>
+                  <p><data:blogCommentMessage/></p>
+                  <a expr:href='data:post.commentFormIframeSrc' id='comment-editor-src'/>
+                  <iframe allowtransparency='true' class='blogger-iframe-colorize blogger-comment-from-post' expr:height='data:cmtIframeInitialHeight' frameborder='0' id='comment-editor' name='comment-editor' src='' width='100%'/>
+                  <data:post.cmtfpIframe/>
+                  <script type='text/javascript'>
+                    BLOG_CMT_createIframe(&#39;<data:post.appRpcRelayPath/>&#39;);
+                  </script>
+                </div>
+              </b:includable>
+
+              <b:includable id='threaded-comment-form' var='post'>
+                <div class='comment-form'>
+                  <a name='comment-form'/>
+                  <p><data:blogCommentMessage/></p>
+                  <data:blogTeamBlogMessage/>
+                  <a expr:href='data:post.commentFormIframeSrc' id='comment-editor-src'/>
+                  <iframe allowtransparency='true' class='blogger-iframe-colorize blogger-comment-from-post' expr:height='data:cmtIframeInitialHeight' frameborder='0' id='comment-editor' name='comment-editor' src='' width='100%'/>
+                  <data:post.cmtfpIframe/>
+                  <script type='text/javascript'>
+                    BLOG_CMT_createIframe(&#39;<data:post.appRpcRelayPath/>&#39;);
+                  </script>
+                </div>
+              </b:includable>
+
+              <b:includable id='commentDeleteIcon' var='comment'>
+                <span expr:class='&quot;item-control &quot; + data:comment.adminClass'>
+                  <a class='comment-delete' expr:href='data:comment.deleteUrl' expr:title='data:top.deleteCommentMsg'>
+                    <img src='https://resources.blogblog.com/img/icon_delete13.gif'/>
+                  </a>
+                </span>
+              </b:includable>
+
+              <b:includable id='mobile-main'>
+                <div class='blog-posts hfeed'>
+                  <b:loop values='data:posts' var='post'>
+                    <div class='post-grid-item'>
+                      <b:include data='post' name='post'/>
+                    </div>
+                  </b:loop>
+                </div>
+                <b:include name='nextprev'/>
+              </b:includable>
+
+            </b:widget>
+
+          </b:section>
+        </div>
+
+        <!-- Sidebar (visible on single post pages) -->
+        <div id='hk-sidebar' id='sidebar-wrapper'>
+          <b:section class='sidebar' id='sidebar' showaddelement='yes'>
+
+            <b:widget id='PopularPosts1' title='Popular Posts' type='PopularPosts' version='1'>
+              <b:includable id='main'>
+                <div class='hk-widget'>
+                  <div class='hk-widget-title'>Popular Posts</div>
+                  <b:if cond='data:posts'>
+                    <ul>
+                      <b:loop values='data:posts' var='post'>
+                        <li>
+                          <b:if cond='data:post.thumbnailUrl'>
+                            <div class='item-thumbnail'>
+                              <a expr:href='data:post.href'>
+                                <img alt='' expr:src='data:post.thumbnailUrl'/>
+                              </a>
+                            </div>
+                          </b:if>
+                          <div class='item-title'>
+                            <a expr:href='data:post.href'><data:post.title/></a>
+                          </div>
+                        </li>
+                      </b:loop>
+                    </ul>
+                  </b:if>
+                </div>
+              </b:includable>
+            </b:widget>
+
+            <b:widget id='Label1' title='Topics' type='Label' version='1'>
+              <b:includable id='main'>
+                <div class='hk-widget'>
+                  <div class='hk-widget-title'>Topics</div>
+                  <div class='cloud-label-widget-content'>
+                    <b:loop values='data:labels' var='label'>
+                      <span class='label-size label-size-1'>
+                        <a expr:href='data:label.url'><data:label.name/></a>
+                      </span>
+                    </b:loop>
+                  </div>
+                </div>
+              </b:includable>
+            </b:widget>
+
+            <b:widget id='BlogArchive1' title='Archive' type='BlogArchive' version='1'>
+              <b:includable id='main'>
+                <div class='hk-widget'>
+                  <div class='hk-widget-title'>Archive</div>
+                  <b:include name='content'/>
+                </div>
+              </b:includable>
+              <b:includable id='content'>
+                <b:if cond='data:style == &quot;MENU&quot;'>
+                  <select expr:id='data:widget.instanceId + &quot;_ArchiveMenu&quot;'>
+                    <option value=''><data:title/></option>
+                    <b:loop values='data:data' var='i'><option expr:value='data:i.url'><data:i.name/> (<data:i.post-count/>)</option></b:loop>
+                  </select>
+                <b:else/>
+                  <b:if cond='data:style == &quot;FLAT&quot;'>
+                    <ul>
+                      <b:loop values='data:data' var='i'>
+                        <li><a expr:href='data:i.url'><data:i.name/></a> (<data:i.post-count/>)</li>
+                      </b:loop>
+                    </ul>
+                  <b:else/>
+                    <b:include data='data' name='interval'/>
+                  </b:if>
+                </b:if>
+              </b:includable>
+              <b:includable id='interval' var='intervalData'>
+                <b:loop values='data:intervalData' var='i'>
+                  <b:if cond='data:i.data'>
+                    <li><a class='post-count-link' expr:href='data:i.url'><data:i.name/></a>
+                      <ul class='posts'><b:include data='i.data' name='interval'/></ul>
+                    </li>
+                  <b:else/>
+                    <li><a expr:href='data:i.url'><data:i.name/></a></li>
+                  </b:if>
+                </b:loop>
+              </b:includable>
+            </b:widget>
+
+          </b:section>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- ====== FOOTER ====== -->
+  <footer id='hk-footer'>
+    <div class='hk-container'>
+      <div class='hk-footer-grid'>
+
+        <div class='hk-footer-brand'>
+          <div class='hk-logo'>hakki<span class='hk-logo-dot'>.</span>in</div>
+          <p class='hk-footer-tagline'>Solution Architect · Azure Cloud Expert · Technical Blogger.<br/>Writing about the Microsoft stack, cloud architecture, and everything in between.</p>
+          <div class='hk-footer-social'>
+            <a href='https://www.linkedin.com/in/sandeepha/' target='_blank' title='LinkedIn'>in</a>
+            <a href='mailto:sandeep@hakki.in' title='Email'>✉</a>
+            <a href='https://docs.google.com/document/d/1czyRxWznXaFaTVVExQkRxmwv-dhIUrXFQqS78F8Pkag/mobilebasic' target='_blank' title='White Paper'>☁</a>
+          </div>
+        </div>
+
+        <div class='hk-footer-col'>
+          <h4>Navigation</h4>
+          <ul>
+            <li><a expr:href='data:blog.homepageUrl'>Home</a></li>
+            <li><a href='#about'>About</a></li>
+            <li><a href='#experience'>Experience</a></li>
+            <li><a href='#blog-section'>Blog</a></li>
+          </ul>
+        </div>
+
+        <div class='hk-footer-col'>
+          <h4>Resources</h4>
+          <ul>
+            <li><a href='https://drive.google.com/file/d/10cZkBQjM8cUhp2u7VslhpvSh_Ki6iByQ/view' target='_blank'>Download CV</a></li>
+            <li><a href='https://docs.google.com/document/d/1czyRxWznXaFaTVVExQkRxmwv-dhIUrXFQqS78F8Pkag/mobilebasic' target='_blank'>Cloud White Paper</a></li>
+            <li><a href='mailto:sandeep@hakki.in'>Contact Me</a></li>
+          </ul>
+        </div>
+
+      </div>
+    </div>
+    <div class='hk-footer-bottom'>
+      <div class='hk-container'>
+        © <data:blog.title/> · Built with care by <a href='mailto:sandeep@hakki.in'>Sandeep Hakki</a>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Scroll to Top -->
+  <button id='hk-scrolltop' onclick='window.scrollTo({top:0,behavior:&quot;smooth&quot;})' title='Back to top'>↑</button>
+
+</div>
+<!-- #hk-outer -->
+
+<!-- ====== SCRIPTS ====== -->
+
+<!-- jQuery (still needed for Blogger internals + related posts) -->
+<script src='https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js' type='text/javascript'/>
+
+<script type='text/javascript'>
+//<![CDATA[
+
+// Preloader
+window.addEventListener('load', function() {
+  var pre = document.getElementById('hk-preloader');
+  if (pre) { pre.style.opacity = '0'; setTimeout(function(){ pre.style.display = 'none'; }, 500); }
+});
+
+// Scroll to top button
+window.addEventListener('scroll', function() {
+  var btn = document.getElementById('hk-scrolltop');
+  if (btn) { btn.classList.toggle('visible', window.scrollY > 400); }
+});
+
+// Sticky nav shadow on scroll
+window.addEventListener('scroll', function() {
+  var nav = document.getElementById('hk-nav');
+  if (nav) { nav.style.boxShadow = window.scrollY > 10 ? '0 4px 24px rgba(0,0,0,0.10)' : ''; }
+});
+
+// Related Posts (by label, no external dependency)
+$(document).ready(function() {
+  $('#related-posts').each(function() {
+    var el = $(this), label = el.text().split(',')[0].trim(), count = 3;
+    if (!label) return;
+    $.ajax({
+      url: '/feeds/posts/default/-/' + encodeURIComponent(label) + '?alt=json-in-script&max-results=' + count,
+      type: 'get', dataType: 'jsonp',
+      success: function(data) {
+        if (!data.feed || !data.feed.entry) return;
+        var html = '<h4 style="font-size:18px;font-weight:700;color:var(--text);margin:32px 0 16px;">Related Posts</h4><ul class="related">';
+        $.each(data.feed.entry, function(i, entry) {
+          var url = '', img = no_image, title = entry.title.$t;
+          $.each(entry.link, function(j, link) { if (link.rel === 'alternate') url = link.href; });
+          if (entry.media$thumbnail) img = entry.media$thumbnail.url.replace('/s72-c/', '/s400-c/');
+          html += '<li><div class="related-thumb"><a class="related-img" href="' + url + '" style="background:url(' + img + ') center/cover no-repeat;display:block;width:100%;height:100%;"></a></div><h3 class="related-title"><a href="' + url + '">' + title + '</a></h3></li>';
+        });
+        html += '</ul>';
+        el.html(html);
+      }
+    });
+  });
+});
+
+//]]>
+</script>
+
+</body>
+</html>

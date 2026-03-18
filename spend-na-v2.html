@@ -1,0 +1,2275 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Spend-na">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="theme-color" content="#0a0f1e">
+<meta name="description" content="Spend-na — Your money mirror. Every rupee has a story.">
+<title>Spend-na</title>
+
+<!-- PWA Manifest inline -->
+<script>
+const MANIFEST = {
+  name: "Spend-na",
+  short_name: "Spend-na",
+  description: "Your money mirror. Every rupee has a story.",
+  start_url: "./",
+  display: "standalone",
+  background_color: "#0a0f1e",
+  theme_color: "#0a0f1e",
+  orientation: "portrait-primary",
+  icons: [
+    { src: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'%3E%3Crect width='512' height='512' rx='114' fill='%230a0f1e'/%3E%3Ctext x='256' y='340' font-size='280' text-anchor='middle'%3E%F0%9F%90%A6%3C/text%3E%3C/svg%3E", sizes: "192x192", type: "image/svg+xml" },
+    { src: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'%3E%3Crect width='512' height='512' rx='114' fill='%230a0f1e'/%3E%3Ctext x='256' y='340' font-size='280' text-anchor='middle'%3E%F0%9F%90%A6%3C/text%3E%3C/svg%3E", sizes: "512x512", type: "image/svg+xml", purpose: "any maskable" }
+  ],
+  categories: ["finance", "productivity"]
+};
+const blob = new Blob([JSON.stringify(MANIFEST)], {type:'application/json'});
+const murl = URL.createObjectURL(blob);
+const ml = document.createElement('link'); ml.rel='manifest'; ml.href=murl;
+document.head.appendChild(ml);
+</script>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800;900&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&display=swap" rel="stylesheet">
+
+<style>
+/* ── DESIGN TOKENS ─────────────────────────────────────── */
+:root {
+  --ink:      #0a0f1e;
+  --ink2:     #141b2d;
+  --ink3:     #1e2840;
+  --ink4:     #2d3a56;
+  --slate:    #64748b;
+  --mist:     #94a3b8;
+  --ghost:    #cbd5e1;
+  --fog:      #e2e8f0;
+  --paper:    #f1f5f9;
+  --white:    #ffffff;
+
+  --teal:     #06b6d4;
+  --teal-d:   #0891b2;
+  --teal-l:   #ecfeff;
+  --teal-m:   #a5f3fc;
+
+  --nec:      #10b981; --nec-l: #ecfdf5; --nec-m: #6ee7b7;
+  --com:      #6366f1; --com-l: #eef2ff; --com-m: #a5b4fc;
+  --cft:      #f59e0b; --cft-l: #fffbeb; --cft-m: #fde68a;
+  --lux:      #f43f5e; --lux-l: #fff1f2; --lux-m: #fda4af;
+
+  --success:  #10b981;
+  --warning:  #f59e0b;
+  --danger:   #ef4444;
+
+  --r-sm: 12px; --r-md: 16px; --r-lg: 20px; --r-xl: 24px; --r-2xl: 32px;
+  --shadow-sm: 0 1px 3px rgba(0,0,0,.08), 0 1px 2px rgba(0,0,0,.06);
+  --shadow-md: 0 4px 16px rgba(0,0,0,.10), 0 2px 6px rgba(0,0,0,.06);
+  --shadow-lg: 0 12px 40px rgba(0,0,0,.15), 0 4px 12px rgba(0,0,0,.08);
+
+  --safe-top:    env(safe-area-inset-top, 0px);
+  --safe-bottom: env(safe-area-inset-bottom, 0px);
+  --safe-left:   env(safe-area-inset-left, 0px);
+  --safe-right:  env(safe-area-inset-right, 0px);
+
+  --font:      'DM Sans', sans-serif;
+  --font-head: 'Syne', sans-serif;
+}
+
+/* ── RESET ─────────────────────────────────────────────── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { height: 100%; -webkit-text-size-adjust: 100%; }
+body {
+  font-family: var(--font);
+  background: var(--ink);
+  color: var(--ink);
+  height: 100%;
+  overflow: hidden;
+  overscroll-behavior: none;
+  -webkit-tap-highlight-color: transparent;
+  -webkit-font-smoothing: antialiased;
+}
+button { font-family: var(--font); cursor: pointer; border: none; background: none; }
+input, textarea, select { font-family: var(--font); }
+a { text-decoration: none; color: inherit; }
+img { display: block; max-width: 100%; }
+
+/* ── APP SHELL ──────────────────────────────────────────── */
+#app-shell {
+  position: fixed; inset: 0;
+  display: flex; flex-direction: column;
+  max-width: 480px;
+  margin: 0 auto;
+  background: var(--paper);
+  overflow: hidden;
+}
+@media (min-width: 900px) {
+  body { background: var(--ink2); display: flex; align-items: center; justify-content: center; min-height: 100vh; }
+  #app-shell { position: relative; height: 100vh; max-height: 920px; border-radius: var(--r-2xl); box-shadow: var(--shadow-lg), 0 0 0 1px rgba(255,255,255,.06); }
+}
+@media (min-width: 1200px) {
+  body { background: var(--ink); }
+}
+
+/* ── LAYER SYSTEM ───────────────────────────────────────── */
+.layer { position: absolute; inset: 0; display: flex; flex-direction: column; opacity: 0; pointer-events: none; transition: opacity .3s ease; }
+.layer.visible { opacity: 1; pointer-events: all; }
+
+/* ── SPLASH ─────────────────────────────────────────────── */
+#layer-splash {
+  background: var(--ink);
+  align-items: center; justify-content: center; gap: 16px;
+}
+.splash-logo { font-size: 72px; animation: logoBounce 1.8s ease-in-out infinite; }
+@keyframes logoBounce { 0%,100%{transform:translateY(0) rotate(-4deg)} 50%{transform:translateY(-12px) rotate(4deg)} }
+.splash-name { font-family: var(--font-head); font-size: 38px; font-weight: 900; color: var(--teal); letter-spacing: -1.5px; }
+.splash-tag  { font-size: 13px; color: var(--slate); letter-spacing: .5px; }
+.splash-loader { width: 40px; height: 2px; background: var(--ink3); border-radius: 1px; overflow: hidden; margin-top: 8px; }
+.splash-loader-fill { height: 2px; background: var(--teal); border-radius: 1px; animation: loadProg 1.2s ease-in-out forwards; }
+@keyframes loadProg { from{width:0} to{width:100%} }
+
+/* ── LOCK SCREEN ────────────────────────────────────────── */
+#layer-lock {
+  background: var(--ink);
+  align-items: center; justify-content: center;
+  padding: 32px 28px calc(var(--safe-bottom) + 32px);
+}
+.lock-inner { width: 100%; max-width: 340px; display: flex; flex-direction: column; align-items: center; }
+.lock-bird { font-size: 52px; margin-bottom: 20px; }
+.lock-title { font-family: var(--font-head); font-size: 30px; font-weight: 900; color: var(--white); letter-spacing: -1px; margin-bottom: 6px; }
+.lock-sub { font-size: 13px; color: var(--slate); text-align: center; margin-bottom: 36px; line-height: 1.6; }
+.lock-field { position: relative; width: 100%; margin-bottom: 12px; }
+.lock-input {
+  width: 100%; background: var(--ink2); border: 1.5px solid var(--ink4);
+  border-radius: var(--r-md); padding: 15px 44px 15px 16px;
+  font-size: 17px; color: var(--white); letter-spacing: 4px;
+  outline: none; transition: border-color .2s;
+}
+.lock-input:focus { border-color: var(--teal); }
+.lock-eye { position: absolute; right: 14px; top: 50%; transform: translateY(-50%); font-size: 17px; color: var(--slate); cursor: pointer; }
+.lock-btn {
+  width: 100%; background: var(--teal); border-radius: var(--r-md);
+  padding: 15px; font-size: 16px; font-weight: 700; color: var(--ink);
+  letter-spacing: .3px; transition: transform .1s, opacity .1s; margin-bottom: 12px;
+}
+.lock-btn:active { transform: scale(.97); }
+.lock-error { font-size: 12px; color: var(--danger); text-align: center; min-height: 18px; }
+.lock-hint { font-size: 11px; color: var(--ink4); text-align: center; margin-top: 24px; line-height: 1.8; }
+
+/* ── ONBOARDING ─────────────────────────────────────────── */
+#layer-onboarding {
+  background: var(--ink);
+  overflow-y: auto; -webkit-overflow-scrolling: touch;
+}
+.ob-scroll { padding: calc(var(--safe-top) + 24px) 24px calc(var(--safe-bottom) + 40px); }
+.ob-hero { text-align: center; margin-bottom: 36px; }
+.ob-emoji { font-size: 60px; display: block; margin-bottom: 12px; }
+.ob-heading { font-family: var(--font-head); font-size: 34px; font-weight: 900; color: var(--teal); letter-spacing: -1.2px; }
+.ob-subhead { font-size: 14px; color: var(--slate); margin-top: 6px; }
+
+.ob-photo-ring {
+  width: 96px; height: 96px; border-radius: 28px;
+  border: 2.5px dashed var(--ink4); background: var(--ink2);
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  gap: 4px; cursor: pointer; overflow: hidden; transition: border-color .2s;
+  margin: 0 auto 28px;
+}
+.ob-photo-ring.has-photo { border-style: solid; border-color: var(--teal); }
+.ob-photo-ring img { width: 100%; height: 100%; object-fit: cover; }
+
+.field-group { margin-bottom: 20px; }
+.field-label { font-size: 10px; font-weight: 700; letter-spacing: 2.5px; color: var(--slate); margin-bottom: 8px; }
+.field-input {
+  width: 100%; background: var(--ink2); border: 1.5px solid var(--ink4);
+  border-radius: var(--r-md); padding: 14px 15px;
+  font-size: 15px; color: var(--white); outline: none; transition: border-color .2s;
+}
+.field-input:focus { border-color: var(--teal); }
+.field-textarea { height: 76px; resize: none; }
+
+.role-grid { display: flex; flex-direction: column; gap: 8px; }
+.role-card {
+  display: flex; align-items: center; gap: 14px;
+  background: var(--ink2); border: 1.5px solid var(--ink4);
+  border-radius: var(--r-md); padding: 14px 16px; cursor: pointer;
+  transition: all .15s;
+}
+.role-card.selected { background: rgba(6,182,212,.08); border-color: var(--teal); }
+.role-emoji { font-size: 20px; }
+.role-name { font-size: 14px; font-weight: 600; color: var(--white); flex: 1; }
+.role-check { width: 22px; height: 22px; border-radius: 11px; background: var(--teal); display: none; align-items: center; justify-content: center; font-size: 11px; font-weight: 900; color: var(--ink); flex-shrink: 0; }
+.role-card.selected .role-check { display: flex; }
+
+.ob-password-box { background: var(--ink2); border: 1.5px solid var(--ink4); border-radius: var(--r-lg); padding: 16px; margin-bottom: 20px; }
+.ob-pw-note { font-size: 11px; color: var(--slate); line-height: 1.7; margin-bottom: 12px; }
+.ob-pw-row { display: flex; gap: 8px; }
+.ob-pw-input { flex: 1; background: var(--ink3); border: 1.5px solid var(--ink4); border-radius: var(--r-sm); padding: 11px 13px; font-size: 14px; color: var(--white); outline: none; transition: border-color .2s; }
+.ob-pw-input:focus { border-color: var(--teal); }
+
+.ob-cta {
+  width: 100%; background: var(--teal); border-radius: var(--r-lg);
+  padding: 17px; font-family: var(--font-head); font-size: 17px; font-weight: 800;
+  color: var(--ink); letter-spacing: -.3px;
+  transition: transform .1s, opacity .1s; margin-top: 8px;
+}
+.ob-cta:disabled { opacity: .35; cursor: default; }
+.ob-cta:not(:disabled):active { transform: scale(.97); }
+.ob-legal { font-size: 10px; color: var(--ink4); text-align: center; line-height: 1.9; margin-top: 16px; }
+
+/* ── MAIN APP ────────────────────────────────────────────── */
+#layer-app { background: var(--paper); }
+
+/* ── TOPBAR ──────────────────────────────────────────────── */
+.topbar {
+  background: var(--ink);
+  padding: calc(var(--safe-top) + 10px) 18px 14px;
+  flex-shrink: 0;
+}
+.topbar-row1 { display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: 16px; }
+.topbar-greeting { font-size: 12px; color: var(--mist); margin-bottom: 3px; }
+.topbar-name { font-family: var(--font-head); font-size: 28px; font-weight: 900; color: var(--white); letter-spacing: -1px; line-height: 1.1; }
+.topbar-role { font-size: 11px; color: var(--teal); font-weight: 600; margin-top: 3px; }
+.topbar-avatar { width: 48px; height: 48px; border-radius: 14px; border: 2px solid var(--teal-d); overflow: hidden; background: var(--teal-d); display: flex; align-items: center; justify-content: center; cursor: pointer; flex-shrink: 0; }
+.topbar-avatar img { width: 100%; height: 100%; object-fit: cover; }
+.topbar-avatar-letter { font-family: var(--font-head); font-size: 20px; font-weight: 800; color: var(--white); }
+
+.quote-strip { background: var(--ink2); border-radius: var(--r-md); padding: 13px 14px; border: 1px solid var(--ink3); }
+.quote-bar { width: 20px; height: 3px; background: var(--teal); border-radius: 2px; margin-bottom: 6px; }
+.quote-text { font-size: 12px; color: var(--ghost); font-style: italic; line-height: 1.6; }
+
+/* ── SAVE INDICATOR ──────────────────────────────────────── */
+.save-bar {
+  display: flex; align-items: center; justify-content: space-between;
+  background: rgba(245,158,11,.08); border-bottom: 1px solid rgba(245,158,11,.2);
+  padding: 8px 16px; flex-shrink: 0;
+}
+.save-bar-text { font-size: 11px; color: var(--cft); font-weight: 600; }
+.save-bar-btn { font-size: 11px; font-weight: 800; color: var(--ink); background: var(--cft); border-radius: 8px; padding: 4px 12px; }
+
+/* ── SCREENS ────────────────────────────────────────────── */
+.screens { flex: 1; overflow: hidden; position: relative; }
+.screen { position: absolute; inset: 0; display: flex; flex-direction: column; opacity: 0; pointer-events: none; transition: opacity .25s; }
+.screen.active { opacity: 1; pointer-events: all; }
+.screen-body { flex: 1; overflow-y: auto; -webkit-overflow-scrolling: touch; overscroll-behavior: contain; }
+.screen-body::-webkit-scrollbar { display: none; }
+
+/* ── SCREEN HEADER ───────────────────────────────────────── */
+.screen-hdr { background: var(--white); padding: 12px 16px; display: flex; align-items: center; gap: 10px; border-bottom: 1px solid var(--fog); flex-shrink: 0; box-shadow: var(--shadow-sm); }
+.hdr-back { font-size: 14px; font-weight: 700; color: var(--teal); padding: 4px 0; min-width: 56px; }
+.hdr-title { font-family: var(--font-head); font-size: 17px; font-weight: 800; color: var(--ink); flex: 1; text-align: center; }
+.hdr-action { font-size: 12px; font-weight: 800; color: var(--ink); background: var(--teal); border-radius: 10px; padding: 7px 13px; min-width: 56px; text-align: center; }
+
+/* ── BOTTOM TABS ─────────────────────────────────────────── */
+.tabbar {
+  background: var(--white); border-top: 1px solid var(--fog);
+  display: flex; padding: 10px 0 calc(var(--safe-bottom) + 8px);
+  flex-shrink: 0; box-shadow: 0 -4px 20px rgba(0,0,0,.06);
+}
+.tab {
+  flex: 1; display: flex; flex-direction: column; align-items: center;
+  gap: 4px; padding: 0; background: none; border: none; cursor: pointer;
+  transition: opacity .15s;
+}
+.tab-glyph { font-size: 21px; position: relative; }
+.tab-badge { position: absolute; top: -5px; right: -8px; min-width: 16px; height: 16px; border-radius: 8px; background: var(--lux); display: flex; align-items: center; justify-content: center; padding: 0 4px; }
+.tab-badge span { font-size: 9px; font-weight: 900; color: var(--white); line-height: 1; }
+.tab-label { font-size: 10px; color: var(--slate); font-weight: 500; }
+.tab.active .tab-label { color: var(--teal); font-weight: 700; }
+.tab-add-fab { width: 44px; height: 44px; border-radius: 22px; background: var(--teal); display: flex; align-items: center; justify-content: center; font-size: 24px; color: var(--ink); margin-top: -16px; box-shadow: 0 4px 14px rgba(6,182,212,.5); font-weight: 300; line-height: 1; }
+
+/* ── HOME SCREEN ─────────────────────────────────────────── */
+.home-summary { background: var(--ink); padding: 0 18px 22px; }
+.total-pill { background: var(--ink3); border-radius: var(--r-md); padding: 12px 16px; display: flex; justify-content: space-between; align-items: center; margin-top: 14px; border: 1px solid var(--ink4); }
+.total-label { font-size: 12px; color: var(--mist); }
+.total-val { font-family: var(--font-head); font-size: 22px; font-weight: 800; color: var(--teal); }
+
+.home-body { background: var(--paper); border-radius: var(--r-2xl) var(--r-2xl) 0 0; margin-top: -16px; padding: 22px 18px 16px; }
+
+.pending-card {
+  background: linear-gradient(135deg, var(--lux) 0%, #be123c 100%);
+  border-radius: var(--r-lg); padding: 14px 16px;
+  display: flex; align-items: center; gap: 12px;
+  margin-bottom: 16px; cursor: pointer; border: none; width: 100%;
+  box-shadow: 0 4px 16px rgba(244,63,94,.3);
+}
+.pending-pulse { width: 10px; height: 10px; border-radius: 5px; background: rgba(255,255,255,.5); animation: pulse 1.5s ease-in-out infinite; flex-shrink: 0; }
+@keyframes pulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:.4;transform:scale(.8)} }
+.pending-info { flex: 1; text-align: left; }
+.pending-title { font-size: 14px; font-weight: 700; color: var(--white); }
+.pending-sub { font-size: 10px; color: rgba(255,255,255,.65); margin-top: 2px; }
+.pending-arrow { font-size: 20px; color: var(--white); font-weight: 700; }
+
+.section-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
+.section-label { font-size: 10px; font-weight: 700; color: var(--mist); letter-spacing: 2.5px; }
+.section-link { font-size: 12px; font-weight: 700; color: var(--teal); background: none; border: none; cursor: pointer; }
+
+.bucket-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 20px; }
+.b-card {
+  background: var(--white); border-radius: var(--r-lg); overflow: hidden;
+  border: 1.5px solid var(--fog); cursor: pointer; transition: transform .12s, box-shadow .12s;
+  box-shadow: var(--shadow-sm); position: relative;
+}
+.b-card:active { transform: scale(.96); box-shadow: none; }
+.b-card.over { border-color: var(--danger); }
+.b-card-accent { height: 4px; width: 100%; }
+.b-card-body { padding: 12px; }
+.b-icon { width: 34px; height: 34px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: 900; border: 1.5px solid; margin-bottom: 8px; }
+.b-amount { font-family: var(--font-head); font-size: 17px; font-weight: 800; margin-bottom: 2px; }
+.b-name { font-size: 10px; color: var(--slate); font-weight: 600; }
+.b-status { font-size: 8px; font-weight: 800; margin-top: 3px; text-transform: uppercase; }
+.b-progress { height: 3px; border-radius: 2px; margin-top: 8px; overflow: hidden; }
+.b-progress-fill { height: 3px; border-radius: 2px; transition: width .6s ease; }
+
+.data-card { background: var(--white); border-radius: var(--r-lg); padding: 14px; border: 1px solid var(--fog); display: flex; gap: 10px; align-items: center; margin-bottom: 10px; cursor: pointer; box-shadow: var(--shadow-sm); }
+.data-card-icon { width: 44px; height: 44px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 18px; flex-shrink: 0; }
+.data-card-info { flex: 1; min-width: 0; }
+.data-card-title { font-size: 14px; font-weight: 700; color: var(--ink); }
+.data-card-sub { font-size: 11px; color: var(--slate); margin-top: 2px; }
+.data-card-action { font-size: 20px; color: var(--mist); }
+
+.footer-strip { text-align: center; padding: 16px 0; }
+.footer-text { font-size: 11px; color: var(--mist); }
+.footer-link { font-size: 10px; color: var(--teal); display: block; margin-top: 4px; }
+
+/* ── ADD SCREEN ──────────────────────────────────────────── */
+.amount-hero { background: var(--white); border-radius: var(--r-xl); padding: 20px; margin: 16px 16px 0; display: flex; align-items: center; box-shadow: var(--shadow-sm); border: 1px solid var(--fog); }
+.amount-symbol { font-size: 32px; color: var(--slate); font-weight: 300; margin-right: 6px; }
+.amount-input { font-family: var(--font-head); font-size: 48px; font-weight: 800; color: var(--ink); flex: 1; border: none; background: none; outline: none; min-width: 0; }
+.add-section { padding: 0 16px; margin-top: 20px; }
+.add-label { font-size: 10px; font-weight: 700; color: var(--slate); letter-spacing: 2.5px; margin-bottom: 10px; }
+.add-input { width: 100%; background: var(--white); border: 1.5px solid var(--fog); border-radius: var(--r-md); padding: 14px 15px; font-size: 15px; color: var(--ink); outline: none; transition: border-color .2s; box-shadow: var(--shadow-sm); }
+.add-input:focus { border-color: var(--teal); }
+
+.source-chips { display: flex; gap: 8px; flex-wrap: wrap; }
+.source-chip { flex: 1; min-width: calc(25% - 6px); display: flex; flex-direction: column; align-items: center; gap: 4px; padding: 10px 6px; border-radius: var(--r-md); border: 1.5px solid var(--fog); background: var(--white); cursor: pointer; transition: all .12s; box-shadow: var(--shadow-sm); }
+.source-chip.sel { border-color: var(--teal); background: var(--teal-l); }
+.source-chip:active { transform: scale(.94); }
+.source-chip-icon { font-size: 18px; }
+.source-chip-label { font-size: 10px; font-weight: 600; color: var(--slate); text-align: center; line-height: 1.3; }
+.source-chip.sel .source-chip-label { color: var(--teal-d); font-weight: 800; }
+
+.bucket-options { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.bucket-opt { display: flex; flex-direction: column; align-items: center; gap: 6px; padding: 14px 10px; border-radius: var(--r-lg); border: 2px solid var(--fog); background: var(--white); cursor: pointer; transition: all .12s; position: relative; box-shadow: var(--shadow-sm); }
+.bucket-opt:active { transform: scale(.95); }
+.bucket-opt.sel { }
+.bucket-opt-badge { position: absolute; top: 8px; right: 8px; width: 18px; height: 18px; border-radius: 9px; display: none; align-items: center; justify-content: center; font-size: 10px; font-weight: 900; color: var(--white); }
+.bucket-opt.sel .bucket-opt-badge { display: flex; }
+.bucket-opt-name { font-size: 12px; font-weight: 700; color: var(--slate); }
+.bucket-opt.sel .bucket-opt-name { font-weight: 800; }
+.bucket-opt-desc { font-size: 9px; color: var(--mist); text-align: center; line-height: 1.4; }
+
+/* ── SORT SCREEN ─────────────────────────────────────────── */
+.sort-hdr { background: var(--white); padding: 14px 16px; display: flex; align-items: center; gap: 12px; border-bottom: 1px solid var(--fog); flex-shrink: 0; }
+.sort-count-ring { width: 38px; height: 38px; border-radius: 19px; background: var(--lux); display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: 900; color: var(--white); flex-shrink: 0; }
+.sort-empty { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 48px 24px; }
+.sort-empty-icon { width: 88px; height: 88px; border-radius: 26px; background: var(--teal-l); border: 2px solid var(--teal-m); display: flex; align-items: center; justify-content: center; font-size: 32px; font-weight: 900; color: var(--teal); margin-bottom: 20px; }
+.txn-card { background: var(--white); border-radius: var(--r-lg); margin-bottom: 10px; border: 1px solid var(--fog); overflow: hidden; box-shadow: var(--shadow-sm); }
+.txn-top { display: flex; align-items: center; gap: 12px; padding: 14px 14px 10px; }
+.txn-icon { width: 44px; height: 44px; border-radius: 12px; background: var(--paper); border: 1px solid var(--fog); display: flex; align-items: center; justify-content: center; font-size: 18px; flex-shrink: 0; }
+.txn-merchant { font-size: 15px; font-weight: 700; color: var(--ink); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.txn-meta { font-size: 11px; color: var(--mist); margin-top: 2px; }
+.txn-amount { font-family: var(--font-head); font-size: 18px; font-weight: 800; color: var(--ink); white-space: nowrap; margin-left: auto; flex-shrink: 0; }
+.bucket-picker { display: flex; padding: 0 14px 14px; gap: 6px; }
+.pick-btn { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 3px; border-radius: var(--r-sm); padding: 8px 4px; border: 1.5px solid; cursor: pointer; transition: transform .1s; }
+.pick-btn:active { transform: scale(.9); }
+.pick-icon { width: 24px; height: 24px; border-radius: 7px; display: flex; align-items: center; justify-content: center; font-size: 10px; font-weight: 900; border: 1.5px solid; }
+.pick-label { font-size: 8px; font-weight: 700; }
+.txn-del { padding: 0 14px 10px; text-align: right; }
+.txn-del-btn { font-size: 11px; color: var(--danger); font-weight: 700; background: none; border: none; cursor: pointer; }
+
+/* ── MY MONTH ────────────────────────────────────────────── */
+.month-hero { background: var(--ink); padding: 20px 18px; }
+.month-total-card { background: var(--ink2); border-radius: var(--r-xl); padding: 20px; border: 1px solid var(--ink3); display: flex; justify-content: space-between; align-items: center; }
+.month-total-label { font-size: 13px; color: var(--slate); }
+.month-total-val { font-family: var(--font-head); font-size: 30px; font-weight: 900; color: var(--teal); letter-spacing: -1px; }
+.bar-strip { display: flex; height: 16px; border-radius: 8px; overflow: hidden; margin-top: 16px; }
+.bar-seg { transition: flex .5s ease; }
+.month-body { background: var(--paper); border-radius: var(--r-2xl) var(--r-2xl) 0 0; margin-top: -10px; padding: 22px 18px 16px; }
+.legend-wrap { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 20px; }
+.legend-dot { width: 8px; height: 8px; border-radius: 4px; }
+.legend-lbl { font-size: 11px; color: var(--ink); font-weight: 600; }
+
+.bucket-row { background: var(--white); border-radius: var(--r-lg); padding: 14px; display: flex; align-items: center; gap: 12px; margin-bottom: 10px; border: 1px solid var(--fog); border-left: 4px solid; cursor: pointer; box-shadow: var(--shadow-sm); transition: transform .1s; }
+.bucket-row:active { transform: scale(.98); }
+.br-info { flex: 1; min-width: 0; }
+.br-name { font-size: 15px; font-weight: 700; color: var(--ink); margin-bottom: 5px; }
+.br-bar { height: 4px; border-radius: 2px; overflow: hidden; background: var(--fog); }
+.br-bar-fill { height: 4px; border-radius: 2px; transition: width .5s ease; }
+.br-tag { font-size: 10px; color: var(--slate); margin-top: 3px; }
+.br-right { text-align: right; }
+.br-amount { font-family: var(--font-head); font-size: 17px; font-weight: 800; }
+.br-pct { font-size: 11px; color: var(--slate); margin-top: 2px; }
+.br-chevron { font-size: 22px; color: var(--fog); }
+
+.weekly-card { background: var(--white); border-radius: var(--r-lg); padding: 16px; margin-bottom: 16px; border: 1px solid var(--fog); box-shadow: var(--shadow-sm); }
+.weekly-title { font-family: var(--font-head); font-size: 13px; font-weight: 800; color: var(--ink); margin-bottom: 16px; }
+.week-bars { display: flex; gap: 8px; align-items: flex-end; height: 100px; }
+.week-col { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 4px; }
+.week-val { font-size: 8px; color: var(--slate); font-weight: 700; height: 12px; }
+.week-bar-wrap { width: 100%; flex: 1; display: flex; align-items: flex-end; }
+.week-bar-inner { width: 100%; border-radius: 6px; overflow: hidden; min-height: 4px; }
+.week-lbl { font-size: 9px; color: var(--slate); }
+
+/* ── SLICE DETAIL ────────────────────────────────────────── */
+.slice-hero { background: var(--ink); padding: 32px 24px 40px; display: flex; flex-direction: column; align-items: center; }
+.slice-ring { width: 108px; height: 108px; border-radius: 54px; border: 8px solid; display: flex; flex-direction: column; align-items: center; justify-content: center; margin-bottom: 20px; }
+.ring-pct { font-family: var(--font-head); font-size: 28px; font-weight: 900; }
+.ring-sub { font-size: 10px; color: var(--slate); }
+.slice-amount { font-family: var(--font-head); font-size: 42px; font-weight: 900; color: var(--white); letter-spacing: -1.5px; margin-bottom: 4px; }
+.slice-period { font-size: 13px; color: var(--slate); }
+.slice-body { background: var(--paper); border-radius: var(--r-2xl) var(--r-2xl) 0 0; margin-top: -12px; padding: 24px 18px; }
+.yn-card { background: var(--white); border-radius: var(--r-xl); padding: 22px; border: 1px solid var(--fog); box-shadow: var(--shadow-sm); }
+.yn-q { font-family: var(--font-head); font-size: 19px; font-weight: 800; color: var(--ink); text-align: center; margin-bottom: 6px; }
+.yn-hint { font-size: 13px; color: var(--slate); text-align: center; margin-bottom: 20px; }
+.yn-btns { display: flex; gap: 12px; }
+.yn-btn { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 6px; padding: 16px; border-radius: var(--r-md); border: none; cursor: pointer; font-size: 14px; font-weight: 700; color: var(--white); transition: transform .1s; }
+.yn-btn:active { transform: scale(.95); }
+.yn-emoji { font-size: 24px; }
+
+/* ── HISTORY ─────────────────────────────────────────────── */
+.hist-hdr { background: var(--white); padding: 12px 16px; border-bottom: 1px solid var(--fog); flex-shrink: 0; }
+.hist-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
+.hist-title { font-family: var(--font-head); font-size: 22px; font-weight: 800; color: var(--ink); }
+.hist-count { font-size: 11px; color: var(--slate); margin-top: 2px; }
+.export-btn-small { background: var(--ink); border-radius: var(--r-sm); padding: 8px 14px; font-size: 12px; font-weight: 700; color: var(--white); }
+.search-wrap { display: flex; align-items: center; background: var(--paper); border: 1.5px solid var(--fog); border-radius: var(--r-md); padding: 0 12px; margin-bottom: 10px; }
+.search-in { flex: 1; padding: 10px 0; font-size: 14px; color: var(--ink); background: none; border: none; outline: none; }
+.search-clr { font-size: 14px; color: var(--slate); font-weight: 700; padding: 4px; background: none; border: none; cursor: pointer; }
+.filter-bar { display: flex; gap: 8px; overflow-x: auto; padding-bottom: 2px; }
+.filter-bar::-webkit-scrollbar { display: none; }
+.fpill { padding: 7px 14px; border-radius: 20px; border: 1.5px solid var(--fog); background: var(--white); font-size: 11px; font-weight: 600; color: var(--slate); cursor: pointer; white-space: nowrap; transition: all .15s; flex-shrink: 0; }
+.fpill.on { color: var(--white); }
+.mgrp { margin-bottom: 16px; }
+.mgrp-hdr { display: flex; justify-content: space-between; align-items: center; padding: 8px 0 6px; }
+.mgrp-name { font-family: var(--font-head); font-size: 13px; font-weight: 800; color: var(--ink); }
+.mgrp-total { font-size: 13px; font-weight: 700; color: var(--teal); }
+.h-txn { background: var(--white); border-radius: var(--r-md); padding: 12px; margin-bottom: 8px; border: 1px solid var(--fog); box-shadow: var(--shadow-sm); }
+.h-txn-row { display: flex; align-items: center; gap: 10px; }
+.h-txn-icon { width: 38px; height: 38px; border-radius: 10px; background: var(--paper); border: 1px solid var(--fog); display: flex; align-items: center; justify-content: center; font-size: 16px; flex-shrink: 0; }
+.h-txn-info { flex: 1; min-width: 0; }
+.h-txn-name { font-size: 13px; font-weight: 700; color: var(--ink); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.h-txn-date { font-size: 10px; color: var(--mist); margin-top: 1px; }
+.h-txn-bucket { font-size: 9px; font-weight: 700; margin-top: 2px; }
+.h-txn-right { text-align: right; flex-shrink: 0; }
+.h-txn-amount { font-family: var(--font-head); font-size: 15px; font-weight: 800; color: var(--ink); }
+.h-txn-acts { display: flex; gap: 10px; justify-content: flex-end; margin-top: 6px; }
+.h-edit { font-size: 11px; color: var(--teal); font-weight: 700; background: none; border: none; cursor: pointer; }
+.h-del { font-size: 11px; color: var(--danger); font-weight: 700; background: none; border: none; cursor: pointer; }
+.inline-edit-box { background: var(--paper); border-radius: var(--r-sm); padding: 10px; margin-top: 10px; border: 1px solid var(--fog); }
+.ie-label { font-size: 9px; font-weight: 700; color: var(--slate); letter-spacing: 2px; margin-bottom: 8px; }
+.ie-row { display: flex; gap: 6px; }
+.ie-btn { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 3px; padding: 8px 4px; border-radius: var(--r-sm); border: 1.5px solid var(--fog); background: var(--white); cursor: pointer; transition: all .1s; }
+.ie-icon { width: 22px; height: 22px; border-radius: 6px; display: flex; align-items: center; justify-content: center; font-size: 9px; font-weight: 900; border: 1.5px solid; }
+.ie-lbl { font-size: 9px; font-weight: 600; color: var(--slate); }
+
+/* ── LIMITS ──────────────────────────────────────────────── */
+.limit-card { background: var(--white); border-radius: var(--r-lg); padding: 16px; margin-bottom: 12px; border: 1px solid var(--fog); border-left: 4px solid; box-shadow: var(--shadow-sm); }
+.lc-hdr { display: flex; align-items: center; gap: 12px; margin-bottom: 14px; }
+.lc-info { flex: 1; }
+.lc-name { font-size: 15px; font-weight: 700; color: var(--ink); }
+.lc-tag { font-size: 11px; color: var(--slate); margin-top: 1px; }
+.lc-status { font-size: 10px; font-weight: 800; text-transform: uppercase; }
+.lc-input-row { display: flex; align-items: center; gap: 8px; margin-bottom: 10px; }
+.lc-sym { font-size: 15px; color: var(--slate); }
+.lc-input { flex: 1; background: var(--paper); border: 1.5px solid var(--fog); border-radius: var(--r-sm); padding: 10px 12px; font-size: 17px; font-weight: 700; font-family: var(--font-head); outline: none; transition: border-color .2s; color: var(--ink); }
+.lc-input:focus { border-color: var(--teal); }
+.lc-bar { height: 6px; border-radius: 3px; overflow: hidden; margin-bottom: 6px; }
+.lc-bar-fill { height: 6px; border-radius: 3px; }
+.lc-bar-text { font-size: 11px; color: var(--slate); }
+.quick-row { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 10px; }
+.q-btn { padding: 5px 10px; border-radius: 8px; font-size: 11px; font-weight: 700; cursor: pointer; border: 1.5px solid; transition: all .1s; background: none; font-family: var(--font); }
+
+/* ── SETTINGS ────────────────────────────────────────────── */
+.acc { background: var(--white); border-radius: var(--r-lg); margin-bottom: 8px; border: 1px solid var(--fog); overflow: hidden; box-shadow: var(--shadow-sm); }
+.acc-hdr { display: flex; justify-content: space-between; align-items: center; padding: 16px; cursor: pointer; }
+.acc-title { font-size: 15px; font-weight: 700; color: var(--ink); }
+.acc-toggle { font-size: 20px; color: var(--teal); font-weight: 700; transition: transform .2s; }
+.acc-body { padding: 0 16px 16px; border-top: 1px solid var(--fog); display: none; }
+.acc.open .acc-body { display: block; }
+.acc.open .acc-toggle { transform: rotate(45deg); }
+.s-label { font-size: 10px; font-weight: 700; color: var(--slate); letter-spacing: 2px; margin-top: 14px; margin-bottom: 7px; }
+.s-input { width: 100%; background: var(--paper); border: 1.5px solid var(--fog); border-radius: var(--r-sm); padding: 11px 13px; font-size: 14px; color: var(--ink); outline: none; transition: border-color .2s; font-family: var(--font); }
+.s-input:focus { border-color: var(--teal); }
+.s-textarea { height: 70px; resize: none; }
+.s-role { display: flex; align-items: center; gap: 10px; padding: 11px 12px; border-radius: var(--r-sm); border: 1.5px solid var(--fog); background: var(--paper); cursor: pointer; margin-bottom: 6px; transition: all .15s; }
+.s-role.on { border-color: var(--teal); background: var(--teal-l); }
+.s-role-name { font-size: 13px; font-weight: 600; color: var(--ink); flex: 1; }
+.s-role.on .s-role-name { color: var(--teal-d); font-weight: 800; }
+.toggle-row { display: flex; justify-content: space-between; align-items: center; padding: 14px 0; border-bottom: 1px solid var(--fog); }
+.toggle-row:last-child { border-bottom: none; }
+.toggle-info { flex: 1; }
+.toggle-label { font-size: 14px; color: var(--ink); font-weight: 500; }
+.toggle-sub { font-size: 11px; color: var(--slate); margin-top: 2px; }
+.tgl { width: 46px; height: 26px; border-radius: 13px; background: var(--fog); display: flex; align-items: center; padding: 3px; cursor: pointer; border: none; transition: background .2s; flex-shrink: 0; }
+.tgl.on { background: var(--teal); }
+.tgl-knob { width: 20px; height: 20px; border-radius: 10px; background: var(--white); transition: transform .2s; box-shadow: 0 1px 3px rgba(0,0,0,.2); }
+.tgl.on .tgl-knob { transform: translateX(20px); }
+.act-btn { display: flex; align-items: center; gap: 12px; padding: 14px; border-radius: var(--r-md); cursor: pointer; border: none; width: 100%; margin-bottom: 8px; font-family: var(--font); transition: transform .1s; }
+.act-btn:active { transform: scale(.97); }
+.act-icon { font-size: 16px; font-weight: 700; }
+.act-title { font-size: 14px; font-weight: 700; }
+.act-sub { font-size: 11px; color: var(--slate); margin-top: 1px; }
+.pw-change-box { background: var(--paper); border-radius: var(--r-md); padding: 14px; border: 1px solid var(--fog); margin-top: 12px; }
+.pw-change-title { font-size: 13px; font-weight: 700; color: var(--ink); margin-bottom: 12px; }
+.pw-row { display: flex; gap: 8px; margin-bottom: 8px; }
+.pw-in { flex: 1; background: var(--white); border: 1.5px solid var(--fog); border-radius: var(--r-sm); padding: 11px 13px; font-size: 14px; color: var(--ink); outline: none; font-family: var(--font); }
+.pw-save-btn { background: var(--teal); border-radius: var(--r-sm); padding: 11px 16px; font-size: 13px; font-weight: 700; color: var(--ink); cursor: pointer; border: none; }
+.share-blank-btn { width: 100%; background: linear-gradient(135deg, var(--teal) 0%, var(--teal-d) 100%); border-radius: var(--r-md); padding: 14px; display: flex; align-items: center; justify-content: center; gap: 8px; font-size: 14px; font-weight: 700; color: var(--ink); border: none; cursor: pointer; margin-bottom: 8px; transition: transform .1s; }
+.share-blank-btn:active { transform: scale(.97); }
+.push-future-box { background: var(--ink2); border-radius: var(--r-md); padding: 16px; border: 1px solid var(--ink4); margin-top: 12px; }
+.push-label { font-size: 11px; font-weight: 700; color: var(--teal); letter-spacing: 1.5px; margin-bottom: 6px; }
+.push-text { font-size: 12px; color: var(--slate); line-height: 1.7; }
+.about-center { text-align: center; padding: 20px 0; }
+.about-divider { width: 32px; height: 1.5px; background: var(--fog); margin: 14px auto; }
+
+/* ── MODAL ───────────────────────────────────────────────── */
+.modal-bg { position: fixed; inset: 0; z-index: 980; background: rgba(0,0,0,.55); display: none; align-items: flex-end; justify-content: center; backdrop-filter: blur(2px); }
+.modal-bg.show { display: flex; }
+.modal-box { background: var(--white); border-radius: var(--r-2xl) var(--r-2xl) 0 0; padding: 24px 22px calc(var(--safe-bottom) + 24px); width: 100%; max-width: 480px; animation: slideUp .26s ease; }
+@keyframes slideUp { from{transform:translateY(100%)} to{transform:translateY(0)} }
+.modal-title { font-family: var(--font-head); font-size: 19px; font-weight: 800; color: var(--ink); margin-bottom: 6px; }
+.modal-body { font-size: 13px; color: var(--slate); line-height: 1.65; margin-bottom: 22px; }
+.modal-btns { display: flex; flex-direction: column; gap: 8px; }
+.mb { padding: 14px; border-radius: var(--r-md); font-size: 14px; font-weight: 700; cursor: pointer; font-family: var(--font); border: none; transition: transform .1s; }
+.mb:active { transform: scale(.97); }
+.mb-primary { background: var(--teal); color: var(--ink); }
+.mb-secondary { background: var(--paper); color: var(--ink); border: 1.5px solid var(--fog); }
+.mb-danger { background: var(--lux-l); color: var(--danger); border: 1.5px solid var(--lux-m); }
+.mb-cancel { background: transparent; color: var(--slate); }
+
+/* ── TOAST ───────────────────────────────────────────────── */
+#toast { position: fixed; bottom: calc(var(--safe-bottom) + 90px); left: 50%; transform: translateX(-50%) translateY(12px); background: var(--ink); color: var(--white); padding: 10px 20px; border-radius: 40px; font-size: 13px; font-weight: 600; z-index: 9999; opacity: 0; transition: all .3s ease; pointer-events: none; white-space: nowrap; border: 1px solid var(--ink4); max-width: calc(100vw - 48px); text-align: center; }
+#toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+/* ── INSTALL BANNER ──────────────────────────────────────── */
+#install-banner { position: fixed; bottom: 0; left: 50%; transform: translateX(-50%); width: 100%; max-width: 480px; background: var(--ink); border-top: 1px solid var(--ink3); padding: 14px 20px calc(var(--safe-bottom) + 14px); display: none; z-index: 970; align-items: center; gap: 12px; }
+#install-banner.show { display: flex; }
+.ib-text { flex: 1; font-size: 12px; color: var(--ghost); line-height: 1.5; }
+.ib-btn { background: var(--teal); border-radius: var(--r-sm); padding: 9px 16px; font-size: 13px; font-weight: 700; color: var(--ink); border: none; cursor: pointer; white-space: nowrap; }
+.ib-close { font-size: 16px; color: var(--slate); background: none; border: none; cursor: pointer; padding: 4px; }
+
+/* ── ANIMATIONS ──────────────────────────────────────────── */
+.fade-up { animation: fadeUp .35s ease; }
+@keyframes fadeUp { from{opacity:0;transform:translateY(10px)} to{opacity:1;transform:translateY(0)} }
+</style>
+</head>
+<body>
+<div id="app-shell">
+
+  <!-- SPLASH -->
+  <div class="layer" id="layer-splash">
+    <div class="splash-logo">🐦</div>
+    <div class="splash-name">Spend-na</div>
+    <div class="splash-tag">Your money mirror</div>
+    <div class="splash-loader"><div class="splash-loader-fill"></div></div>
+  </div>
+
+  <!-- LOCK -->
+  <div class="layer" id="layer-lock">
+    <div class="lock-inner">
+      <div class="lock-bird">🔐</div>
+      <div class="lock-title">Spend-na</div>
+      <div class="lock-sub">Protected by your password.<br>Enter it to continue.</div>
+      <div class="lock-field">
+        <input class="lock-input" id="lockPw" type="password" placeholder="Enter password" autocomplete="current-password">
+        <span class="lock-eye" id="lockEye" onclick="UI.toggleEye('lockPw','lockEye')">👁</span>
+      </div>
+      <button class="lock-btn" onclick="APP.unlock()">Unlock →</button>
+      <div class="lock-error" id="lockErr"></div>
+      <div class="lock-hint">🔒 Your data stays only on this device<br>© Sandeep Hakki · hakki.in</div>
+    </div>
+  </div>
+
+  <!-- ONBOARDING -->
+  <div class="layer" id="layer-onboarding">
+    <div class="ob-scroll">
+      <div class="ob-hero">
+        <span class="ob-emoji">🐦</span>
+        <div class="ob-heading">Spend-na</div>
+        <div class="ob-subhead">Your money mirror. Let's set you up.</div>
+      </div>
+
+      <div onclick="APP.pickPhoto('ob')">
+        <div class="ob-photo-ring" id="obPhotoRing">
+          <span style="font-size:30px">◉</span>
+          <span style="font-size:10px;color:var(--slate)">Add photo</span>
+        </div>
+      </div>
+
+      <div class="field-group">
+        <div class="field-label">YOUR NAME *</div>
+        <input class="field-input" id="obName" type="text" placeholder="e.g. Priya Sharma" autocomplete="name" oninput="APP.obValidate()">
+      </div>
+      <div class="field-group">
+        <div class="field-label">DATE OF BIRTH</div>
+        <input class="field-input" id="obDob" type="text" inputmode="numeric" placeholder="DD / MM / YYYY">
+      </div>
+      <div class="field-group">
+        <div class="field-label">YOUR CITY</div>
+        <input class="field-input" id="obCity" type="text" placeholder="e.g. Bengaluru">
+      </div>
+      <div class="field-group">
+        <div class="field-label">I AM A... *</div>
+        <div class="role-grid" id="obRoles"></div>
+      </div>
+      <div class="field-group">
+        <div class="field-label">MY DAILY QUOTE (optional)</div>
+        <textarea class="field-input field-textarea" id="obQuote" placeholder="Something that motivates you to be mindful with money..."></textarea>
+      </div>
+
+      <div class="ob-password-box">
+        <div class="ob-pw-note">🔐 Set a password to protect your data.<br>Only you can open this app on any device.</div>
+        <div class="ob-pw-row">
+          <input class="ob-pw-input" id="obPw1" type="password" placeholder="Choose password *" autocomplete="new-password" oninput="APP.obValidate()">
+          <input class="ob-pw-input" id="obPw2" type="password" placeholder="Confirm *" autocomplete="new-password" oninput="APP.obValidate()">
+        </div>
+        <div style="font-size:11px;color:var(--danger);min-height:16px;margin-top:4px" id="obPwErr"></div>
+      </div>
+
+      <button class="ob-cta" id="obCta" disabled onclick="APP.startJourney()">Start my journey →</button>
+      <div class="ob-legal">All your data stays only on this device.<br>No server. No cloud. No tracking. Ever.<br>© Sandeep Hakki · hakki.in · 2026</div>
+    </div>
+  </div>
+
+  <!-- MAIN APP -->
+  <div class="layer" id="layer-app">
+
+    <!-- TOPBAR (home only) -->
+    <div id="topbar" style="flex-shrink:0">
+      <div class="topbar">
+        <div class="topbar-row1">
+          <div>
+            <div class="topbar-greeting" id="topGreeting">Good Morning</div>
+            <div class="topbar-name" id="topName">Friend</div>
+            <div class="topbar-role" id="topRole"></div>
+          </div>
+          <div class="topbar-avatar" id="topAvatar" onclick="APP.goSettings()"></div>
+        </div>
+        <div class="quote-strip">
+          <div class="quote-bar"></div>
+          <div class="quote-text" id="topQuote"></div>
+        </div>
+      </div>
+      <div class="save-bar" id="saveBar" style="display:none">
+        <div class="save-bar-text">💾 Unsaved changes</div>
+        <button class="save-bar-btn" onclick="APP.saveToFile()">Save now</button>
+      </div>
+    </div>
+
+    <!-- SCREENS -->
+    <div class="screens" id="screens">
+
+      <!-- HOME -->
+      <div class="screen active" id="s-home">
+        <div class="screen-body">
+          <div class="home-summary" id="homeSummary"></div>
+          <div class="home-body fade-up" id="homeBody"></div>
+        </div>
+      </div>
+
+      <!-- SORT -->
+      <div class="screen" id="s-sort">
+        <div class="sort-hdr" id="sortHdr">
+          <div class="sort-count-ring" id="sortRing">0</div>
+          <div>
+            <div style="font-family:var(--font-head);font-size:18px;font-weight:800;color:var(--ink)">Sort Spends</div>
+            <div style="font-size:11px;color:var(--slate)" id="sortSubtitle">0 waiting</div>
+          </div>
+        </div>
+        <div class="sort-empty" id="sortEmpty" style="display:none">
+          <div class="sort-empty-icon">✓</div>
+          <div style="font-family:var(--font-head);font-size:26px;font-weight:800;color:var(--ink);margin-bottom:8px">All sorted!</div>
+          <div style="font-size:14px;color:var(--slate);text-align:center;line-height:1.6;margin-bottom:24px">See where your money went.</div>
+          <button onclick="APP.goTab('month')" style="background:var(--teal);border:none;border-radius:var(--r-md);padding:12px 28px;font-size:14px;font-weight:700;color:var(--ink);cursor:pointer">See My Month ›</button>
+        </div>
+        <div class="screen-body" id="sortList" style="padding:14px 16px"></div>
+      </div>
+
+      <!-- MY MONTH -->
+      <div class="screen" id="s-month">
+        <div style="background:var(--white);padding:12px 16px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--fog);flex-shrink:0">
+          <div>
+            <div style="font-family:var(--font-head);font-size:22px;font-weight:800;color:var(--ink)">My Month</div>
+            <div style="font-size:11px;color:var(--slate)" id="monthSub"></div>
+          </div>
+          <button onclick="APP.shareMonth()" style="font-size:12px;font-weight:700;color:var(--teal);background:none;border:none;cursor:pointer">Share ↑</button>
+        </div>
+        <div class="screen-body" id="monthBody" style=""></div>
+      </div>
+
+      <!-- SLICE DETAIL -->
+      <div class="screen" id="s-slice">
+        <div class="screen-hdr">
+          <button class="hdr-back" onclick="APP.goTab('month')">← Back</button>
+          <div class="hdr-title" id="sliceTitle">Detail</div>
+          <div style="min-width:56px"></div>
+        </div>
+        <div class="screen-body" id="sliceBody"></div>
+      </div>
+
+      <!-- HISTORY -->
+      <div class="screen" id="s-history">
+        <div class="hist-hdr">
+          <div class="hist-top">
+            <div>
+              <div class="hist-title">History</div>
+              <div class="hist-count" id="histCount">0 transactions</div>
+            </div>
+            <button class="export-btn-small" onclick="APP.exportHTML()">Export ↑</button>
+          </div>
+          <div class="search-wrap">
+            <input class="search-in" id="histSearch" placeholder="Search transactions..." oninput="APP.renderHistory()">
+            <button class="search-clr" onclick="document.getElementById('histSearch').value='';APP.renderHistory()">✕</button>
+          </div>
+          <div class="filter-bar" id="filterBar"></div>
+        </div>
+        <div class="screen-body" id="histList" style="padding:12px 16px"></div>
+      </div>
+
+      <!-- ADD -->
+      <div class="screen" id="s-add">
+        <div class="screen-hdr">
+          <button class="hdr-back" onclick="APP.goTab('home')">← Back</button>
+          <div class="hdr-title">Add Spend</div>
+          <button class="hdr-action" id="addSaveBtn" onclick="APP.saveManual()" style="opacity:.3" disabled>Save</button>
+        </div>
+        <div class="screen-body">
+          <div class="amount-hero">
+            <div class="amount-symbol">₹</div>
+            <input class="amount-input" id="addAmt" type="number" inputmode="decimal" placeholder="0" oninput="APP.validateAdd()">
+          </div>
+          <div class="add-section">
+            <div class="add-label">WHAT WAS IT FOR?</div>
+            <input class="add-input" id="addDesc" placeholder="e.g. Lunch, Petrol, School fees">
+          </div>
+          <div class="add-section" style="margin-top:20px">
+            <div class="add-label">HOW DID YOU PAY?</div>
+            <div class="source-chips" id="sourceChips"></div>
+          </div>
+          <div class="add-section" style="margin-top:20px;padding-bottom:40px">
+            <div class="add-label">WHICH BUCKET?</div>
+            <div class="bucket-options" id="bucketOpts"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- LIMITS -->
+      <div class="screen" id="s-limits">
+        <div class="screen-hdr">
+          <button class="hdr-back" onclick="APP.goTab('home')">← Back</button>
+          <div class="hdr-title">Budget Limits</div>
+          <button class="hdr-action" onclick="APP.saveLimits()">Save</button>
+        </div>
+        <div class="screen-body" id="limitsBody" style="padding:16px"></div>
+      </div>
+
+      <!-- SETTINGS -->
+      <div class="screen" id="s-settings">
+        <div class="screen-hdr">
+          <button class="hdr-back" onclick="APP.goTab('home')">← Back</button>
+          <div class="hdr-title">Settings & Help</div>
+          <button class="hdr-action" onclick="APP.saveSettings()">Save</button>
+        </div>
+        <div class="screen-body" id="settingsBody" style="padding:16px"></div>
+      </div>
+
+    </div><!-- /screens -->
+
+    <!-- TAB BAR -->
+    <div class="tabbar" id="tabbar">
+      <button class="tab active" data-tab="home" onclick="APP.goTab('home')">
+        <div class="tab-glyph">⬡</div>
+        <div class="tab-label">Home</div>
+      </button>
+      <button class="tab" data-tab="sort" onclick="APP.goTab('sort')">
+        <div class="tab-glyph" style="position:relative">
+          ↕
+          <div class="tab-badge" id="sortBadge" style="display:none"><span id="sortBadgeN">0</span></div>
+        </div>
+        <div class="tab-label">Sort</div>
+      </button>
+      <button class="tab" data-tab="month" onclick="APP.goTab('month')">
+        <div class="tab-glyph">◎</div>
+        <div class="tab-label">Month</div>
+      </button>
+      <button class="tab" data-tab="history" onclick="APP.goTab('history')">
+        <div class="tab-glyph">≡</div>
+        <div class="tab-label">History</div>
+      </button>
+      <button class="tab" data-tab="add" onclick="APP.goTab('add')">
+        <div class="tab-add-fab">+</div>
+        <div class="tab-label">Add</div>
+      </button>
+    </div>
+
+  </div><!-- /layer-app -->
+
+</div><!-- /app-shell -->
+
+<!-- MODAL -->
+<div class="modal-bg" id="modal" onclick="if(event.target===this)UI.closeModal()">
+  <div class="modal-box">
+    <div class="modal-title" id="mTitle"></div>
+    <div class="modal-body" id="mBody"></div>
+    <div class="modal-btns" id="mBtns"></div>
+  </div>
+</div>
+
+<!-- TOAST -->
+<div id="toast"></div>
+
+<!-- INSTALL BANNER -->
+<div id="install-banner">
+  <div class="ib-text">Add Spend-na to your home screen for the best experience.</div>
+  <button class="ib-btn" id="installBtn">Install</button>
+  <button class="ib-close" onclick="document.getElementById('install-banner').classList.remove('show')">✕</button>
+</div>
+
+<script>
+// ═══════════════════════════════════════════════════════════════════
+//  SPEND-NA v2 — PWA · JSON-as-DB · Password Protected · Offline
+//  © 2026 Sandeep Hakki · hakki.in
+//  Architecture: JSON file = source of truth · localStorage = cache
+// ═══════════════════════════════════════════════════════════════════
+
+// ── SERVICE WORKER (inline, registered via blob) ─────────────────
+const SW_CODE = `
+const CACHE = 'spend-na-v2';
+const ASSETS = [self.location.href];
+self.addEventListener('install', e => {
+  e.waitUntil(caches.open(CACHE).then(c => c.addAll(ASSETS)));
+  self.skipWaiting();
+});
+self.addEventListener('activate', e => {
+  e.waitUntil(caches.keys().then(keys =>
+    Promise.all(keys.filter(k => k !== CACHE).map(k => caches.delete(k)))
+  ));
+  self.clients.claim();
+});
+self.addEventListener('fetch', e => {
+  e.respondWith(
+    caches.match(e.request).then(cached => cached || fetch(e.request).catch(() => cached))
+  );
+});
+// FUTURE: push notification handler
+self.addEventListener('push', e => {
+  const data = e.data ? e.data.json() : {title:'Spend-na', body:'Check your spends today!'};
+  e.waitUntil(self.registration.showNotification(data.title, {
+    body: data.body, icon: '/icon-192.png', badge: '/icon-192.png', tag: 'spend-na-push'
+  }));
+});
+self.addEventListener('notificationclick', e => { e.notification.close(); e.waitUntil(clients.openWindow('/')); });
+`;
+
+// ── CONSTANTS ──────────────────────────────────────────────────────
+const APP_VERSION = 2;
+const BUCKETS = {
+  necessary:  { label:'Necessary',    tag:'Food · Health · Rent',       color:'#10b981', light:'#ecfdf5', mid:'#6ee7b7', glyph:'⌂' },
+  committed:  { label:'Committed',    tag:'EMI · Insurance · SIP',      color:'#6366f1', light:'#eef2ff', mid:'#a5b4fc', glyph:'◈' },
+  comfortable:{ label:'Comfortable',  tag:'Lifestyle · Shopping',        color:'#f59e0b', light:'#fffbeb', mid:'#fde68a', glyph:'◎' },
+  luxury:     { label:'Luxury',       tag:'Splurge · Dining out',        color:'#f43f5e', light:'#fff1f2', mid:'#fda4af', glyph:'◆' },
+};
+const ROLES = {
+  student:      { label:'Student',              icon:'🎓', limits:{ necessary:3000,  committed:0,     comfortable:2000,  luxury:1000  } },
+  home_manager: { label:'Home Manager',         icon:'🏠', limits:{ necessary:15000, committed:5000,  comfortable:5000,  luxury:2000  } },
+  working:      { label:'Working Professional', icon:'💼', limits:{ necessary:15000, committed:30000, comfortable:10000, luxury:5000  } },
+  business:     { label:'Business Owner',       icon:'🏢', limits:{ necessary:20000, committed:20000, comfortable:15000, luxury:10000 } },
+  retired:      { label:'Retired',              icon:'🌿', limits:{ necessary:10000, committed:5000,  comfortable:8000,  luxury:3000  } },
+};
+const SOURCES = [
+  { key:'cash',      label:'Cash',       icon:'₹' },
+  { key:'upi',       label:'Own UPI',    icon:'U' },
+  { key:'others_upi',label:"Others' UPI",icon:'O' },
+  { key:'hand_loan', label:'Hand Loan',  icon:'L' },
+];
+const ICON_RULES = [
+  { kw:['food','meal','lunch','dinner','breakfast','restaurant','cafe','canteen','hotel','pizza','burger','chicken','tiffin','dabba','dhaba','bakery','sweets','snack','delivery','zomato','swiggy','blinkit','mess'], icon:'🍽' },
+  { kw:['grocery','groceries','vegetable','fruit','milk','dairy','kirana','supermarket','mart','bazaar','market','store','fresh','bigbasket','jiomart'], icon:'🛒' },
+  { kw:['cab','taxi','ride','auto','rickshaw','bus','train','metro','travel','transport','ola','uber','rapido','irctc','flight'], icon:'🚗' },
+  { kw:['fuel','petrol','diesel','cng','pump','bpcl','hp','shell','iocl'], icon:'⛽' },
+  { kw:['medical','medicine','pharmacy','hospital','clinic','doctor','health','chemist','drug','lab','apollo','medplus'], icon:'💊' },
+  { kw:['shopping','clothes','shirt','pant','shoes','dress','saree','kurta','fashion','myntra','amazon','flipkart'], icon:'🛍' },
+  { kw:['electricity','power','water','gas','bill','utility','recharge','mobile','broadband','internet','wifi','airtel','jio'], icon:'⚡' },
+  { kw:['school','college','tuition','coaching','course','fees','exam','education'], icon:'📚' },
+  { kw:['movie','cinema','theatre','show','event','concert','game','entertainment','netflix','hotstar'], icon:'🎬' },
+  { kw:['emi','loan','insurance','premium','lic','sip','mutual','investment','fd','bank','credit'], icon:'🏦' },
+  { kw:['rent','maintenance','society','flat','house','room','pg'], icon:'🏠' },
+  { kw:['salon','spa','haircut','beauty','gym','fitness','yoga','wellness'], icon:'💇' },
+];
+const LS_KEY = 'sn_data_v2';
+const LS_UNSAVED = 'sn_unsaved_v2';
+
+// ── MD5 (password hashing, no external deps) ───────────────────────
+function md5(s){
+  function safeAdd(x,y){const lsw=(x&0xFFFF)+(y&0xFFFF),msw=(x>>16)+(y>>16)+(lsw>>16);return(msw<<16)|(lsw&0xFFFF)}
+  function rol(n,c){return(n<<c)|(n>>>(32-c))}
+  function cmn(q,a,b,x,s,t){return safeAdd(rol(safeAdd(safeAdd(a,q),safeAdd(x,t)),s),b)}
+  const ff=(a,b,c,d,x,s,t)=>cmn((b&c)|((~b)&d),a,b,x,s,t);
+  const gg=(a,b,c,d,x,s,t)=>cmn((b&d)|(c&(~d)),a,b,x,s,t);
+  const hh=(a,b,c,d,x,s,t)=>cmn(b^c^d,a,b,x,s,t);
+  const ii=(a,b,c,d,x,s,t)=>cmn(c^(b|(~d)),a,b,x,s,t);
+  const str=unescape(encodeURIComponent(s));
+  const bytes=[];
+  for(let i=0;i<str.length;i++) bytes.push(str.charCodeAt(i));
+  bytes.push(0x80);
+  while(bytes.length%64!==56) bytes.push(0);
+  const lo=str.length*8,hi=0;
+  bytes.push(lo&0xFF,(lo>>8)&0xFF,(lo>>16)&0xFF,(lo>>24)&0xFF,hi,hi,hi,hi);
+  let a=0x67452301,b=0xEFCDAB89,c=0x98BADCFE,d=0x10325476;
+  for(let i=0;i<bytes.length;i+=64){
+    const M=[];
+    for(let j=0;j<16;j++) M[j]=bytes[i+j*4]|(bytes[i+j*4+1]<<8)|(bytes[i+j*4+2]<<16)|(bytes[i+j*4+3]<<24);
+    const [A,B,C,D]=[a,b,c,d];
+    a=ff(a,b,c,d,M[0],7,-680876936);d=ff(d,a,b,c,M[1],12,-389564586);c=ff(c,d,a,b,M[2],17,606105819);b=ff(b,c,d,a,M[3],22,-1044525330);
+    a=ff(a,b,c,d,M[4],7,-176418897);d=ff(d,a,b,c,M[5],12,1200080426);c=ff(c,d,a,b,M[6],17,-1473231341);b=ff(b,c,d,a,M[7],22,-45705983);
+    a=ff(a,b,c,d,M[8],7,1770035416);d=ff(d,a,b,c,M[9],12,-1958414417);c=ff(c,d,a,b,M[10],17,-42063);b=ff(b,c,d,a,M[11],22,-1990404162);
+    a=ff(a,b,c,d,M[12],7,1804603682);d=ff(d,a,b,c,M[13],12,-40341101);c=ff(c,d,a,b,M[14],17,-1502002290);b=ff(b,c,d,a,M[15],22,1236535329);
+    a=gg(a,b,c,d,M[1],5,-165796510);d=gg(d,a,b,c,M[6],9,-1069501632);c=gg(c,d,a,b,M[11],14,643717713);b=gg(b,c,d,a,M[0],20,-373897302);
+    a=gg(a,b,c,d,M[5],5,-701558691);d=gg(d,a,b,c,M[10],9,38016083);c=gg(c,d,a,b,M[15],14,-660478335);b=gg(b,c,d,a,M[4],20,-405537848);
+    a=gg(a,b,c,d,M[9],5,568446438);d=gg(d,a,b,c,M[14],9,-1019803690);c=gg(c,d,a,b,M[3],14,-187363961);b=gg(b,c,d,a,M[8],20,1163531501);
+    a=gg(a,b,c,d,M[13],5,-1444681467);d=gg(d,a,b,c,M[2],9,-51403784);c=gg(c,d,a,b,M[7],14,1735328473);b=gg(b,c,d,a,M[12],20,-1926607734);
+    a=hh(a,b,c,d,M[5],4,-378558);d=hh(d,a,b,c,M[8],11,-2022574463);c=hh(c,d,a,b,M[11],16,1839030562);b=hh(b,c,d,a,M[14],23,-35309556);
+    a=hh(a,b,c,d,M[1],4,-1530992060);d=hh(d,a,b,c,M[4],11,1272893353);c=hh(c,d,a,b,M[7],16,-155497632);b=hh(b,c,d,a,M[10],23,-1094730640);
+    a=hh(a,b,c,d,M[13],4,681279174);d=hh(d,a,b,c,M[0],11,-358537222);c=hh(c,d,a,b,M[3],16,-722521979);b=hh(b,c,d,a,M[6],23,76029189);
+    a=hh(a,b,c,d,M[9],4,-640364487);d=hh(d,a,b,c,M[12],11,-421815835);c=hh(c,d,a,b,M[15],16,530742520);b=hh(b,c,d,a,M[2],23,-995338651);
+    a=ii(a,b,c,d,M[0],6,-198630844);d=ii(d,a,b,c,M[7],10,1126891415);c=ii(c,d,a,b,M[14],15,-1416354905);b=ii(b,c,d,a,M[5],21,-57434055);
+    a=ii(a,b,c,d,M[12],6,1700485571);d=ii(d,a,b,c,M[3],10,-1894986606);c=ii(c,d,a,b,M[10],15,-1051523);b=ii(b,c,d,a,M[1],21,-2054922799);
+    a=ii(a,b,c,d,M[8],6,1873313359);d=ii(d,a,b,c,M[15],10,-30611744);c=ii(c,d,a,b,M[6],15,-1560198380);b=ii(b,c,d,a,M[13],21,1309151649);
+    a=ii(a,b,c,d,M[4],6,-145523070);d=ii(d,a,b,c,M[11],10,-1120210379);c=ii(c,d,a,b,M[2],15,718787259);b=ii(b,c,d,a,M[9],21,-343485551);
+    a=safeAdd(a,A);b=safeAdd(b,B);c=safeAdd(c,C);d=safeAdd(d,D);
+  }
+  const h=(n)=>[n&0xFF,(n>>8)&0xFF,(n>>16)&0xFF,(n>>24)&0xFF].map(b=>(b<16?'0':'')+b.toString(16)).join('');
+  return [a,b,c,d].map(h).join('');
+}
+
+// ── DATABASE ───────────────────────────────────────────────────────
+// The JSON structure IS the database. localStorage is the working copy.
+const DB = {
+  // Default empty database structure
+  empty() {
+    return {
+      app: 'Spend-na',
+      version: APP_VERSION,
+      schema: 1,
+      created: new Date().toISOString(),
+      lastSaved: new Date().toISOString(),
+      passwordHash: '',
+      profile: { name:'', role:'working', photo:null, dob:'', city:'', quote:'' },
+      limits: { necessary:15000, committed:30000, comfortable:10000, luxury:5000 },
+      settings: { soundEnabled:true, notifEnabled:false },
+      transactions: [],
+      // FUTURE: push subscription token stored here
+      pushToken: null,
+    };
+  },
+
+  // Load from localStorage (working copy)
+  load() {
+    try {
+      const raw = localStorage.getItem(LS_KEY);
+      if (!raw) return null;
+      return JSON.parse(raw);
+    } catch { return null; }
+  },
+
+  // Save to localStorage (always instant)
+  save(data) {
+    try {
+      data.lastSaved = new Date().toISOString();
+      localStorage.setItem(LS_KEY, JSON.stringify(data));
+      return true;
+    } catch { return false; }
+  },
+
+  // Export data as downloadable JSON file
+  exportFile(data) {
+    const payload = JSON.parse(JSON.stringify(data)); // deep clone
+    // Remove sensitive hash from export? No — keep it so reimport works seamlessly
+    payload.exportedAt = new Date().toISOString();
+    payload.exportNote = 'This is your Spend-na data file. Keep it safe. Import it back anytime.';
+    const json = JSON.stringify(payload, null, 2);
+    const blob = new Blob([json], { type: 'application/json' });
+    const url  = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `spend-na-data-${new Date().toISOString().slice(0,10)}.json`;
+    a.click();
+    URL.revokeObjectURL(url);
+  },
+
+  // Import from JSON file — returns parsed data or null
+  importFile() {
+    return new Promise((resolve) => {
+      const input = document.createElement('input');
+      input.type = 'file';
+      input.accept = '.json,application/json';
+      input.onchange = async (e) => {
+        const file = e.target.files[0];
+        if (!file) { resolve(null); return; }
+        try {
+          const text = await file.text();
+          const data = JSON.parse(text);
+          if (!data.transactions || !Array.isArray(data.transactions)) { resolve(null); return; }
+          resolve(data);
+        } catch { resolve(null); }
+      };
+      input.click();
+    });
+  },
+};
+
+// ── STATE ──────────────────────────────────────────────────────────
+let STATE = {
+  data: null,           // The full database object
+  unlocked: false,
+  currentTab: 'home',
+  sliceBucket: null,
+  histFilter: null,
+  addSource: null,
+  addBucket: null,
+  addLimitVals: {},
+  settingsRole: null,
+  settingsToggles: {},
+  unsaved: false,       // Tracks if localStorage is ahead of last file save
+  obRole: null,
+  obPhoto: null,
+  deferredInstall: null,
+};
+
+// ── UI HELPERS ─────────────────────────────────────────────────────
+const UI = {
+  esc(s) { return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); },
+
+  fmt(n) { // Format as ₹ with k shorthand
+    if (n >= 100000) return `₹${(n/100000).toFixed(1)}L`;
+    if (n >= 1000)   return `₹${(n/1000).toFixed(1)}k`;
+    return `₹${n}`;
+  },
+
+  fmtFull(n) { return '₹' + (n||0).toLocaleString('en-IN'); },
+
+  avatar(profile, size) {
+    const sz = size || 48;
+    const letter = (profile?.name?.[0] || 'S').toUpperCase();
+    if (profile?.photo) {
+      return `<img src="${profile.photo}" style="width:100%;height:100%;object-fit:cover;border-radius:inherit">`;
+    }
+    return `<span style="font-family:var(--font-head);font-size:${Math.round(sz*.38)}px;font-weight:800;color:#fff">${letter}</span>`;
+  },
+
+  icon(merchant) {
+    if (!merchant) return '💸';
+    const lo = merchant.toLowerCase();
+    for (const r of ICON_RULES) if (r.kw.some(k => lo.includes(k))) return r.icon;
+    return '💸';
+  },
+
+  toast(msg, dur=2200) {
+    const el = document.getElementById('toast');
+    el.textContent = msg;
+    el.classList.add('show');
+    clearTimeout(el._t);
+    el._t = setTimeout(() => el.classList.remove('show'), dur);
+  },
+
+  modal(title, body, buttons) {
+    document.getElementById('mTitle').textContent = title;
+    document.getElementById('mBody').innerHTML = body;
+    document.getElementById('mBtns').innerHTML = buttons.map((b,i) => `<button class="mb ${b.cls}" id="mb${i}">${b.label}</button>`).join('');
+    buttons.forEach((b,i) => { document.getElementById(`mb${i}`).onclick = b.action; });
+    document.getElementById('modal').classList.add('show');
+  },
+
+  closeModal() { document.getElementById('modal').classList.remove('show'); },
+
+  toggleEye(inputId, eyeId) {
+    const inp = document.getElementById(inputId);
+    const eye = document.getElementById(eyeId);
+    inp.type = inp.type === 'password' ? 'text' : 'password';
+    eye.textContent = inp.type === 'password' ? '👁' : '🙈';
+  },
+
+  showLayer(id) {
+    ['layer-splash','layer-lock','layer-onboarding','layer-app'].forEach(l => {
+      const el = document.getElementById(l);
+      el.classList.toggle('visible', el.id === id);
+    });
+  },
+};
+
+// ── SUMMARY ───────────────────────────────────────────────────────
+function calcSummary() {
+  const s = { total:0 };
+  Object.keys(BUCKETS).forEach(k => s[k] = 0);
+  (STATE.data?.transactions || []).forEach(t => {
+    if (t.bucket && BUCKETS[t.bucket]) {
+      s[t.bucket] += t.amount;
+      s.total += t.amount;
+    }
+  });
+  return s;
+}
+
+function pendingCount() {
+  return (STATE.data?.transactions || []).filter(t => !t.bucket).length;
+}
+
+// ── MAIN APP ───────────────────────────────────────────────────────
+const APP = {
+
+  // ── BOOT ──
+  async boot() {
+    // Register service worker
+    if ('serviceWorker' in navigator) {
+      const blob = new Blob([SW_CODE], { type: 'application/javascript' });
+      const swUrl = URL.createObjectURL(blob);
+      navigator.serviceWorker.register(swUrl).catch(() => {});
+    }
+
+    // Install banner
+    window.addEventListener('beforeinstallprompt', e => {
+      e.preventDefault();
+      STATE.deferredInstall = e;
+      document.getElementById('install-banner').classList.add('show');
+    });
+    document.getElementById('installBtn').onclick = () => {
+      if (STATE.deferredInstall) {
+        STATE.deferredInstall.prompt();
+        STATE.deferredInstall.userChoice.then(() => {
+          document.getElementById('install-banner').classList.remove('show');
+        });
+      }
+    };
+
+    // Load from localStorage
+    const saved = DB.load();
+
+    setTimeout(() => {
+      if (!saved) {
+        // Brand new — show onboarding
+        this._buildRoles();
+        UI.showLayer('layer-onboarding');
+      } else if (saved.passwordHash) {
+        // Has password — show lock
+        STATE.data = saved;
+        UI.showLayer('layer-lock');
+        document.getElementById('lockPw').focus();
+      } else {
+        // No password (shouldn't happen normally)
+        STATE.data = saved;
+        this.launch();
+      }
+    }, 1400);
+  },
+
+  // ── UNLOCK ──
+  unlock() {
+    const pw = document.getElementById('lockPw').value.trim();
+    if (!pw) return;
+    if (md5(pw) === STATE.data.passwordHash) {
+      STATE.unlocked = true;
+      document.getElementById('lockErr').textContent = '';
+      this.launch();
+    } else {
+      document.getElementById('lockErr').textContent = 'Wrong password. Try again.';
+      document.getElementById('lockPw').value = '';
+      document.getElementById('lockPw').focus();
+      setTimeout(() => document.getElementById('lockErr').textContent = '', 2500);
+    }
+  },
+
+  // ── ONBOARDING ──
+  _buildRoles() {
+    document.getElementById('obRoles').innerHTML = Object.entries(ROLES).map(([k,r]) => `
+      <div class="role-card" data-role="${k}" onclick="APP.obRole('${k}')">
+        <span class="role-emoji">${r.icon}</span>
+        <span class="role-name">${r.label}</span>
+        <div class="role-check">✓</div>
+      </div>
+    `).join('');
+  },
+
+  obRole(key) {
+    STATE.obRole = key;
+    document.querySelectorAll('.role-card').forEach(el =>
+      el.classList.toggle('selected', el.dataset.role === key)
+    );
+    this.obValidate();
+  },
+
+  obValidate() {
+    const name = document.getElementById('obName')?.value?.trim() || '';
+    const pw1  = document.getElementById('obPw1')?.value  || '';
+    const pw2  = document.getElementById('obPw2')?.value  || '';
+    const cta  = document.getElementById('obCta');
+    const err  = document.getElementById('obPwErr');
+    let ok = name.length > 1 && STATE.obRole && pw1.length >= 4;
+    if (pw1 && pw2 && pw1 !== pw2) { err.textContent = 'Passwords do not match'; ok = false; }
+    else if (pw1 && pw1.length < 4) { err.textContent = 'Password must be at least 4 characters'; ok = false; }
+    else err.textContent = '';
+    if (cta) { cta.disabled = !ok; cta.style.opacity = ok ? '1' : '.35'; }
+  },
+
+  async startJourney() {
+    const name  = document.getElementById('obName').value.trim();
+    const pw    = document.getElementById('obPw1').value;
+    const role  = ROLES[STATE.obRole];
+    const firstName = name.split(' ')[0];
+    const defaultQuote = `${role.icon} Every rupee has a story, ${firstName}. Make yours count.`;
+
+    const data = DB.empty();
+    data.passwordHash = md5(pw);
+    data.profile = {
+      name,
+      role:  STATE.obRole,
+      photo: STATE.obPhoto || null,
+      dob:   document.getElementById('obDob').value.trim(),
+      city:  document.getElementById('obCity').value.trim(),
+      quote: document.getElementById('obQuote').value.trim() || defaultQuote,
+    };
+    data.limits = { ...role.limits };
+
+    STATE.data = data;
+    DB.save(data);
+
+    // Offer to save the file right away
+    this._promptFirstSave();
+    this.launch();
+  },
+
+  _promptFirstSave() {
+    UI.modal(
+      '🎉 Welcome to Spend-na!',
+      'Your data is saved on this device. For extra safety, download your data file and keep it in your Files or Google Drive. You can always import it back.',
+      [
+        { label:'Save my data file', cls:'mb-primary', action:() => { UI.closeModal(); DB.exportFile(STATE.data); UI.toast('Data file saved!'); } },
+        { label:'I\'ll do it later', cls:'mb-cancel', action:() => UI.closeModal() },
+      ]
+    );
+  },
+
+  // ── LAUNCH ──
+  launch() {
+    UI.showLayer('layer-app');
+    this.goTab('home');
+    this._updateSaveBar();
+  },
+
+  // ── SAVE INDICATOR ──
+  markUnsaved() {
+    STATE.unsaved = true;
+    localStorage.setItem(LS_UNSAVED, '1');
+    this._updateSaveBar();
+  },
+
+  _updateSaveBar() {
+    const bar = document.getElementById('saveBar');
+    if (bar) bar.style.display = STATE.unsaved ? 'flex' : 'none';
+  },
+
+  saveToFile() {
+    DB.exportFile(STATE.data);
+    STATE.unsaved = false;
+    localStorage.removeItem(LS_UNSAVED);
+    this._updateSaveBar();
+    UI.toast('Data file saved to your device!');
+  },
+
+  // ── PHOTO PICKER ──
+  pickPhoto(ctx) {
+    const inp = document.createElement('input');
+    inp.type = 'file'; inp.accept = 'image/*';
+    inp.onchange = (e) => {
+      const file = e.target.files[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = (ev) => {
+        const uri = ev.target.result;
+        if (ctx === 'ob') {
+          STATE.obPhoto = uri;
+          const ring = document.getElementById('obPhotoRing');
+          ring.classList.add('has-photo');
+          ring.innerHTML = `<img src="${uri}" style="width:100%;height:100%;object-fit:cover;border-radius:26px">`;
+        } else {
+          STATE.data.profile.photo = uri;
+          DB.save(STATE.data);
+          this.markUnsaved();
+          this._refreshTopbar();
+        }
+      };
+      reader.readAsDataURL(file);
+    };
+    inp.click();
+  },
+
+  // ── TOPBAR ──
+  _refreshTopbar() {
+    const p = STATE.data.profile;
+    const h = new Date().getHours();
+    const greet = h < 12 ? 'Good Morning' : h < 17 ? 'Good Afternoon' : 'Good Evening';
+    const firstName = p.name.split(' ')[0] || 'Friend';
+    const role = ROLES[p.role] || ROLES.working;
+    document.getElementById('topGreeting').textContent = greet;
+    document.getElementById('topName').textContent = firstName;
+    document.getElementById('topRole').textContent = `${role.icon} ${role.label}`;
+    document.getElementById('topQuote').textContent = p.quote || 'Every rupee has a story. Make yours count today.';
+    const av = document.getElementById('topAvatar');
+    av.innerHTML = UI.avatar(p, 48);
+  },
+
+  goSettings() { this.goTab('settings'); },
+
+  // ── NAVIGATION ──
+  goTab(tab) {
+    STATE.currentTab = tab;
+
+    // Topbar visibility
+    document.getElementById('topbar').style.display = tab === 'home' ? 'block' : 'none';
+
+    // Tab bar visibility
+    const showTabBar = ['home','sort','month','history','add'].includes(tab);
+    document.getElementById('tabbar').style.display = showTabBar ? 'flex' : 'none';
+
+    // Screen switch
+    document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+    const screenMap = { home:'s-home', sort:'s-sort', month:'s-month', history:'s-history', add:'s-add', limits:'s-limits', settings:'s-settings', slice:'s-slice' };
+    const el = document.getElementById(screenMap[tab] || 's-home');
+    if (el) { el.classList.add('active'); }
+
+    // Tab highlight
+    document.querySelectorAll('.tab').forEach(t => t.classList.toggle('active', t.dataset.tab === tab));
+
+    // Render
+    const fn = `render_${tab}`;
+    if (this[fn]) this[fn]();
+  },
+
+  // ── HOME ──
+  render_home() {
+    this._refreshTopbar();
+    const summary = calcSummary();
+    const pending = pendingCount();
+    const limits  = STATE.data.limits;
+
+    // Summary hero
+    const summaryEl = document.getElementById('homeSummary');
+    if (summary.total > 0) {
+      summaryEl.innerHTML = `
+        <div class="total-pill">
+          <div class="total-label">This Month</div>
+          <div class="total-val">${UI.fmtFull(summary.total)}</div>
+        </div>
+      `;
+    } else {
+      summaryEl.innerHTML = '';
+    }
+
+    // Sort badge
+    const badge = document.getElementById('sortBadge');
+    if (pending > 0) { badge.style.display = 'flex'; document.getElementById('sortBadgeN').textContent = pending; }
+    else badge.style.display = 'none';
+
+    // Body
+    const bodyEl = document.getElementById('homeBody');
+    bodyEl.innerHTML = `
+      ${pending > 0 ? `
+        <button class="pending-card" onclick="APP.goTab('sort')">
+          <div class="pending-pulse"></div>
+          <div class="pending-info">
+            <div class="pending-title">${pending} spend${pending>1?'s':''} waiting to be sorted</div>
+            <div class="pending-sub">Tap to classify them into buckets</div>
+          </div>
+          <div class="pending-arrow">›</div>
+        </button>
+      ` : ''}
+      <div class="section-row">
+        <div class="section-label">THIS MONTH</div>
+        <button class="section-link" onclick="APP.goTab('limits')">Limits ›</button>
+      </div>
+      <div class="bucket-grid">
+        ${Object.entries(BUCKETS).map(([k,cfg]) => {
+          const amt   = summary[k] || 0;
+          const limit = limits[k]  || 0;
+          const isOver = limit > 0 && amt > limit;
+          const isNear = limit > 0 && amt >= limit * .8 && !isOver;
+          const pct  = limit > 0 ? Math.min((amt / limit) * 100, 100) : 0;
+          const col  = isOver ? '#ef4444' : isNear ? '#f59e0b' : cfg.color;
+          return `
+            <div class="b-card${isOver?' over':''}" onclick="APP.goTab('month')">
+              <div class="b-card-accent" style="background:${col}"></div>
+              <div class="b-card-body">
+                <div class="b-icon" style="background:${cfg.light};color:${cfg.color};border-color:${cfg.mid}">${cfg.glyph}</div>
+                <div class="b-amount" style="color:${col}">${UI.fmt(amt)}</div>
+                <div class="b-name">${cfg.label}</div>
+                ${isOver?`<div class="b-status" style="color:var(--danger)">Over limit</div>`:''}
+                ${isNear?`<div class="b-status" style="color:var(--warning)">Near limit</div>`:''}
+                ${limit>0?`<div class="b-progress" style="background:${cfg.light}"><div class="b-progress-fill" style="background:${col};width:${pct}%"></div></div>`:''}
+              </div>
+            </div>
+          `;
+        }).join('')}
+      </div>
+
+      <div class="section-row" style="margin-top:4px">
+        <div class="section-label">MY DATA</div>
+        <button class="section-link" onclick="APP.goTab('history')">All history ›</button>
+      </div>
+      <div class="data-card" onclick="APP.saveToFile()">
+        <div class="data-card-icon" style="background:var(--teal-l)">💾</div>
+        <div class="data-card-info">
+          <div class="data-card-title">Save my data file</div>
+          <div class="data-card-sub">Downloads JSON to your device • Last: ${STATE.data.lastSaved ? new Date(STATE.data.lastSaved).toLocaleDateString('en-IN',{day:'2-digit',month:'short',hour:'2-digit',minute:'2-digit'}) : 'Never'}</div>
+        </div>
+        <div class="data-card-action">↓</div>
+      </div>
+      <div class="data-card" onclick="APP.loadFromFile()">
+        <div class="data-card-icon" style="background:var(--nec-l)">📂</div>
+        <div class="data-card-info">
+          <div class="data-card-title">Load from my file</div>
+          <div class="data-card-sub">Restore or merge from a saved JSON file</div>
+        </div>
+        <div class="data-card-action">↑</div>
+      </div>
+
+      <div class="footer-strip">
+        <div class="footer-text" style="color:var(--mist)">🔒 All data stays only on your device</div>
+        <a href="http://www.hakki.in" target="_blank" class="footer-link">© Sandeep Hakki · hakki.in · 2026</a>
+      </div>
+    `;
+  },
+
+  // ── LOAD FROM FILE ──
+  async loadFromFile() {
+    const data = await DB.importFile();
+    if (!data) { UI.toast('No file selected or invalid file'); return; }
+    UI.modal(
+      'Load data file?',
+      `Found ${data.transactions.length} transactions from ${data.exportedAt ? new Date(data.exportedAt).toLocaleDateString('en-IN') : 'unknown date'}. This will merge with your current data.`,
+      [
+        { label:'Cancel', cls:'mb-cancel', action:() => UI.closeModal() },
+        { label:'Merge & Load', cls:'mb-primary', action:() => {
+          // Merge transactions (no duplicates by ID)
+          const map = new Map();
+          [...STATE.data.transactions, ...data.transactions].forEach(t => { if (!map.has(t.id)) map.set(t.id, t); });
+          STATE.data.transactions = Array.from(map.values()).sort((a,b) => new Date(b.timestamp) - new Date(a.timestamp));
+          // Merge profile if current is empty
+          if (!STATE.data.profile.name && data.profile?.name) STATE.data.profile = data.profile;
+          DB.save(STATE.data);
+          UI.closeModal();
+          this.render_home();
+          UI.toast(`${STATE.data.transactions.length} transactions loaded ✓`);
+        }},
+      ]
+    );
+  },
+
+  // ── SORT ──
+  render_sort() {
+    const unsorted = (STATE.data.transactions || []).filter(t => !t.bucket);
+    document.getElementById('sortRing').textContent = unsorted.length;
+    document.getElementById('sortSubtitle').textContent = `${unsorted.length} waiting to be sorted`;
+
+    const listEl  = document.getElementById('sortList');
+    const emptyEl = document.getElementById('sortEmpty');
+
+    if (unsorted.length === 0) {
+      listEl.style.display    = 'none';
+      emptyEl.style.display   = 'flex';
+      return;
+    }
+    emptyEl.style.display  = 'none';
+    listEl.style.display   = 'block';
+
+    listEl.innerHTML = unsorted.map(t => `
+      <div class="txn-card fade-up" id="tc_${t.id}">
+        <div class="txn-top">
+          <div class="txn-icon">${UI.icon(t.merchant)}</div>
+          <div style="flex:1;min-width:0">
+            <div class="txn-merchant">${UI.esc(t.merchant)}</div>
+            <div class="txn-meta">${t.date} · ${t.time} · ✍️ Manual</div>
+          </div>
+          <div class="txn-amount">${UI.fmtFull(t.amount)}</div>
+        </div>
+        <div class="bucket-picker">
+          ${Object.entries(BUCKETS).map(([k,cfg]) => `
+            <button class="pick-btn" style="border-color:${cfg.light};background:${cfg.light}" onclick="APP.classify('${t.id}','${k}')">
+              <div class="pick-icon" style="background:${cfg.light};color:${cfg.color};border-color:${cfg.mid}">${cfg.glyph}</div>
+              <span class="pick-label" style="color:${cfg.color}">${cfg.label}</span>
+            </button>
+          `).join('')}
+        </div>
+        <div class="txn-del">
+          <button class="txn-del-btn" onclick="APP.deleteTxn('${t.id}')">Delete</button>
+        </div>
+      </div>
+    `).join('');
+  },
+
+  classify(id, bucket) {
+    STATE.data.transactions = STATE.data.transactions.map(t => t.id === id ? {...t, bucket} : t);
+    DB.save(STATE.data);
+    this.markUnsaved();
+    const card = document.getElementById(`tc_${id}`);
+    if (card) {
+      card.style.transition = 'all .3s ease';
+      card.style.opacity = '0';
+      card.style.transform = 'translateX(50px)';
+      setTimeout(() => this.render_sort(), 320);
+    }
+    const pending = pendingCount();
+    const badge = document.getElementById('sortBadge');
+    if (pending > 0) { badge.style.display = 'flex'; document.getElementById('sortBadgeN').textContent = pending; }
+    else badge.style.display = 'none';
+    UI.toast(`→ ${BUCKETS[bucket].label} ${BUCKETS[bucket].glyph}`);
+  },
+
+  deleteTxn(id) {
+    UI.modal('Delete transaction?', 'This cannot be undone.', [
+      { label:'Cancel', cls:'mb-cancel', action:() => UI.closeModal() },
+      { label:'Delete', cls:'mb-danger', action:() => {
+        STATE.data.transactions = STATE.data.transactions.filter(t => t.id !== id);
+        DB.save(STATE.data);
+        this.markUnsaved();
+        UI.closeModal();
+        this.render_sort();
+        UI.toast('Deleted');
+      }},
+    ]);
+  },
+
+  // ── MY MONTH ──
+  render_month() {
+    const summary = calcSummary();
+    const total   = summary.total;
+    const month   = new Date().toLocaleDateString('en-IN', { month:'long', year:'numeric' });
+    document.getElementById('monthSub').textContent = month;
+
+    const bodyEl = document.getElementById('monthBody');
+
+    if (total === 0) {
+      bodyEl.innerHTML = `
+        <div style="display:flex;flex-direction:column;align-items:center;justify-content:center;padding:60px 24px;text-align:center">
+          <div style="font-size:48px;margin-bottom:16px">📊</div>
+          <div style="font-family:var(--font-head);font-size:22px;font-weight:800;color:var(--ink);margin-bottom:8px">Nothing sorted yet</div>
+          <div style="font-size:14px;color:var(--slate);margin-bottom:28px;line-height:1.6">Add and sort your spends<br>to see your monthly picture.</div>
+          <button onclick="APP.goTab('add')" style="background:var(--teal);border:none;border-radius:var(--r-md);padding:13px 28px;font-size:14px;font-weight:700;color:var(--ink);cursor:pointer">Add a spend ›</button>
+        </div>
+      `;
+      return;
+    }
+
+    // Weekly breakdown
+    const txns = STATE.data.transactions.filter(t => t.bucket);
+    const weeks = { W1:{}, W2:{}, W3:{}, W4:{} };
+    txns.forEach(t => {
+      const day = parseInt(t.date) || 1;
+      const wk  = day <= 7 ? 'W1' : day <= 14 ? 'W2' : day <= 21 ? 'W3' : 'W4';
+      weeks[wk][t.bucket] = (weeks[wk][t.bucket] || 0) + t.amount;
+    });
+    const weekMax = Math.max(...Object.values(weeks).map(w => Object.values(w).reduce((a,b)=>a+b,0)), 1);
+
+    bodyEl.innerHTML = `
+      <div class="month-hero">
+        <div class="month-total-card">
+          <div>
+            <div class="month-total-label">Total this month</div>
+            <div class="month-total-val">${UI.fmtFull(total)}</div>
+          </div>
+        </div>
+        <div class="bar-strip" style="margin-top:16px">
+          ${Object.entries(BUCKETS).filter(([k]) => summary[k] > 0).map(([k,cfg]) =>
+            `<div class="bar-seg" style="flex:${summary[k]};background:${cfg.color}"></div>`
+          ).join('')}
+        </div>
+        <div class="legend-wrap" style="margin-top:10px">
+          ${Object.entries(BUCKETS).filter(([k]) => summary[k] > 0).map(([k,cfg]) => {
+            const pct = Math.round((summary[k]/total)*100);
+            return `<div style="display:flex;align-items:center;gap:6px">
+              <div class="legend-dot" style="background:${cfg.color}"></div>
+              <div class="legend-lbl">${cfg.label} ${pct}%</div>
+            </div>`;
+          }).join('')}
+        </div>
+      </div>
+      <div class="month-body">
+        <div class="weekly-card">
+          <div class="weekly-title">Week by Week</div>
+          <div class="week-bars">
+            ${Object.entries(weeks).map(([wk, data]) => {
+              const wkTotal = Object.values(data).reduce((a,b)=>a+b,0);
+              const barH    = weekMax > 0 ? (wkTotal / weekMax) * 80 : 0;
+              return `
+                <div class="week-col">
+                  <div class="week-val">${wkTotal > 0 ? Math.round(wkTotal/1000)+'k' : ''}</div>
+                  <div class="week-bar-wrap">
+                    <div class="week-bar-inner" style="height:${Math.max(barH,4)}px">
+                      ${Object.entries(BUCKETS).map(([bk,cfg]) => {
+                        const bAmt = data[bk] || 0;
+                        const bH   = wkTotal > 0 ? (bAmt / wkTotal) * Math.max(barH,4) : 0;
+                        return bAmt > 0 ? `<div style="height:${bH}px;background:${cfg.color}"></div>` : '';
+                      }).join('')}
+                    </div>
+                  </div>
+                  <div class="week-lbl">${wk}</div>
+                </div>
+              `;
+            }).join('')}
+          </div>
+        </div>
+
+        ${Object.entries(BUCKETS).map(([k,cfg]) => {
+          const amt  = summary[k] || 0;
+          const pct  = total > 0 ? Math.round((amt/total)*100) : 0;
+          const limit = STATE.data.limits[k] || 0;
+          const isOver = limit > 0 && amt > limit;
+          return `
+            <div class="bucket-row" style="border-left-color:${cfg.color}" onclick="APP.showSlice('${k}')">
+              <div class="b-icon" style="background:${cfg.light};color:${cfg.color};border-color:${cfg.mid};width:44px;height:44px;flex-shrink:0">${cfg.glyph}</div>
+              <div class="br-info">
+                <div class="br-name">${cfg.label}</div>
+                <div class="br-bar"><div class="br-bar-fill" style="background:${isOver?'var(--danger)':cfg.color};width:${pct}%"></div></div>
+                <div class="br-tag">${cfg.tag}</div>
+              </div>
+              <div class="br-right">
+                <div class="br-amount" style="color:${isOver?'var(--danger)':cfg.color}">${UI.fmtFull(amt)}</div>
+                <div class="br-pct">${pct}%</div>
+              </div>
+              <div class="br-chevron">›</div>
+            </div>
+          `;
+        }).join('')}
+      </div>
+    `;
+  },
+
+  showSlice(bucket) {
+    STATE.sliceBucket = bucket;
+    this.goTab('slice');
+  },
+
+  render_slice() {
+    const k   = STATE.sliceBucket;
+    const cfg = BUCKETS[k];
+    if (!cfg) { this.goTab('month'); return; }
+    const summary = calcSummary();
+    const total   = summary.total;
+    const amt     = summary[k] || 0;
+    const pct     = total > 0 ? Math.round((amt/total)*100) : 0;
+    const month   = new Date().toLocaleDateString('en-IN',{month:'long',year:'numeric'});
+    document.getElementById('sliceTitle').textContent = cfg.label;
+
+    const reflections = {
+      luxury:     { yes:'You treated yourself this month. Did it feel worth it?', no:'Maybe next month will be lighter. That awareness is already progress.' },
+      necessary:  { yes:'Your essentials are covered. That\'s what matters most.', no:'Some months cost more. Life is unpredictable.' },
+      committed:  { yes:'Your obligations are fully met. That\'s real discipline.', no:'A heavy month for commitments. Watch this next month.' },
+      comfortable:{ yes:'You lived well this month. Balance is a skill.', no:'Small shifts add up. Try one swap next month.' },
+    };
+    const ref = reflections[k];
+
+    const txnsForBucket = (STATE.data.transactions || []).filter(t => t.bucket === k);
+
+    document.getElementById('sliceBody').innerHTML = `
+      <div class="slice-hero">
+        <div class="slice-ring" style="border-color:${cfg.color}">
+          <div class="ring-pct" style="color:${cfg.color}">${pct}%</div>
+          <div class="ring-sub">of total</div>
+        </div>
+        <div class="slice-amount">${UI.fmtFull(amt)}</div>
+        <div class="slice-period">${cfg.label} · ${month}</div>
+      </div>
+      <div class="slice-body">
+        <div class="yn-card" id="ynCard">
+          <div class="yn-q">Was this a good month?</div>
+          <div class="yn-hint">Be honest. No judgment here.</div>
+          <div class="yn-btns">
+            <button class="yn-btn" style="background:var(--nec)" onclick="APP.ynAnswer(true,'${UI.esc(ref.yes)}')">
+              <span class="yn-emoji">🙂</span>Yes
+            </button>
+            <button class="yn-btn" style="background:var(--slate)" onclick="APP.ynAnswer(false,'${UI.esc(ref.no)}')">
+              <span class="yn-emoji">😕</span>No
+            </button>
+          </div>
+        </div>
+        <div style="margin-top:20px">
+          <div style="font-size:10px;font-weight:700;color:var(--slate);letter-spacing:2.5px;margin-bottom:12px">TRANSACTIONS (${txnsForBucket.length})</div>
+          ${txnsForBucket.length === 0 ? '<div style="font-size:14px;color:var(--slate);text-align:center;padding:20px">None this month</div>' :
+            txnsForBucket.map(t => `
+              <div style="background:var(--white);border-radius:var(--r-md);padding:12px;display:flex;align-items:center;gap:10px;margin-bottom:8px;border:1px solid var(--fog)">
+                <div style="font-size:20px">${UI.icon(t.merchant)}</div>
+                <div style="flex:1;min-width:0">
+                  <div style="font-size:13px;font-weight:700;color:var(--ink);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${UI.esc(t.merchant)}</div>
+                  <div style="font-size:10px;color:var(--mist)">${t.date}</div>
+                </div>
+                <div style="font-family:var(--font-head);font-size:15px;font-weight:800;color:${cfg.color}">${UI.fmtFull(t.amount)}</div>
+              </div>
+            `).join('')
+          }
+        </div>
+      </div>
+    `;
+  },
+
+  ynAnswer(yes, msg) {
+    const card = document.getElementById('ynCard');
+    card.innerHTML = `
+      <div style="text-align:center">
+        <div style="font-size:40px;margin-bottom:14px">${yes?'🙂':'😕'}</div>
+        <div style="font-size:15px;color:var(--ink);line-height:1.7;font-weight:500">${msg}</div>
+        <button onclick="APP.render_slice()" style="margin-top:20px;font-size:12px;color:var(--teal);font-weight:700;background:none;border:none;cursor:pointer">Change answer</button>
+      </div>
+    `;
+  },
+
+  shareMonth() {
+    const summary = calcSummary();
+    const month   = new Date().toLocaleDateString('en-IN',{month:'long',year:'numeric'});
+    const lines   = Object.entries(BUCKETS).map(([k,cfg]) =>
+      `${cfg.glyph} ${cfg.label}: ${UI.fmtFull(summary[k]||0)} (${summary.total>0?Math.round(((summary[k]||0)/summary.total)*100):0}%)`
+    );
+    const text = [`My Month — ${month}`, `Total: ${UI.fmtFull(summary.total)}`, '', ...lines, '', 'Spend-na · © Sandeep Hakki · hakki.in'].join('\n');
+    if (navigator.share) {
+      navigator.share({ title:`My Month — ${month}`, text }).catch(()=>{});
+    } else {
+      navigator.clipboard.writeText(text).then(() => UI.toast('Copied!')).catch(()=>UI.toast('Share unavailable'));
+    }
+  },
+
+  // ── HISTORY ──
+  render_history() {
+    const all   = STATE.data.transactions || [];
+    const count = all.length;
+    document.getElementById('histCount').textContent = `${count} transaction${count!==1?'s':''}`;
+
+    // Filter pills
+    const pillBar = document.getElementById('filterBar');
+    if (!pillBar.hasChildNodes() || pillBar._filter !== STATE.histFilter) {
+      const pills = [{key:null,label:'All'}, ...Object.entries(BUCKETS).map(([k,v])=>({key:k,label:v.label})), {key:'unsorted',label:'Unsorted'}];
+      pillBar.innerHTML = pills.map(p => {
+        const isOn = STATE.histFilter === p.key;
+        const cfg  = p.key && BUCKETS[p.key];
+        const style = isOn ? (cfg ? `border-color:${cfg.color};background:${cfg.color}` : `border-color:var(--ink);background:var(--ink)`) : '';
+        return `<button class="fpill${isOn?' on':''}" style="${style}" onclick="APP.setHistFilter('${p.key}')">${p.label}</button>`;
+      }).join('');
+      pillBar._filter = STATE.histFilter;
+    }
+
+    const search   = (document.getElementById('histSearch')?.value || '').toLowerCase();
+    const filtered = all.filter(t => {
+      const matchSearch = !search || t.merchant.toLowerCase().includes(search) || String(t.amount).includes(search);
+      const matchFilter = STATE.histFilter == null
+        ? true
+        : STATE.histFilter === 'unsorted' ? !t.bucket : t.bucket === STATE.histFilter;
+      return matchSearch && matchFilter;
+    });
+
+    const grouped = {};
+    filtered.forEach(t => {
+      const key = t.month || 'Unknown';
+      if (!grouped[key]) grouped[key] = [];
+      grouped[key].push(t);
+    });
+
+    const listEl = document.getElementById('histList');
+    if (filtered.length === 0) {
+      listEl.innerHTML = '<div style="text-align:center;padding:48px;font-size:14px;color:var(--slate)">No results</div>';
+      return;
+    }
+
+    listEl.innerHTML = Object.entries(grouped).map(([month, items]) => `
+      <div class="mgrp">
+        <div class="mgrp-hdr">
+          <div class="mgrp-name">${month}</div>
+          <div class="mgrp-total">${UI.fmtFull(items.reduce((s,t)=>s+t.amount,0))}</div>
+        </div>
+        ${items.map(t => {
+          const cfg = t.bucket ? BUCKETS[t.bucket] : null;
+          return `
+            <div class="h-txn" id="ht_${t.id}">
+              <div class="h-txn-row">
+                <div class="h-txn-icon">${UI.icon(t.merchant)}</div>
+                <div class="h-txn-info">
+                  <div class="h-txn-name">${UI.esc(t.merchant)}</div>
+                  <div class="h-txn-date">${t.date} · ${t.time}</div>
+                  ${cfg?`<div class="h-txn-bucket" style="color:${cfg.color}">${cfg.glyph} ${cfg.label}</div>`:`<div class="h-txn-bucket" style="color:var(--mist)">Unsorted</div>`}
+                </div>
+                <div class="h-txn-right">
+                  <div class="h-txn-amount">${UI.fmtFull(t.amount)}</div>
+                  <div class="h-txn-acts">
+                    <button class="h-edit" onclick="APP.toggleHEdit('${t.id}')">Edit</button>
+                    <span style="color:var(--fog)">|</span>
+                    <button class="h-del" onclick="APP.histDelete('${t.id}')">Del</button>
+                  </div>
+                </div>
+              </div>
+              <div class="inline-edit-box" id="he_${t.id}" style="display:none">
+                <div class="ie-label">CHANGE BUCKET</div>
+                <div class="ie-row">
+                  ${Object.entries(BUCKETS).map(([bk,bc]) => {
+                    const isSel = t.bucket === bk;
+                    return `
+                      <button class="ie-btn${isSel?' sel':''}"
+                        style="${isSel?`border-color:${bc.color};background:${bc.light}`:''}"
+                        onclick="APP.histClassify('${t.id}','${bk}')">
+                        <div class="ie-icon" style="background:${bc.light};color:${bc.color};border-color:${bc.mid}">${bc.glyph}</div>
+                        <span class="ie-lbl" style="${isSel?`color:${bc.color};font-weight:800`:''}">${bc.label}</span>
+                      </button>
+                    `;
+                  }).join('')}
+                </div>
+              </div>
+            </div>
+          `;
+        }).join('')}
+      </div>
+    `).join('');
+  },
+
+  setHistFilter(key) {
+    STATE.histFilter = (key === 'null' || !key) ? null : key;
+    document.getElementById('filterBar').innerHTML = '';
+    document.getElementById('filterBar')._filter = null;
+    this.render_history();
+  },
+
+  toggleHEdit(id) {
+    const el = document.getElementById(`he_${id}`);
+    if (el) el.style.display = el.style.display === 'none' ? 'block' : 'none';
+  },
+
+  histClassify(id, bucket) {
+    STATE.data.transactions = STATE.data.transactions.map(t => t.id === id ? {...t, bucket} : t);
+    DB.save(STATE.data);
+    this.markUnsaved();
+    document.getElementById('filterBar').innerHTML = '';
+    this.render_history();
+    UI.toast(`→ ${BUCKETS[bucket].label}`);
+  },
+
+  histDelete(id) {
+    UI.modal('Delete transaction?', 'This cannot be undone.', [
+      { label:'Cancel', cls:'mb-cancel', action:() => UI.closeModal() },
+      { label:'Delete', cls:'mb-danger', action:() => {
+        STATE.data.transactions = STATE.data.transactions.filter(t => t.id !== id);
+        DB.save(STATE.data);
+        this.markUnsaved();
+        UI.closeModal();
+        document.getElementById('filterBar').innerHTML = '';
+        this.render_history();
+        UI.toast('Deleted');
+      }},
+    ]);
+  },
+
+  exportHTML() {
+    const txns  = STATE.data.transactions || [];
+    const total = txns.filter(t=>t.bucket).reduce((s,t)=>s+t.amount,0);
+    const month = new Date().toLocaleDateString('en-IN',{month:'long',year:'numeric'});
+    const summary = calcSummary();
+    const rows = txns.map(t => {
+      const cfg = t.bucket ? BUCKETS[t.bucket] : null;
+      return `<tr><td>${t.date}</td><td><strong>${t.merchant}</strong></td><td style="text-align:right;font-weight:700">₹${t.amount.toLocaleString('en-IN')}</td><td style="text-align:center"><span style="background:${cfg?cfg.light:'#f1f5f9'};color:${cfg?cfg.color:'#94a3b8'};font-size:11px;font-weight:700;padding:3px 8px;border-radius:6px">${cfg?cfg.label:'Unsorted'}</span></td></tr>`;
+    }).join('');
+    const bCards = Object.entries(BUCKETS).map(([k,cfg]) => {
+      const amt = summary[k]||0;
+      const pct = total>0?Math.round((amt/total)*100):0;
+      return `<div style="flex:1;min-width:120px;background:${cfg.light};border-radius:12px;padding:14px"><div style="font-size:10px;color:${cfg.color};font-weight:700;letter-spacing:1px">${cfg.label.toUpperCase()}</div><div style="font-size:20px;font-weight:800;color:${cfg.color};margin-top:6px">₹${amt.toLocaleString('en-IN')}</div><div style="font-size:11px;color:#64748b;margin-top:4px">${pct}%</div></div>`;
+    }).join('');
+    const html = `<!DOCTYPE html><html><head><meta charset="utf-8"><title>Spend-na — ${month}</title><style>body{font-family:-apple-system,sans-serif;background:#f8fafc;margin:0;padding:20px}table{width:100%;border-collapse:collapse}td{padding:10px 12px;border-bottom:1px solid #f1f5f9;font-size:13px;color:#334155}.wrap{max-width:700px;margin:0 auto}</style></head><body><div class="wrap"><div style="background:linear-gradient(135deg,#0a0f1e,#1e2840);border-radius:20px;padding:24px;margin-bottom:20px"><div style="font-size:26px;font-weight:900;color:#06b6d4;font-family:sans-serif">Spend-na</div><div style="font-size:14px;color:#94a3b8;margin-top:4px">Monthly Report — ${month}</div><div style="font-size:38px;font-weight:800;color:#fff;margin-top:16px">₹${total.toLocaleString('en-IN')}</div></div><div style="display:flex;flex-wrap:wrap;gap:12px;margin-bottom:20px">${bCards}</div><div style="background:white;border-radius:16px;overflow:hidden"><div style="padding:16px 20px;border-bottom:1px solid #f1f5f9"><strong style="font-size:15px">All Transactions</strong></div><table><tbody>${rows}</tbody></table></div><div style="text-align:center;padding:24px;color:#94a3b8;font-size:11px">Generated by Spend-na · © Sandeep Hakki · hakki.in · 2026</div></div></body></html>`;
+    const blob = new Blob([html], {type:'text/html'});
+    const url  = URL.createObjectURL(blob);
+    const a    = document.createElement('a'); a.href=url; a.download=`spend-na-${month.replace(' ','-')}.html`; a.click();
+    URL.revokeObjectURL(url);
+    UI.toast('Report exported!');
+  },
+
+  // ── ADD ──
+  render_add() {
+    STATE.addSource = null;
+    STATE.addBucket = null;
+    if (document.getElementById('addAmt')) document.getElementById('addAmt').value = '';
+    if (document.getElementById('addDesc')) document.getElementById('addDesc').value = '';
+
+    document.getElementById('sourceChips').innerHTML = SOURCES.map(s => `
+      <div class="source-chip" data-src="${s.key}" onclick="APP.selSource('${s.key}')">
+        <div class="source-chip-icon">${s.icon}</div>
+        <div class="source-chip-label">${s.label}</div>
+      </div>
+    `).join('');
+
+    document.getElementById('bucketOpts').innerHTML = Object.entries(BUCKETS).map(([k,cfg]) => `
+      <div class="bucket-opt" data-bkt="${k}" onclick="APP.selBucket('${k}')">
+        <div class="b-icon" style="background:${cfg.light};color:${cfg.color};border-color:${cfg.mid}">${cfg.glyph}</div>
+        <div class="bucket-opt-name">${cfg.label}</div>
+        <div class="bucket-opt-desc">${cfg.tag}</div>
+        <div class="bucket-opt-badge" style="background:${cfg.color}">✓</div>
+      </div>
+    `).join('');
+
+    this.validateAdd();
+  },
+
+  selSource(key) {
+    STATE.addSource = key;
+    document.querySelectorAll('.source-chip').forEach(el => el.classList.toggle('sel', el.dataset.src === key));
+    this.validateAdd();
+  },
+
+  selBucket(key) {
+    STATE.addBucket = key;
+    document.querySelectorAll('.bucket-opt').forEach(el => {
+      const k   = el.dataset.bkt;
+      const cfg = BUCKETS[k];
+      const on  = k === key;
+      el.classList.toggle('sel', on);
+      el.style.borderColor = on ? cfg.color : 'var(--fog)';
+      el.style.background  = on ? cfg.light : 'var(--white)';
+      el.querySelector('.bucket-opt-name').style.color = on ? cfg.color : 'var(--slate)';
+    });
+    this.validateAdd();
+  },
+
+  validateAdd() {
+    const amt = parseFloat(document.getElementById('addAmt')?.value || '0');
+    const ok  = amt > 0 && STATE.addSource && STATE.addBucket;
+    const btn = document.getElementById('addSaveBtn');
+    if (btn) { btn.disabled = !ok; btn.style.opacity = ok ? '1' : '.3'; }
+  },
+
+  saveManual() {
+    const amt  = parseFloat(document.getElementById('addAmt').value);
+    const desc = document.getElementById('addDesc').value.trim();
+    if (!amt || amt <= 0 || !STATE.addSource || !STATE.addBucket) return;
+    const now = new Date();
+    const txn = {
+      id:        `t_${Date.now()}_${Math.random().toString(36).slice(2,7)}`,
+      timestamp: now.toISOString(),
+      date:      now.toLocaleDateString('en-IN',{day:'2-digit',month:'short'}),
+      time:      now.toLocaleTimeString('en-IN',{hour:'2-digit',minute:'2-digit'}),
+      month:     now.toLocaleDateString('en-IN',{month:'short',year:'numeric'}),
+      merchant:  desc || 'Manual Entry',
+      amount:    amt,
+      bucket:    STATE.addBucket,
+      source:    STATE.addSource,
+    };
+    STATE.data.transactions = [txn, ...(STATE.data.transactions || [])];
+    DB.save(STATE.data);
+    this.markUnsaved();
+    UI.toast(`₹${amt.toLocaleString('en-IN')} → ${BUCKETS[STATE.addBucket].label}`);
+    this.goTab('home');
+  },
+
+  // ── LIMITS ──
+  render_limits() {
+    STATE.addLimitVals = { ...STATE.data.limits };
+    const summary = calcSummary();
+    document.getElementById('limitsBody').innerHTML = Object.entries(BUCKETS).map(([k,cfg]) => {
+      const amt   = summary[k] || 0;
+      const limit = STATE.addLimitVals[k] || 0;
+      const isOver = limit > 0 && amt > limit;
+      const isNear = limit > 0 && amt >= limit * .8 && !isOver;
+      const pct   = limit > 0 ? Math.min((amt/limit)*100,100) : 0;
+      const col   = isOver ? 'var(--danger)' : isNear ? 'var(--warning)' : cfg.color;
+      return `
+        <div class="limit-card" style="border-left-color:${cfg.color}">
+          <div class="lc-hdr">
+            <div class="b-icon" style="background:${cfg.light};color:${cfg.color};border-color:${cfg.mid};width:38px;height:38px;flex-shrink:0">${cfg.glyph}</div>
+            <div class="lc-info">
+              <div class="lc-name">${cfg.label}</div>
+              <div class="lc-tag">${cfg.tag}</div>
+            </div>
+            ${isOver?`<span class="lc-status" style="color:var(--danger)">OVER</span>`:''}
+            ${isNear?`<span class="lc-status" style="color:var(--warning)">NEAR</span>`:''}
+          </div>
+          <div class="lc-input-row">
+            <span class="lc-sym">₹</span>
+            <input class="lc-input" id="lim_${k}" type="number" value="${limit}"
+              style="color:${col};border-color:${isOver?'var(--danger)':isNear?'var(--warning)':'var(--fog)'}"
+              oninput="STATE.addLimitVals['${k}']=parseFloat(this.value)||0">
+          </div>
+          ${limit>0?`
+            <div class="lc-bar" style="background:${cfg.light}"><div class="lc-bar-fill" style="background:${col};width:${pct}%"></div></div>
+            <div class="lc-bar-text">₹${amt.toLocaleString('en-IN')} of ₹${limit.toLocaleString('en-IN')} (${Math.round(pct)}%)</div>
+          `:''}
+          <div class="quick-row">
+            ${[5000,10000,15000,25000,50000].map(v => `
+              <button class="q-btn" style="border-color:${cfg.mid};background:${STATE.addLimitVals[k]===v?cfg.color:cfg.light};color:${STATE.addLimitVals[k]===v?'#fff':cfg.color}"
+                onclick="STATE.addLimitVals['${k}']=${v};document.getElementById('lim_${k}').value=${v};APP.render_limits()">
+                ${v>=1000?v/1000+'k':v}
+              </button>
+            `).join('')}
+          </div>
+        </div>
+      `;
+    }).join('') + `<button onclick="APP.resetLimits()" style="width:100%;background:var(--paper);border:1.5px solid var(--fog);border-radius:var(--r-md);padding:14px;font-size:13px;color:var(--slate);font-weight:600;cursor:pointer;margin-top:4px">Reset to defaults</button>`;
+  },
+
+  saveLimits() {
+    STATE.data.limits = { ...STATE.addLimitVals };
+    DB.save(STATE.data);
+    this.markUnsaved();
+    UI.toast('Limits saved ✓');
+    this.goTab('home');
+  },
+
+  resetLimits() {
+    UI.modal('Reset to defaults?','Restore original limits based on your role?', [
+      { label:'Cancel', cls:'mb-cancel', action:() => UI.closeModal() },
+      { label:'Reset', cls:'mb-secondary', action:() => {
+        STATE.addLimitVals = { ...(ROLES[STATE.data.profile.role||'working'].limits) };
+        UI.closeModal();
+        this.render_limits();
+      }},
+    ]);
+  },
+
+  // ── SETTINGS ──
+  render_settings() {
+    STATE.settingsRole    = STATE.data.profile.role;
+    STATE.settingsToggles = { ...STATE.data.settings };
+    const p = STATE.data.profile;
+
+    document.getElementById('settingsBody').innerHTML = `
+      <!-- PROFILE -->
+      <div class="acc open" id="acc-profile">
+        <div class="acc-hdr" onclick="APP.toggleAcc('acc-profile')">
+          <div class="acc-title">👤 My Profile</div>
+          <div class="acc-toggle">+</div>
+        </div>
+        <div class="acc-body">
+          <div onclick="APP.pickPhoto('settings')" style="display:flex;justify-content:center;margin:16px 0;cursor:pointer">
+            <div style="width:76px;height:76px;border-radius:22px;border:2px solid var(--teal);overflow:hidden;background:var(--teal-d);display:flex;align-items:center;justify-content:center;position:relative" id="settingsAvatar">
+              ${UI.avatar(p,76)}
+            </div>
+          </div>
+          <div class="s-label">NAME</div>
+          <input class="s-input" id="sp-name" type="text" value="${UI.esc(p.name||'')}" placeholder="Your name">
+          <div class="s-label">CITY</div>
+          <input class="s-input" id="sp-city" type="text" value="${UI.esc(p.city||'')}" placeholder="Your city">
+          <div class="s-label">DATE OF BIRTH</div>
+          <input class="s-input" id="sp-dob" type="text" value="${UI.esc(p.dob||'')}" placeholder="DD/MM/YYYY">
+          <div class="s-label">I AM A...</div>
+          ${Object.entries(ROLES).map(([k,r]) => `
+            <div class="s-role${p.role===k?' on':''}" data-role="${k}" onclick="APP.settingsRole('${k}')">
+              <span>${r.icon}</span>
+              <span class="s-role-name">${r.label}</span>
+              ${p.role===k?'<span style="color:var(--teal);font-weight:700">✓</span>':''}
+            </div>
+          `).join('')}
+          <div class="s-label">MY DAILY QUOTE</div>
+          <textarea class="s-input s-textarea" id="sp-quote" placeholder="Something that motivates you...">${UI.esc(p.quote||'')}</textarea>
+        </div>
+      </div>
+
+      <!-- PASSWORD -->
+      <div class="acc" id="acc-pw">
+        <div class="acc-hdr" onclick="APP.toggleAcc('acc-pw')">
+          <div class="acc-title">🔐 Change Password</div>
+          <div class="acc-toggle">+</div>
+        </div>
+        <div class="acc-body">
+          <div class="pw-change-box">
+            <div class="pw-change-title">How to change your password</div>
+            <div class="pw-row">
+              <input class="pw-in" id="pwOld" type="password" placeholder="Current password">
+            </div>
+            <div class="pw-row">
+              <input class="pw-in" id="pwNew1" type="password" placeholder="New password (min 4 chars)">
+              <input class="pw-in" id="pwNew2" type="password" placeholder="Confirm new">
+            </div>
+            <div style="font-size:11px;color:var(--danger);min-height:16px;margin-bottom:8px" id="pwChangeErr"></div>
+            <button class="pw-save-btn" style="width:100%" onclick="APP.changePassword()">Change Password</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- NOTIFICATIONS -->
+      <div class="acc" id="acc-notif">
+        <div class="acc-hdr" onclick="APP.toggleAcc('acc-notif')">
+          <div class="acc-title">🔔 Notifications</div>
+          <div class="acc-toggle">+</div>
+        </div>
+        <div class="acc-body">
+          <div class="toggle-row">
+            <div class="toggle-info"><div class="toggle-label">Morning reminder</div><div class="toggle-sub">Daily nudge to log your spends</div></div>
+            <button class="tgl${STATE.settingsToggles.notifEnabled?' on':''}" id="tgl-notif" onclick="APP.tgl('notifEnabled','tgl-notif')"><div class="tgl-knob"></div></button>
+          </div>
+          <div class="push-future-box">
+            <div class="push-label">FUTURE FEATURE</div>
+            <div class="push-text">Push notifications from the app owner will appear here — tips, reminders, and updates. No marketing. No data collection. Coming soon.</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- DATA -->
+      <div class="acc" id="acc-data">
+        <div class="acc-hdr" onclick="APP.toggleAcc('acc-data')">
+          <div class="acc-title">🗄️ My Data</div>
+          <div class="acc-toggle">+</div>
+        </div>
+        <div class="acc-body" style="padding-top:12px">
+          <button class="act-btn" style="background:var(--teal-l)" onclick="APP.saveToFile()">
+            <span class="act-icon" style="color:var(--teal-d)">↓</span>
+            <div><div class="act-title" style="color:var(--teal-d)">Save my data file</div><div class="act-sub">Downloads JSON to your device</div></div>
+          </button>
+          <button class="act-btn" style="background:var(--paper);border:1.5px solid var(--fog)" onclick="APP.loadFromFile()">
+            <span class="act-icon">↑</span>
+            <div><div class="act-title">Load from file</div><div class="act-sub">Merge from a saved JSON backup</div></div>
+          </button>
+          <button class="share-blank-btn" onclick="APP.shareBlankApp()">
+            🐦 Share Blank App to Someone
+          </button>
+          <button class="act-btn" style="background:var(--lux-l);border:1.5px solid var(--lux-m)" onclick="APP.clearAll()">
+            <span class="act-icon" style="color:var(--danger)">✕</span>
+            <div><div class="act-title" style="color:var(--danger)">Clear all data</div><div class="act-sub">Save your file first!</div></div>
+          </button>
+        </div>
+      </div>
+
+      <!-- HOW IT WORKS -->
+      <div class="acc" id="acc-how">
+        <div class="acc-hdr" onclick="APP.toggleAcc('acc-how')">
+          <div class="acc-title">❓ How It Works</div>
+          <div class="acc-toggle">+</div>
+        </div>
+        <div class="acc-body">
+          ${[
+            ['What is Spend-na?', 'A money mirror, not a budget app. It makes you see clearly where every rupee goes — sorted into 4 honest buckets. No judgement, just clarity.'],
+            ['Where is my data stored?', 'Only on your device. The app stores data in your browser\'s local storage. Download your JSON data file regularly and keep it in your Files or Google Drive. You own it entirely.'],
+            ['How do I move my data to a new phone?', 'Tap "Save my data file" on the old phone. Copy the JSON to your new phone. Open the app on the new phone and tap "Load from file". Done.'],
+            ['What are the 4 buckets?', 'Necessary = survival (food, rent, health). Committed = fixed obligations (EMI, insurance, SIP). Comfortable = lifestyle (shopping, outings). Luxury = splurge (fine dining, impulse buys).'],
+            ['How do I change my password?', 'Settings → Change Password → enter current password → enter new password twice → save. The new hash is stored in your JSON file.'],
+            ['Can I share this app?', 'Yes! Use "Share Blank App" in Data settings. It sends a clean copy with zero personal data. Anyone can install it and start fresh with their own password.'],
+          ].map(([q,a]) => `<div style="padding:14px 0;border-bottom:1px solid var(--fog)"><div style="font-size:14px;font-weight:700;color:var(--ink);margin-bottom:6px">${q}</div><div style="font-size:13px;color:var(--slate);line-height:1.7">${a}</div></div>`).join('')}
+        </div>
+      </div>
+
+      <!-- ABOUT -->
+      <div class="acc" id="acc-about">
+        <div class="acc-hdr" onclick="APP.toggleAcc('acc-about')">
+          <div class="acc-title">🐦 About Spend-na</div>
+          <div class="acc-toggle">+</div>
+        </div>
+        <div class="acc-body">
+          <div class="about-center">
+            <div style="font-size:52px;margin-bottom:12px">🐦</div>
+            <div style="font-family:var(--font-head);font-size:24px;font-weight:900;color:var(--teal);letter-spacing:-0.5px">Spend-na</div>
+            <div style="font-size:12px;color:var(--slate);margin-top:4px">Version 2.0 · PWA · Offline First</div>
+            <div class="about-divider"></div>
+            <div style="font-size:13px;color:var(--ink);line-height:1.8;margin-bottom:10px">Built with ♥ by Sandeep Hakki<br>for every Indian who wants to<br>understand their money honestly.</div>
+            <a href="http://www.hakki.in" target="_blank" style="font-size:13px;font-weight:700;color:var(--teal);display:inline-block;margin-bottom:16px">www.hakki.in</a>
+            <div style="font-size:11px;color:var(--mist);line-height:1.9">© 2026 Sandeep Hakki. All rights reserved.<br>Spend-na is a product of Hakki Consulting.<br>No data is collected. No servers involved.<br>Your privacy is the entire point.</div>
+          </div>
+        </div>
+      </div>
+    `;
+  },
+
+  toggleAcc(id) { document.getElementById(id).classList.toggle('open'); },
+
+  settingsRole(key) {
+    STATE.settingsRole = key;
+    document.querySelectorAll('.s-role').forEach(el => el.classList.toggle('on', el.dataset.role === key));
+  },
+
+  tgl(key, id) {
+    STATE.settingsToggles[key] = !STATE.settingsToggles[key];
+    document.getElementById(id).classList.toggle('on', STATE.settingsToggles[key]);
+  },
+
+  changePassword() {
+    const oldPw  = document.getElementById('pwOld')?.value  || '';
+    const newPw1 = document.getElementById('pwNew1')?.value || '';
+    const newPw2 = document.getElementById('pwNew2')?.value || '';
+    const errEl  = document.getElementById('pwChangeErr');
+    if (md5(oldPw) !== STATE.data.passwordHash) { errEl.textContent = 'Current password is wrong'; return; }
+    if (newPw1.length < 4) { errEl.textContent = 'New password must be at least 4 characters'; return; }
+    if (newPw1 !== newPw2) { errEl.textContent = 'New passwords do not match'; return; }
+    STATE.data.passwordHash = md5(newPw1);
+    DB.save(STATE.data);
+    this.markUnsaved();
+    errEl.textContent = '';
+    if (document.getElementById('pwOld'))  document.getElementById('pwOld').value  = '';
+    if (document.getElementById('pwNew1')) document.getElementById('pwNew1').value = '';
+    if (document.getElementById('pwNew2')) document.getElementById('pwNew2').value = '';
+    UI.toast('Password changed! Save your data file.', 3000);
+    UI.modal('Password Changed!',
+      'Your new password is set. Download your data file now so the new password is saved in your backup.',
+      [
+        { label:'Save data file now', cls:'mb-primary', action:() => { UI.closeModal(); DB.exportFile(STATE.data); UI.toast('Data file saved!'); } },
+        { label:'Later', cls:'mb-cancel', action:() => UI.closeModal() },
+      ]
+    );
+  },
+
+  saveSettings() {
+    const p = STATE.data.profile;
+    p.name  = document.getElementById('sp-name')?.value?.trim()  || p.name;
+    p.city  = document.getElementById('sp-city')?.value?.trim()  || p.city;
+    p.dob   = document.getElementById('sp-dob')?.value?.trim()   || p.dob;
+    p.quote = document.getElementById('sp-quote')?.value?.trim() || p.quote;
+    p.role  = STATE.settingsRole || p.role;
+    STATE.data.settings = { ...STATE.settingsToggles };
+    DB.save(STATE.data);
+    this.markUnsaved();
+    UI.toast('Settings saved ✓');
+    this.goTab('home');
+  },
+
+  shareBlankApp() {
+    UI.modal(
+      '🐦 Share Blank App',
+      'This downloads a clean copy of Spend-na with zero personal data. Share it with anyone — they set their own password and start fresh. Your data stays private.',
+      [
+        { label:'Cancel', cls:'mb-cancel', action:() => UI.closeModal() },
+        { label:'Download blank app', cls:'mb-primary', action:() => {
+          UI.closeModal();
+          fetch(window.location.href)
+            .then(r => r.text())
+            .then(html => {
+              const blob = new Blob([html], {type:'text/html'});
+              const url  = URL.createObjectURL(blob);
+              const a    = document.createElement('a'); a.href=url; a.download='spend-na.html'; a.click();
+              URL.revokeObjectURL(url);
+              UI.toast('Blank app downloaded!');
+            })
+            .catch(() => UI.toast('Save this HTML file and share it directly!'));
+        }},
+      ]
+    );
+  },
+
+  clearAll() {
+    UI.modal('Clear all data?',
+      'This permanently deletes all your transactions and settings. Save your data file first!',
+      [
+        { label:'Save file first', cls:'mb-primary', action:() => { UI.closeModal(); DB.exportFile(STATE.data); } },
+        { label:'Clear everything', cls:'mb-danger', action:() => {
+          localStorage.clear();
+          UI.closeModal();
+          location.reload();
+        }},
+        { label:'Cancel', cls:'mb-cancel', action:() => UI.closeModal() },
+      ]
+    );
+  },
+};
+
+// ── KEYBOARD ──────────────────────────────────────────────────────
+document.addEventListener('keydown', e => {
+  if (e.key === 'Enter' && document.getElementById('layer-lock').classList.contains('visible')) {
+    APP.unlock();
+  }
+});
+
+// ── PREVENT CONTEXT MENU (production feel) ───────────────────────
+document.addEventListener('contextmenu', e => e.preventDefault());
+
+// ── BOOT ──────────────────────────────────────────────────────────
+document.getElementById('layer-splash').classList.add('visible');
+APP.boot();
+</script>
+</body>
+</html>

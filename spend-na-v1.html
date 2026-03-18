@@ -1,0 +1,2040 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Spend-na">
+<meta name="theme-color" content="#080e1d">
+<meta name="description" content="Your money mirror. Every rupee has a story.">
+<title>Spend-na</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800;900&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet">
+
+<style>
+:root {
+  --nec: #059669; --necL: #ecfdf5; --necM: #6ee7b7;
+  --com: #7c3aed; --comL: #f5f3ff; --comM: #c4b5fd;
+  --cft: #d97706; --cftL: #fffbeb; --cftM: #fcd34d;
+  --lux: #e11d48; --luxL: #fff1f2; --luxM: #fda4af;
+  --brand: #06b6d4; --brandD: #0e7490; --brandL: #ecfeff;
+  --dark: #080e1d; --dark2: #111827; --dark3: #1f2937; --darkB: #374151;
+  --bg: #f1f5f9; --card: #ffffff; --cardB: #e2e8f0;
+  --t1: #0f172a; --t2: #334155; --t3: #64748b; --t4: #94a3b8;
+  --white: #ffffff; --warning: #f59e0b; --danger: #dc2626; --success: #10b981;
+  --radius: 16px; --font: 'DM Sans', sans-serif; --font-head: 'Syne', sans-serif;
+  --safe-top: env(safe-area-inset-top, 0px);
+  --safe-bottom: env(safe-area-inset-bottom, 0px);
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+html, body { height: 100%; overflow: hidden; }
+
+body {
+  font-family: var(--font);
+  background: var(--dark);
+  color: var(--t1);
+  overscroll-behavior: none;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+#app {
+  display: flex;
+  flex-direction: column;
+  height: 100dvh;
+  height: 100vh;
+  max-width: 540px;
+  margin: 0 auto;
+  position: relative;
+  overflow: hidden;
+  background: var(--bg);
+}
+
+/* ── SCROLLABLE CONTENT ── */
+.screen { display: none; flex-direction: column; flex: 1; overflow: hidden; }
+.screen.active { display: flex; }
+.scroll-area { flex: 1; overflow-y: auto; -webkit-overflow-scrolling: touch; overscroll-behavior: contain; }
+.scroll-area::-webkit-scrollbar { display: none; }
+
+/* ── TYPOGRAPHY ── */
+h1, h2, h3, .font-head { font-family: var(--font-head); }
+
+/* ── SPLASH ── */
+#splash {
+  position: fixed; inset: 0; z-index: 999;
+  background: var(--dark);
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  gap: 12px;
+  transition: opacity 0.4s ease;
+}
+#splash.hide { opacity: 0; pointer-events: none; }
+.splash-bird { font-size: 56px; animation: birdPulse 1.5s ease-in-out infinite; }
+@keyframes birdPulse { 0%,100%{transform:scale(1) rotate(-5deg)} 50%{transform:scale(1.08) rotate(5deg)} }
+.splash-title { font-family: var(--font-head); font-size: 32px; font-weight: 900; color: var(--brand); letter-spacing: -1px; }
+.splash-sub { font-size: 13px; color: var(--t4); }
+
+/* ── LOCK SCREEN ── */
+#lockScreen {
+  position: fixed; inset: 0; z-index: 990;
+  background: var(--dark);
+  display: none; flex-direction: column; align-items: center; justify-content: center;
+  padding: 32px;
+}
+#lockScreen.visible { display: flex; }
+.lock-bird { font-size: 48px; margin-bottom: 16px; }
+.lock-title { font-family: var(--font-head); font-size: 28px; font-weight: 900; color: var(--white); margin-bottom: 6px; }
+.lock-sub { font-size: 13px; color: var(--t4); margin-bottom: 32px; text-align: center; }
+.lock-input {
+  width: 100%; max-width: 300px; background: var(--dark2); border: 1.5px solid var(--darkB);
+  border-radius: 14px; padding: 14px 16px; font-size: 16px; color: var(--white);
+  font-family: var(--font); text-align: center; letter-spacing: 4px; outline: none; margin-bottom: 12px;
+}
+.lock-input:focus { border-color: var(--brand); }
+.lock-btn {
+  width: 100%; max-width: 300px; background: var(--brand); border: none; border-radius: 14px;
+  padding: 14px; font-size: 15px; font-weight: 700; color: var(--dark); cursor: pointer;
+  font-family: var(--font); transition: transform 0.1s;
+}
+.lock-btn:active { transform: scale(0.97); }
+.lock-err { font-size: 12px; color: var(--danger); margin-top: 8px; min-height: 16px; }
+.lock-hint { font-size: 11px; color: var(--t4); margin-top: 20px; text-align: center; line-height: 1.6; }
+
+/* ── HEADER ── */
+.screen-header {
+  background: var(--card);
+  padding: calc(var(--safe-top) + 12px) 18px 12px;
+  display: flex; align-items: center; gap: 10px;
+  border-bottom: 1px solid var(--cardB);
+  flex-shrink: 0;
+}
+.header-center { flex: 1; text-align: center; }
+.header-title { font-family: var(--font-head); font-size: 17px; font-weight: 800; color: var(--t1); }
+.header-sub { font-size: 11px; color: var(--t4); margin-top: 1px; }
+.header-side { width: 70px; }
+.header-back { font-size: 14px; color: var(--brand); font-weight: 600; background: none; border: none; cursor: pointer; padding: 4px 0; font-family: var(--font); }
+.header-action { font-size: 12px; color: var(--dark); font-weight: 700; background: var(--brand); border: none; border-radius: 12px; padding: 6px 12px; cursor: pointer; font-family: var(--font); white-space: nowrap; }
+
+/* ── BOTTOM TAB BAR ── */
+#tabBar {
+  background: var(--card);
+  display: flex;
+  padding: 10px 0 calc(var(--safe-bottom) + 8px);
+  border-top: 1px solid var(--cardB);
+  box-shadow: 0 -2px 12px rgba(0,0,0,0.06);
+  flex-shrink: 0;
+}
+.tab-item {
+  flex: 1; display: flex; flex-direction: column; align-items: center; gap: 3px;
+  background: none; border: none; cursor: pointer; padding: 0; font-family: var(--font);
+  transition: opacity 0.15s;
+}
+.tab-icon { font-size: 20px; position: relative; opacity: 0.55; transition: opacity 0.15s; }
+.tab-item.active .tab-icon { opacity: 1; }
+.tab-label { font-size: 10px; color: var(--t4); font-weight: 500; }
+.tab-item.active .tab-label { color: var(--brand); font-weight: 700; }
+.tab-add-btn {
+  width: 42px; height: 42px; border-radius: 21px; background: var(--brand);
+  display: flex; align-items: center; justify-content: center;
+  margin-top: -14px; font-size: 22px; color: var(--white); line-height: 1;
+  box-shadow: 0 3px 12px rgba(6,182,212,0.4);
+}
+.tab-badge {
+  position: absolute; top: -4px; right: -6px; min-width: 16px; height: 16px;
+  border-radius: 8px; background: var(--lux); display: flex; align-items: center;
+  justify-content: center; padding: 0 3px;
+}
+.tab-badge span { font-size: 9px; font-weight: 800; color: var(--white); }
+
+/* ── ONBOARDING ── */
+#onboarding {
+  position: fixed; inset: 0; z-index: 980;
+  background: var(--dark);
+  overflow-y: auto; -webkit-overflow-scrolling: touch;
+  display: none;
+}
+#onboarding.visible { display: block; }
+.ob-inner {
+  padding: calc(var(--safe-top) + 24px) 22px calc(var(--safe-bottom) + 40px);
+  max-width: 480px; margin: 0 auto;
+}
+.ob-brand { text-align: center; margin-bottom: 28px; }
+.ob-bird { font-size: 60px; display: block; margin-bottom: 8px; }
+.ob-title { font-family: var(--font-head); font-size: 36px; font-weight: 900; color: var(--brand); letter-spacing: -1px; }
+.ob-tagline { font-size: 13px; color: var(--t4); margin-top: 4px; }
+.ob-photo-wrap { display: flex; justify-content: center; margin-bottom: 22px; position: relative; width: fit-content; margin-left: auto; margin-right: auto; }
+.ob-photo-circle {
+  width: 90px; height: 90px; border-radius: 28px; background: var(--dark2);
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  border: 2px dashed var(--darkB); overflow: hidden; cursor: pointer; font-size: 26px; color: var(--t4);
+  transition: border-color 0.2s;
+}
+.ob-photo-circle.has-photo { border-style: solid; border-color: var(--brand); }
+.ob-photo-circle img { width: 100%; height: 100%; object-fit: cover; }
+.ob-photo-check {
+  position: absolute; bottom: -4px; right: -4px; width: 24px; height: 24px;
+  border-radius: 12px; background: var(--success); display: none; align-items: center;
+  justify-content: center; color: var(--white); font-size: 12px; font-weight: 700;
+}
+.ob-photo-check.visible { display: flex; }
+.ob-label { font-size: 10px; color: var(--t4); letter-spacing: 2px; font-weight: 700; margin-bottom: 8px; }
+.ob-input {
+  width: 100%; background: var(--dark2); border: 1.5px solid var(--darkB);
+  border-radius: 14px; padding: 13px 14px; font-size: 15px; color: var(--white);
+  font-family: var(--font); outline: none; margin-bottom: 18px; transition: border-color 0.2s;
+}
+.ob-input:focus { border-color: var(--brand); }
+.ob-textarea { height: 72px; resize: none; }
+.ob-role-btn {
+  display: flex; align-items: center; gap: 12px; background: var(--dark2);
+  border: 1.5px solid var(--darkB); border-radius: 14px; padding: 14px;
+  cursor: pointer; transition: all 0.15s; margin-bottom: 8px; width: 100%;
+  font-family: var(--font);
+}
+.ob-role-btn.selected { background: var(--brand); border-color: var(--brand); }
+.ob-role-icon { font-size: 18px; }
+.ob-role-name { font-size: 14px; color: var(--white); font-weight: 600; flex: 1; text-align: left; }
+.ob-role-btn.selected .ob-role-name { color: var(--dark); font-weight: 800; }
+.ob-role-check { width: 22px; height: 22px; border-radius: 11px; background: var(--dark); display: none; align-items: center; justify-content: center; font-size: 12px; font-weight: 900; color: var(--brand); }
+.ob-role-btn.selected .ob-role-check { display: flex; }
+.ob-cta {
+  width: 100%; background: var(--brand); border: none; border-radius: 18px;
+  padding: 16px; font-size: 16px; font-weight: 800; color: var(--dark);
+  cursor: pointer; font-family: var(--font-head); margin-top: 8px; transition: all 0.15s;
+}
+.ob-cta:disabled { opacity: 0.35; cursor: default; }
+.ob-cta:not(:disabled):active { transform: scale(0.97); }
+.ob-privacy { font-size: 10px; color: var(--t4); text-align: center; line-height: 1.8; margin-top: 16px; }
+
+/* ── HOME SCREEN ── */
+.home-hero {
+  background: var(--dark);
+  padding: calc(var(--safe-top) + 10px) 18px 28px;
+}
+.home-toprow { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 14px; }
+.home-greeting { font-size: 12px; color: var(--t4); margin-bottom: 2px; }
+.home-name { font-family: var(--font-head); font-size: 26px; font-weight: 800; color: var(--white); letter-spacing: -0.5px; }
+.home-role { font-size: 11px; color: var(--brand); font-weight: 600; margin-top: 2px; }
+.home-settings-btn {
+  width: 44px; height: 44px; border-radius: 22px; background: rgba(255,255,255,0.07);
+  display: flex; align-items: center; justify-content: center; border: none; cursor: pointer;
+  font-size: 17px; color: var(--t3); font-weight: 600;
+  flex-shrink: 0;
+}
+.home-quote-card {
+  background: var(--dark2); border-radius: 20px; padding: 16px;
+  display: flex; align-items: center; gap: 14; border: 1px solid var(--darkB);
+  position: relative; overflow: hidden; gap: 14px;
+}
+.home-quote-bar { width: 24px; height: 3px; background: var(--brand); border-radius: 2px; margin-bottom: 4px; }
+.home-quote-text { font-size: 12px; color: #cbd5e1; font-style: italic; line-height: 1.6; flex: 1; }
+.home-total-strip {
+  background: var(--dark3); border-radius: 14px; padding: 11px 16px;
+  display: flex; justify-content: space-between; align-items: center;
+  border: 1px solid var(--darkB); margin-top: 14px;
+}
+.home-total-label { font-size: 12px; color: var(--t4); }
+.home-total-val { font-family: var(--font-head); font-size: 22px; font-weight: 800; color: var(--brand); }
+.home-content {
+  background: var(--bg); border-radius: 24px 24px 0 0;
+  margin-top: -16px; padding: 22px 18px 12px; flex: 1;
+}
+.home-pending-banner {
+  background: var(--lux); border-radius: 16px; padding: 12px 14px;
+  display: flex; align-items: center; gap: 10; border: none; cursor: pointer;
+  margin-bottom: 14px; width: 100%; font-family: var(--font); gap: 10px;
+}
+.pending-dot { width: 8px; height: 8px; border-radius: 4px; background: rgba(255,255,255,0.5); flex-shrink: 0; animation: pulse 1.5s ease-in-out infinite; }
+@keyframes pulse { 0%,100%{opacity:1}50%{opacity:0.4} }
+.pending-info { flex: 1; text-align: left; }
+.pending-title { font-size: 13px; font-weight: 700; color: var(--white); }
+.pending-sub { font-size: 10px; color: rgba(255,255,255,0.6); margin-top: 1px; }
+.pending-cta { font-size: 14px; font-weight: 700; color: var(--white); }
+.section-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
+.section-label { font-size: 10px; color: var(--t4); letter-spacing: 2.5px; font-weight: 700; }
+.section-link { font-size: 11px; color: var(--brand); font-weight: 700; background: none; border: none; cursor: pointer; font-family: var(--font); }
+.bucket-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 18px; }
+.bucket-card {
+  background: var(--card); border-radius: var(--radius); padding: 12px;
+  border: 1.5px solid var(--cardB); cursor: pointer; position: relative; overflow: hidden;
+  transition: transform 0.1s, box-shadow 0.1s; text-align: left;
+}
+.bucket-card:active { transform: scale(0.97); }
+.bucket-card.over { border-color: var(--danger); }
+.bucket-card-bar { height: 4px; border-radius: 2px; margin: -12px -12px 10px; }
+.bucket-icon { width: 32px; height: 32px; border-radius: 9px; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 900; margin-bottom: 6px; border: 1.5px solid; }
+.bucket-amount { font-family: var(--font-head); font-size: 15px; font-weight: 800; margin-bottom: 2px; }
+.bucket-name { font-size: 10px; color: var(--t3); font-weight: 600; }
+.bucket-status { font-size: 8px; font-weight: 800; margin-top: 4px; }
+.bucket-progress-track { height: 4px; border-radius: 2px; margin-top: 6px; overflow: hidden; }
+.bucket-progress-fill { height: 4px; border-radius: 2px; transition: width 0.5s ease; }
+.action-btn-primary {
+  width: 100%; background: var(--brand); border: none; border-radius: 16px;
+  padding: 15px; font-size: 15px; font-weight: 700; color: var(--dark);
+  cursor: pointer; font-family: var(--font); margin-bottom: 10px; transition: all 0.1s;
+}
+.action-btn-primary:active { transform: scale(0.97); }
+.action-btn-secondary {
+  width: 100%; background: var(--card); border: 2px solid var(--brand);
+  border-radius: 16px; padding: 14px; font-size: 15px; font-weight: 700;
+  color: var(--brand); cursor: pointer; font-family: var(--font); margin-bottom: 18px; transition: all 0.1s;
+}
+.action-btn-secondary:active { transform: scale(0.97); }
+.privacy-footer { background: var(--card); border-radius: 14px; padding: 12px; border: 1px solid var(--cardB); text-align: center; }
+.privacy-text { font-size: 11px; color: var(--t4); }
+.privacy-link { font-size: 9px; color: var(--brand); display: block; margin-top: 4px; text-decoration: none; }
+
+/* ── BUCKET ICONS ── */
+.bi { display: inline-flex; align-items: center; justify-content: center; border-radius: 28%; border: 1.5px solid; font-weight: 900; }
+.bi-nec { background: var(--necL); color: var(--nec); border-color: var(--necM); }
+.bi-com { background: var(--comL); color: var(--com); border-color: var(--comM); }
+.bi-cft { background: var(--cftL); color: var(--cft); border-color: var(--cftM); }
+.bi-lux { background: var(--luxL); color: var(--lux); border-color: var(--luxM); }
+
+/* ── SORT SCREEN ── */
+.sort-header {
+  background: var(--card); padding: calc(var(--safe-top) + 8px) 18px 12px;
+  display: flex; align-items: center; gap: 10px; border-bottom: 1px solid var(--cardB); flex-shrink: 0;
+}
+.sort-count-badge {
+  width: 36px; height: 36px; border-radius: 18px; background: var(--lux);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 13px; font-weight: 800; color: var(--white); flex-shrink: 0;
+}
+.sort-empty { display: flex; flex-direction: column; align-items: center; justify-content: center; flex: 1; padding: 48px 24px; text-align: center; }
+.sort-empty-icon { width: 90px; height: 90px; border-radius: 26px; background: var(--brandL); display: flex; align-items: center; justify-content: center; margin-bottom: 20px; border: 2px solid var(--brand); font-size: 28px; color: var(--brand); font-weight: 900; }
+.txn-card { background: var(--card); border-radius: 18px; padding: 14px; margin-bottom: 10px; border: 1px solid var(--cardB); }
+.txn-row { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
+.merchant-icon {
+  width: 42px; height: 42px; border-radius: 12px; background: var(--bg);
+  display: flex; align-items: center; justify-content: center; font-size: 18px;
+  border: 1px solid var(--cardB); flex-shrink: 0; font-weight: 700;
+}
+.txn-merchant { font-size: 15px; font-weight: 700; color: var(--t1); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.txn-meta { font-size: 11px; color: var(--t4); margin-top: 2px; }
+.txn-amount { font-family: var(--font-head); font-size: 17px; font-weight: 800; color: var(--t1); white-space: nowrap; margin-left: auto; flex-shrink: 0; }
+.sms-preview {
+  font-size: 11px; color: var(--t3); background: var(--bg); border-radius: 8px;
+  padding: 8px; margin-bottom: 10px; line-height: 1.5;
+  font-family: 'Courier New', monospace; overflow: hidden;
+  display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical;
+}
+.bucket-picker { display: flex; gap: 6px; }
+.bucket-pick-btn {
+  flex: 1; display: flex; flex-direction: column; align-items: center; gap: 3px;
+  border: 1.5px solid; border-radius: 12px; padding: 8px 4px; cursor: pointer;
+  background: none; font-family: var(--font); transition: all 0.1s;
+}
+.bucket-pick-btn:active { transform: scale(0.94); }
+.bucket-pick-label { font-size: 8px; font-weight: 700; }
+.txn-delete-row { display: flex; justify-content: flex-end; margin-top: 8px; }
+.txn-delete-btn { background: none; border: none; font-size: 12px; color: var(--lux); font-weight: 700; cursor: pointer; font-family: var(--font); padding: 4px; }
+
+/* ── MY MONTH ── */
+.color-bar { height: 18px; border-radius: 9px; display: flex; overflow: hidden; margin-bottom: 10px; }
+.color-legend { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 18px; }
+.legend-item { display: flex; align-items: center; gap: 5px; }
+.legend-dot { width: 8px; height: 8px; border-radius: 4px; }
+.legend-label { font-size: 11px; color: var(--t2); font-weight: 600; }
+.total-card {
+  background: var(--dark); border-radius: 18px; padding: 18px;
+  display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px;
+}
+.total-card-label { font-size: 13px; color: var(--t4); }
+.total-card-val { font-family: var(--font-head); font-size: 22px; font-weight: 800; color: var(--white); }
+.weekly-card { background: var(--card); border-radius: 18px; padding: 16px; margin-bottom: 14px; border: 1px solid var(--cardB); }
+.weekly-title { font-family: var(--font-head); font-size: 13px; font-weight: 800; color: var(--t1); margin-bottom: 14px; }
+.weekly-bars { display: flex; gap: 8px; align-items: flex-end; height: 110px; }
+.week-col { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 4px; }
+.week-val { font-size: 9px; color: var(--t4); font-weight: 700; height: 12px; }
+.week-bar-wrap { width: 100%; flex: 1; display: flex; align-items: flex-end; }
+.week-bar { width: 100%; border-radius: 6px; overflow: hidden; display: flex; flex-direction: column; justify-content: flex-end; }
+.week-label { font-size: 9px; color: var(--t4); }
+.bucket-detail-card {
+  background: var(--card); border-radius: 18px; padding: 14px;
+  display: flex; align-items: center; gap: 12px; margin-bottom: 10px;
+  border: 1px solid var(--cardB); border-left: 4px solid; cursor: pointer; transition: transform 0.1s;
+}
+.bucket-detail-card:active { transform: scale(0.98); }
+.bdc-info { flex: 1; }
+.bdc-name { font-size: 15px; font-weight: 700; color: var(--t1); margin-bottom: 5px; }
+.bdc-bar-track { height: 5px; background: var(--bg); border-radius: 3px; overflow: hidden; }
+.bdc-bar-fill { height: 5px; border-radius: 3px; transition: width 0.5s ease; }
+.bdc-tag { font-size: 11px; color: var(--t4); margin-top: 3px; }
+.bdc-right { text-align: right; }
+.bdc-amount { font-family: var(--font-head); font-size: 17px; font-weight: 800; }
+.bdc-pct { font-size: 11px; color: var(--t4); margin-top: 2px; }
+.bdc-chevron { font-size: 20px; color: var(--t4); }
+.share-btn { font-size: 12px; color: var(--brand); font-weight: 700; background: none; border: none; cursor: pointer; font-family: var(--font); }
+
+/* ── SLICE DETAIL ── */
+.slice-center { display: flex; flex-direction: column; align-items: center; padding: 24px 22px; }
+.slice-ring {
+  width: 100px; height: 100px; border-radius: 50%; border: 8px solid;
+  display: flex; flex-direction: column; align-items: center; justify-content: center; margin-bottom: 24px;
+}
+.ring-pct { font-family: var(--font-head); font-size: 26px; font-weight: 900; }
+.ring-label { font-size: 10px; color: var(--t4); }
+.yn-card { background: var(--card); border-radius: 22px; padding: 22px; width: 100%; border: 1px solid var(--cardB); }
+.yn-question { font-family: var(--font-head); font-size: 19px; font-weight: 800; color: var(--t1); text-align: center; margin-bottom: 8px; }
+.yn-sub { font-size: 13px; color: var(--t4); text-align: center; margin-bottom: 20px; }
+.yn-btns { display: flex; gap: 12px; }
+.yn-btn {
+  flex: 1; display: flex; flex-direction: column; align-items: center;
+  padding: 14px; border-radius: 14px; gap: 4px; border: none; cursor: pointer; font-family: var(--font);
+  font-size: 14px; font-weight: 700; color: var(--white); transition: transform 0.1s;
+}
+.yn-btn:active { transform: scale(0.96); }
+.yn-emoji { font-size: 22px; }
+.yn-answer { text-align: center; }
+.yn-answer-emoji { font-size: 36px; display: block; margin-bottom: 14px; }
+.yn-answer-text { font-size: 15px; color: var(--t1); line-height: 1.6; font-weight: 500; }
+.yn-change-btn { background: none; border: none; color: var(--brand); font-weight: 600; font-size: 13px; cursor: pointer; font-family: var(--font); margin-top: 18px; }
+
+/* ── HISTORY SCREEN ── */
+.history-header {
+  background: var(--card); padding: calc(var(--safe-top) + 8px) 18px 10px;
+  border-bottom: 1px solid var(--cardB); flex-shrink: 0;
+}
+.history-toprow { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
+.history-title { font-family: var(--font-head); font-size: 22px; font-weight: 800; color: var(--t1); }
+.history-count { font-size: 11px; color: var(--t4); margin-top: 1px; }
+.export-btn { background: var(--dark); border: none; border-radius: 12px; padding: 7px 12px; font-size: 12px; font-weight: 700; color: var(--white); cursor: pointer; font-family: var(--font); }
+.search-box { display: flex; align-items: center; background: var(--bg); border-radius: 12px; border: 1.5px solid var(--cardB); padding: 0 12px; margin-bottom: 10px; }
+.search-input { flex: 1; padding: 9px 0; font-size: 14px; color: var(--t1); background: none; border: none; outline: none; font-family: var(--font); }
+.search-clear { background: none; border: none; font-size: 14px; color: var(--t3); cursor: pointer; padding: 4px; font-weight: 700; }
+.filter-pills { display: flex; gap: 8px; overflow-x: auto; padding-bottom: 2px; }
+.filter-pills::-webkit-scrollbar { display: none; }
+.filter-pill {
+  padding: 7px 14px; border-radius: 20px; border: 1.5px solid var(--cardB);
+  background: var(--card); font-size: 12px; font-weight: 600; color: var(--t2);
+  cursor: pointer; white-space: nowrap; font-family: var(--font); transition: all 0.15s; flex-shrink: 0;
+}
+.filter-pill.active { color: var(--white); }
+.month-group { margin-bottom: 16px; }
+.month-label { display: flex; justify-content: space-between; align-items: center; padding: 8px 0 6px; }
+.month-name { font-family: var(--font-head); font-size: 13px; font-weight: 800; color: var(--t1); }
+.month-total { font-size: 13px; font-weight: 700; color: var(--brand); }
+.hist-txn-card { background: var(--card); border-radius: 14px; padding: 12px; margin-bottom: 8px; border: 1px solid var(--cardB); }
+.hist-txn-row { display: flex; align-items: center; gap: 10px; }
+.hist-txn-info { flex: 1; min-width: 0; }
+.hist-txn-name { font-size: 13px; font-weight: 700; color: var(--t1); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin-bottom: 2px; }
+.hist-txn-date { font-size: 10px; color: var(--t4); }
+.hist-txn-bucket { font-size: 10px; font-weight: 700; margin-top: 2px; }
+.hist-txn-right { text-align: right; flex-shrink: 0; }
+.hist-txn-amount { font-family: var(--font-head); font-size: 15px; font-weight: 800; color: var(--t1); margin-bottom: 6px; }
+.hist-txn-actions { display: flex; gap: 10px; justify-content: flex-end; align-items: center; }
+.hist-edit-btn { font-size: 11px; color: var(--brand); font-weight: 700; background: none; border: none; cursor: pointer; font-family: var(--font); }
+.hist-sep { color: var(--cardB); font-size: 12px; }
+.hist-del-btn { font-size: 11px; color: var(--lux); font-weight: 700; background: none; border: none; cursor: pointer; font-family: var(--font); }
+.inline-edit { margin-top: 10px; background: var(--bg); border-radius: 12px; padding: 10px; border: 1px solid var(--cardB); }
+.inline-edit-label { font-size: 10px; color: var(--t4); letter-spacing: 2px; font-weight: 700; margin-bottom: 8px; }
+.inline-bucket-row { display: flex; gap: 6px; }
+.inline-bucket-btn {
+  flex: 1; display: flex; flex-direction: column; align-items: center;
+  padding: 7px 4px; border-radius: 10px; border: 1.5px solid var(--cardB);
+  cursor: pointer; background: none; gap: 3px; font-family: var(--font); transition: all 0.1s;
+}
+.inline-bucket-btn.selected { }
+.inline-bucket-label { font-size: 9px; color: var(--t3); font-weight: 600; }
+
+/* ── MANUAL ADD ── */
+.amount-input-card { background: var(--card); border-radius: 20px; padding: 20px; display: flex; align-items: center; margin-bottom: 22px; border: 1px solid var(--cardB); }
+.amount-symbol { font-size: 30px; color: var(--t4); font-weight: 300; margin-right: 4px; }
+.amount-input { font-family: var(--font-head); font-size: 46px; font-weight: 800; color: var(--t1); flex: 1; border: none; background: none; outline: none; min-width: 0; }
+.form-label { font-size: 10px; color: var(--t4); letter-spacing: 2px; font-weight: 700; margin-bottom: 10px; }
+.form-input {
+  width: 100%; background: var(--card); border: 1.5px solid var(--cardB); border-radius: 14px;
+  padding: 14px; font-size: 15px; color: var(--t1); font-family: var(--font); outline: none;
+  margin-bottom: 22px; transition: border-color 0.2s;
+}
+.form-input:focus { border-color: var(--brand); }
+.source-grid { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 22px; }
+.source-btn {
+  flex: 1; min-width: calc(50% - 4px); display: flex; flex-direction: column; align-items: center;
+  padding: 10px; border-radius: 12px; border: 1.5px solid var(--cardB);
+  background: var(--card); cursor: pointer; font-family: var(--font); gap: 4px; transition: all 0.1s;
+}
+.source-btn.selected { border-color: var(--brand); background: var(--brandL); }
+.source-btn:active { transform: scale(0.96); }
+.source-icon { font-size: 16px; }
+.source-label { font-size: 10px; font-weight: 600; color: var(--t1); text-align: center; }
+.source-btn.selected .source-label { color: var(--brandD); font-weight: 800; }
+.bucket-option-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.bucket-option-btn {
+  display: flex; flex-direction: column; align-items: center; padding: 12px;
+  border-radius: 16px; border: 2px solid var(--cardB); background: var(--card);
+  cursor: pointer; font-family: var(--font); gap: 6px; position: relative; transition: all 0.1s;
+}
+.bucket-option-btn:active { transform: scale(0.96); }
+.bucket-option-btn.selected { }
+.bucket-opt-name { font-size: 12px; font-weight: 600; color: var(--t2); text-align: center; }
+.bucket-opt-name.selected { font-weight: 800; }
+.bucket-opt-desc { font-size: 9px; color: var(--t4); text-align: center; line-height: 1.4; }
+.bucket-opt-check { position: absolute; top: 6px; right: 6px; padding: 2px 5px; border-radius: 6px; font-size: 9px; font-weight: 900; color: var(--white); display: none; }
+.bucket-option-btn.selected .bucket-opt-check { display: block; }
+
+/* ── LIMITS ── */
+.limit-card { background: var(--card); border-radius: 18px; padding: 16px; margin-bottom: 12px; border: 1px solid var(--cardB); border-left: 4px solid; }
+.limit-header { display: flex; align-items: center; gap: 10px; margin-bottom: 12px; }
+.limit-info { flex: 1; }
+.limit-name { font-size: 15px; font-weight: 700; color: var(--t1); }
+.limit-tag { font-size: 11px; color: var(--t4); }
+.limit-status { font-size: 10px; font-weight: 800; }
+.limit-input-row { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
+.limit-symbol { font-size: 14px; color: var(--t3); }
+.limit-input {
+  flex: 1; background: var(--bg); border-radius: 12px; padding: 10px 12px;
+  font-size: 16px; font-weight: 700; border: 1.5px solid var(--cardB);
+  font-family: var(--font-head); outline: none; transition: border-color 0.2s;
+}
+.limit-progress-track { height: 6px; border-radius: 3px; overflow: hidden; margin-bottom: 6px; }
+.limit-progress-fill { height: 6px; border-radius: 3px; }
+.limit-progress-text { font-size: 11px; color: var(--t4); }
+.quick-btns { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 10px; }
+.quick-btn { padding: 5px 10px; border-radius: 8px; border: 1px solid; font-size: 11px; font-weight: 700; cursor: pointer; font-family: var(--font); transition: all 0.1s; }
+.reset-btn { background: var(--bg); border-radius: 14px; padding: 14px; border: 1.5px solid var(--cardB); width: 100%; font-size: 13px; color: var(--t3); font-weight: 600; cursor: pointer; font-family: var(--font); margin-top: 8px; }
+
+/* ── SETTINGS ── */
+.accordion { background: var(--card); border-radius: 16px; margin-bottom: 8px; border: 1px solid var(--cardB); overflow: hidden; }
+.accordion-header { padding: 16px; display: flex; justify-content: space-between; align-items: center; cursor: pointer; }
+.accordion-title { font-size: 15px; font-weight: 700; color: var(--t1); }
+.accordion-toggle { font-size: 18px; color: var(--brand); font-weight: 700; transition: transform 0.2s; }
+.accordion-body { padding: 0 16px 16px; border-top: 1px solid var(--cardB); display: none; }
+.accordion.open .accordion-body { display: block; }
+.accordion.open .accordion-toggle { transform: rotate(45deg); }
+.profile-photo-wrap { display: flex; justify-content: center; margin: 14px 0; position: relative; width: fit-content; margin-left: auto; margin-right: auto; }
+.profile-photo-circle {
+  width: 76px; height: 76px; border-radius: 24px; overflow: hidden;
+  border: 2px solid var(--brand); cursor: pointer; display: flex; align-items: center; justify-content: center; background: var(--brand);
+}
+.profile-photo-circle img { width: 100%; height: 100%; object-fit: cover; }
+.profile-photo-add {
+  position: absolute; bottom: -4px; right: -4px; width: 22px; height: 22px;
+  border-radius: 11px; background: var(--success); display: flex; align-items: center; justify-content: center;
+  font-size: 14px; color: var(--white); font-weight: 700;
+}
+.settings-field-label { font-size: 10px; color: var(--t4); letter-spacing: 1.5px; font-weight: 700; margin-top: 12px; margin-bottom: 6px; }
+.settings-input { width: 100%; background: var(--bg); border: 1.5px solid var(--cardB); border-radius: 12px; padding: 12px; font-size: 14px; color: var(--t1); font-family: var(--font); outline: none; transition: border-color 0.2s; }
+.settings-input:focus { border-color: var(--brand); }
+.settings-textarea { width: 100%; background: var(--bg); border: 1.5px solid var(--cardB); border-radius: 12px; padding: 12px; font-size: 14px; color: var(--t1); font-family: var(--font); outline: none; resize: none; height: 72px; }
+.settings-role-btn {
+  display: flex; align-items: center; gap: 10px; padding: 12px; border-radius: 12px;
+  border: 1.5px solid var(--cardB); background: var(--bg); cursor: pointer; margin-bottom: 6px; font-family: var(--font); transition: all 0.15s;
+}
+.settings-role-btn.selected { border-color: var(--brand); background: var(--brandL); }
+.settings-role-name { font-size: 13px; color: var(--t2); font-weight: 600; flex: 1; }
+.settings-role-btn.selected .settings-role-name { color: var(--brandD); font-weight: 800; }
+.toggle-row { display: flex; justify-content: space-between; align-items: center; padding: 14px 0; }
+.toggle-label { font-size: 14px; color: var(--t1); }
+.toggle-sub { font-size: 11px; color: var(--t4); margin-top: 2px; }
+.toggle-btn {
+  width: 46px; height: 26px; border-radius: 13px; background: var(--cardB);
+  display: flex; align-items: center; padding: 3px; cursor: pointer; border: none; transition: background 0.2s;
+}
+.toggle-btn.on { background: var(--brand); }
+.toggle-knob { width: 20px; height: 20px; border-radius: 10px; background: var(--white); transition: transform 0.2s; }
+.toggle-btn.on .toggle-knob { transform: translateX(20px); }
+.data-action-btn { border-radius: 12px; padding: 14px; display: flex; align-items: center; gap: 10px; cursor: pointer; border: none; font-family: var(--font); width: 100%; margin-bottom: 10px; }
+.data-action-icon { font-size: 16px; font-weight: 700; }
+.data-action-title { font-size: 14px; font-weight: 700; }
+.data-action-sub { font-size: 11px; color: var(--t4); margin-top: 1px; }
+.faq-item { margin-top: 14px; padding-bottom: 14px; border-bottom: 1px solid var(--cardB); }
+.faq-item:last-child { border-bottom: none; }
+.faq-q { font-size: 14px; font-weight: 700; color: var(--t1); margin-bottom: 6px; }
+.faq-a { font-size: 13px; color: var(--t3); line-height: 1.6; }
+.about-center { text-align: center; padding: 20px 0; }
+.about-divider { width: 40px; height: 1.5px; background: var(--cardB); margin: 16px auto; }
+.about-built { font-size: 13px; color: var(--t2); line-height: 1.7; margin-bottom: 8px; }
+.about-link { font-size: 13px; color: var(--brand); font-weight: 700; text-decoration: none; display: inline-block; margin-bottom: 16px; }
+.about-copy { font-size: 11px; color: var(--t4); line-height: 1.8; }
+
+/* ── USER AVATAR ── */
+.user-avatar {
+  border-radius: 28%; border: 2px solid var(--brandD);
+  overflow: hidden; display: flex; align-items: center; justify-content: center;
+  background: var(--brand); flex-shrink: 0;
+}
+.user-avatar img { width: 100%; height: 100%; object-fit: cover; }
+.user-avatar-letter { font-family: var(--font-head); font-weight: 800; color: var(--white); }
+
+/* ── MODAL ── */
+.modal-overlay {
+  position: fixed; inset: 0; z-index: 970; background: rgba(0,0,0,0.6);
+  display: none; align-items: flex-end; justify-content: center;
+}
+.modal-overlay.visible { display: flex; }
+.modal-box {
+  background: var(--card); border-radius: 22px 22px 0 0;
+  padding: 22px 22px calc(var(--safe-bottom) + 22px); width: 100%; max-width: 540px;
+  animation: slideUp 0.25s ease;
+}
+@keyframes slideUp { from{transform:translateY(100%)}to{transform:translateY(0)} }
+.modal-title { font-family: var(--font-head); font-size: 18px; font-weight: 800; color: var(--t1); margin-bottom: 6px; }
+.modal-sub { font-size: 13px; color: var(--t3); line-height: 1.6; margin-bottom: 20px; }
+.modal-btns { display: flex; flex-direction: column; gap: 8px; }
+.modal-btn {
+  padding: 14px; border-radius: 14px; border: none; font-size: 14px; font-weight: 700;
+  cursor: pointer; font-family: var(--font); transition: all 0.1s;
+}
+.modal-btn:active { transform: scale(0.97); }
+.modal-btn-primary { background: var(--brand); color: var(--dark); }
+.modal-btn-secondary { background: var(--bg); color: var(--t1); border: 1.5px solid var(--cardB); }
+.modal-btn-danger { background: var(--luxL); color: var(--danger); border: 1.5px solid var(--luxM); }
+.modal-btn-cancel { background: transparent; color: var(--t3); }
+
+/* ── SHARE APP BUTTON ── */
+.share-new-app-btn {
+  display: flex; align-items: center; justify-content: center; gap: 8px;
+  background: linear-gradient(135deg, var(--brand), var(--brandD));
+  border: none; border-radius: 14px; padding: 12px 18px; width: 100%;
+  font-size: 13px; font-weight: 700; color: var(--dark); cursor: pointer;
+  font-family: var(--font); margin-bottom: 10px; transition: all 0.1s;
+}
+.share-new-app-btn:active { transform: scale(0.97); }
+
+/* ── TOAST ── */
+#toast {
+  position: fixed; bottom: calc(var(--safe-bottom) + 80px); left: 50%; transform: translateX(-50%) translateY(20px);
+  background: var(--dark); color: var(--white); padding: 10px 20px; border-radius: 24px;
+  font-size: 13px; font-weight: 600; z-index: 9999; opacity: 0;
+  transition: all 0.3s ease; pointer-events: none; white-space: nowrap; border: 1px solid var(--darkB);
+}
+#toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+/* ── ANIMATIONS ── */
+.fade-in { animation: fadeIn 0.35s ease; }
+@keyframes fadeIn { from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)} }
+
+/* ── DESKTOP LAYOUT ── */
+@media (min-width: 600px) {
+  #app { box-shadow: 0 0 60px rgba(0,0,0,0.15); }
+  body { background: #e2e8f0; display: flex; align-items: center; justify-content: center; min-height: 100vh; overflow: auto; }
+  #app { height: 100dvh; max-height: 900px; border-radius: 0; }
+}
+@media (min-width: 900px) {
+  body { background: var(--dark2); }
+}
+</style>
+</head>
+<body>
+
+<!-- SPLASH -->
+<div id="splash">
+  <div class="splash-bird">🐦</div>
+  <div class="splash-title">Spend-na</div>
+  <div class="splash-sub">Your money mirror</div>
+</div>
+
+<!-- LOCK SCREEN -->
+<div id="lockScreen">
+  <div class="lock-bird">🔐</div>
+  <div class="lock-title">Spend-na</div>
+  <div class="lock-sub">This app is protected.<br>Enter password to open.</div>
+  <input class="lock-input" type="password" id="lockInput" placeholder="••••••" autocomplete="current-password" inputmode="text">
+  <button class="lock-btn" onclick="APP.unlock()">Unlock →</button>
+  <div class="lock-err" id="lockErr"></div>
+  <div class="lock-hint">🔒 Protected by Sandeep Hakki<br>Share the blank app — not this file — to others</div>
+</div>
+
+<!-- ONBOARDING -->
+<div id="onboarding">
+  <div class="ob-inner">
+    <div class="ob-brand">
+      <span class="ob-bird">🐦</span>
+      <div class="ob-title">Spend-na</div>
+      <div class="ob-tagline">Your money mirror. Let's set you up.</div>
+    </div>
+    <div class="ob-photo-wrap" onclick="APP.pickPhoto('ob')">
+      <div class="ob-photo-circle" id="obPhotoCircle">
+        <span style="font-size:26px;color:var(--t4)">◉</span>
+        <span style="font-size:10px;color:var(--t4);margin-top:4px">Photo</span>
+      </div>
+      <div class="ob-photo-check" id="obPhotoCheck">✓</div>
+    </div>
+    <div class="ob-label">YOUR NAME *</div>
+    <input class="ob-input" id="obName" placeholder="e.g. Priya Sharma" type="text" autocomplete="name" oninput="APP.obValidate()">
+    <div class="ob-label">DATE OF BIRTH</div>
+    <input class="ob-input" id="obDob" placeholder="DD/MM/YYYY" type="text" inputmode="numeric">
+    <div class="ob-label">YOUR CITY</div>
+    <input class="ob-input" id="obCity" placeholder="e.g. Bengaluru" type="text">
+    <div class="ob-label">I AM A... *</div>
+    <div id="obRoles"></div>
+    <div class="ob-label" style="margin-top:4px">YOUR DAILY QUOTE (optional)</div>
+    <textarea class="ob-input ob-textarea" id="obQuote" placeholder="Something that motivates you..."></textarea>
+    <button class="ob-cta" id="obCta" disabled onclick="APP.startJourney()">Start my journey →</button>
+    <div class="ob-privacy">All your data stays only on this device.<br>No server. No cloud. No tracking.</div>
+  </div>
+</div>
+
+<!-- MAIN APP -->
+<div id="app" style="display:none">
+
+  <!-- HOME SCREEN -->
+  <div class="screen" id="screenHome">
+    <div class="scroll-area" id="homeScroll">
+      <div class="home-hero">
+        <div class="home-toprow">
+          <div>
+            <div class="home-greeting" id="homeGreeting">Good Morning</div>
+            <div class="home-name" id="homeName">Friend</div>
+            <div class="home-role" id="homeRole"></div>
+          </div>
+          <button class="home-settings-btn" onclick="APP.nav('Settings')">{ }</button>
+        </div>
+        <div class="home-quote-card">
+          <div id="homeAvatarWrap"></div>
+          <div style="flex:1;min-width:0;margin-left:14px">
+            <div class="home-quote-bar"></div>
+            <div class="home-quote-text" id="homeQuote">Every rupee has a story. Make yours count today.</div>
+          </div>
+        </div>
+        <div class="home-total-strip" id="homeTotalStrip" style="display:none">
+          <div class="home-total-label">Month Total</div>
+          <div class="home-total-val" id="homeTotalVal">₹0</div>
+        </div>
+      </div>
+      <div class="home-content fade-in">
+        <button class="home-pending-banner" id="homePendingBanner" style="display:none" onclick="APP.nav('Sort')">
+          <div class="pending-dot"></div>
+          <div class="pending-info">
+            <div class="pending-title" id="pendingTitle">0 spends waiting</div>
+            <div class="pending-sub">tap to classify</div>
+          </div>
+          <div class="pending-cta">Sort ›</div>
+        </button>
+        <div class="section-row">
+          <div class="section-label">THIS MONTH</div>
+          <button class="section-link" onclick="APP.nav('Limits')">Set Limits ›</button>
+        </div>
+        <div class="bucket-grid" id="bucketGrid"></div>
+        <button class="action-btn-primary" onclick="APP.nav('Sort')">⊞ Scan Bank Messages</button>
+        <button class="action-btn-secondary" onclick="APP.nav('ManualAdd')">+ Add Manually</button>
+        <div class="privacy-footer">
+          <div class="privacy-text">Your data never leaves this device</div>
+          <a href="http://www.hakki.in" target="_blank" class="privacy-link">© Sandeep Hakki · hakki.in · 2026</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SORT SCREEN -->
+  <div class="screen" id="screenSort">
+    <div class="sort-header" id="sortHeader">
+      <div id="sortAvatarWrap"></div>
+      <div style="flex:1">
+        <div style="font-family:var(--font-head);font-size:18px;font-weight:800;color:var(--t1)">Sort Spends</div>
+        <div style="font-size:11px;color:var(--t4)" id="sortCount">0 waiting</div>
+      </div>
+      <div class="sort-count-badge" id="sortBadge">0</div>
+    </div>
+    <div id="sortEmpty" class="sort-empty" style="display:none">
+      <div class="sort-empty-icon">✓</div>
+      <div style="font-family:var(--font-head);font-size:26px;font-weight:800;color:var(--t1);margin-bottom:8px">All sorted!</div>
+      <div style="font-size:14px;color:var(--t3);text-align:center;line-height:1.6;margin-bottom:24px">Nothing is pending.<br>See where your money went this month.</div>
+      <button class="action-btn-primary" style="width:auto;padding:12px 32px" onclick="APP.nav('MyMonth')">See My Month ›</button>
+    </div>
+    <div class="scroll-area" id="sortList" style="padding:14px 18px"></div>
+  </div>
+
+  <!-- MY MONTH SCREEN -->
+  <div class="screen" id="screenMyMonth">
+    <div class="screen-header">
+      <div class="header-side"></div>
+      <div class="header-center">
+        <div class="header-title">My Month</div>
+        <div class="header-sub" id="monthSubtitle"></div>
+      </div>
+      <div class="header-side" style="text-align:right">
+        <button class="share-btn" onclick="APP.shareMonth()">Share ↑</button>
+      </div>
+    </div>
+    <div class="scroll-area" style="padding:20px 18px" id="myMonthContent"></div>
+  </div>
+
+  <!-- SLICE DETAIL SCREEN -->
+  <div class="screen" id="screenSliceDetail">
+    <div class="screen-header">
+      <div class="header-side"><button class="header-back" onclick="APP.nav('MyMonth')">← Back</button></div>
+      <div class="header-center"><div class="header-title" id="sliceTitle">Detail</div></div>
+      <div class="header-side"></div>
+    </div>
+    <div class="scroll-area" id="sliceContent"></div>
+  </div>
+
+  <!-- HISTORY SCREEN -->
+  <div class="screen" id="screenHistory">
+    <div class="history-header">
+      <div class="history-toprow">
+        <div>
+          <div class="history-title">History</div>
+          <div class="history-count" id="historyCount">0 transactions</div>
+        </div>
+        <button class="export-btn" onclick="APP.exportHTML()">Export ↑</button>
+      </div>
+      <div class="search-box">
+        <input class="search-input" id="histSearch" placeholder="Search..." oninput="APP.renderHistory()">
+        <button class="search-clear" onclick="document.getElementById('histSearch').value='';APP.renderHistory()">✕</button>
+      </div>
+      <div class="filter-pills" id="histFilterPills"></div>
+    </div>
+    <div class="scroll-area" style="padding:14px 18px" id="historyList"></div>
+  </div>
+
+  <!-- MANUAL ADD SCREEN -->
+  <div class="screen" id="screenManualAdd">
+    <div class="screen-header">
+      <div class="header-side"><button class="header-back" onclick="APP.nav('Home')">← Back</button></div>
+      <div class="header-center"><div class="header-title">Add Spend</div></div>
+      <div class="header-side" style="text-align:right">
+        <button class="header-action" id="addSaveBtn" onclick="APP.saveManual()" style="opacity:0.3" disabled>Save</button>
+      </div>
+    </div>
+    <div class="scroll-area" style="padding:18px 18px" id="manualAddContent">
+      <div class="amount-input-card">
+        <div class="amount-symbol">₹</div>
+        <input class="amount-input" id="addAmount" type="number" inputmode="decimal" placeholder="0" oninput="APP.validateManual()">
+      </div>
+      <div class="form-label">WHAT WAS IT FOR?</div>
+      <input class="form-input" id="addDesc" placeholder="e.g. Lunch, Petrol, School fees" oninput="APP.validateManual()">
+      <div class="form-label">HOW DID YOU PAY?</div>
+      <div class="source-grid" id="sourceGrid"></div>
+      <div class="form-label">WHICH BUCKET?</div>
+      <div class="bucket-option-grid" id="bucketOptionGrid"></div>
+    </div>
+  </div>
+
+  <!-- LIMITS SCREEN -->
+  <div class="screen" id="screenLimits">
+    <div class="screen-header">
+      <div class="header-side"><button class="header-back" onclick="APP.nav('Home')">← Back</button></div>
+      <div class="header-center"><div class="header-title">Budget Limits</div></div>
+      <div class="header-side" style="text-align:right">
+        <button class="header-action" onclick="APP.saveLimits()">Save</button>
+      </div>
+    </div>
+    <div class="scroll-area" style="padding:18px 18px" id="limitsContent"></div>
+  </div>
+
+  <!-- SETTINGS SCREEN -->
+  <div class="screen" id="screenSettings">
+    <div class="screen-header">
+      <div class="header-side"><button class="header-back" onclick="APP.nav('Home')">← Back</button></div>
+      <div class="header-center"><div class="header-title">Settings & Help</div></div>
+      <div class="header-side" style="text-align:right">
+        <button class="header-action" onclick="APP.saveSettings()">Save</button>
+      </div>
+    </div>
+    <div class="scroll-area" style="padding:16px 18px" id="settingsContent"></div>
+  </div>
+
+  <!-- TAB BAR -->
+  <div id="tabBar">
+    <button class="tab-item active" data-tab="Home" onclick="APP.nav('Home')">
+      <div class="tab-icon">⬡</div>
+      <div class="tab-label">Wallet</div>
+    </button>
+    <button class="tab-item" data-tab="Sort" onclick="APP.nav('Sort')">
+      <div class="tab-icon" style="position:relative">↕<div class="tab-badge" id="sortTabBadge" style="display:none"><span id="sortTabCount">0</span></div></div>
+      <div class="tab-label">Sort</div>
+    </button>
+    <button class="tab-item" data-tab="MyMonth" onclick="APP.nav('MyMonth')">
+      <div class="tab-icon">◎</div>
+      <div class="tab-label">Month</div>
+    </button>
+    <button class="tab-item" data-tab="History" onclick="APP.nav('History')">
+      <div class="tab-icon">≡</div>
+      <div class="tab-label">History</div>
+    </button>
+    <button class="tab-item" data-tab="ManualAdd" onclick="APP.nav('ManualAdd')">
+      <div class="tab-add-btn">+</div>
+      <div class="tab-label">Add</div>
+    </button>
+  </div>
+</div>
+
+<!-- MODAL -->
+<div class="modal-overlay" id="modalOverlay" onclick="if(event.target===this)APP.closeModal()">
+  <div class="modal-box">
+    <div class="modal-title" id="modalTitle"></div>
+    <div class="modal-sub" id="modalSub"></div>
+    <div class="modal-btns" id="modalBtns"></div>
+  </div>
+</div>
+
+<!-- TOAST -->
+<div id="toast"></div>
+
+<script>
+// ═══════════════════════════════════════════════════════════
+// SPEND-NA PWA — FULL APPLICATION
+// © 2026 Sandeep Hakki · hakki.in
+// ═══════════════════════════════════════════════════════════
+
+const OWNER_HASH = "5e8848b1a75b14e3ef88fb23aa7a5c7b"; // MD5 of "hakki2026"
+// To change password: compute MD5 of your new password and replace above
+
+const BUCKETS = {
+  necessary:  {label:'Necessary',   color:'#059669', light:'#ecfdf5', mid:'#6ee7b7', shape:'⌂', tag:'Food · Health · Rent', cls:'bi-nec'},
+  committed:  {label:'Committed',   color:'#7c3aed', light:'#f5f3ff', mid:'#c4b5fd', shape:'◈', tag:'EMI · Insurance · SIP', cls:'bi-com'},
+  comfortable:{label:'Comfortable', color:'#d97706', light:'#fffbeb', mid:'#fcd34d', shape:'◎', tag:'Lifestyle · Shopping', cls:'bi-cft'},
+  luxury:     {label:'Luxury',      color:'#e11d48', light:'#fff1f2', mid:'#fda4af', shape:'◆', tag:'Splurge · Dining out', cls:'bi-lux'},
+};
+
+const ROLES = {
+  student:      {label:'Student',              icon:'🎓', limits:{necessary:3000,committed:0,comfortable:2000,luxury:1000}, nudge:n=>`Study hard, ${n}. Your future self will thank you.`},
+  home_manager: {label:'Home Manager',         icon:'🏠', limits:{necessary:15000,committed:5000,comfortable:5000,luxury:2000}, nudge:n=>`You run this house, ${n}. Every rupee matters.`},
+  working:      {label:'Working Professional', icon:'💼', limits:{necessary:15000,committed:30000,comfortable:10000,luxury:5000}, nudge:n=>`You earn it, ${n}. Now own where it goes.`},
+  business:     {label:'Business Owner',       icon:'🏢', limits:{necessary:20000,committed:20000,comfortable:15000,luxury:10000}, nudge:n=>`Revenue is vanity, profit is sanity, ${n}.`},
+  retired:      {label:'Retired',              icon:'🌿', limits:{necessary:10000,committed:5000,comfortable:8000,luxury:3000}, nudge:n=>`You've earned your peace, ${n}. Spend wisely.`},
+};
+
+const CATEGORY_RULES = [
+  {keywords:['food','meal','lunch','dinner','breakfast','restaurant','cafe','canteen','hotel','pizza','burger','chicken','mutton','veg','tiffin','dabba','mess','dhaba','bakery','sweets','mithai','snack','delivery','order','takeaway','parcel','catering','zomato','swiggy','blinkit'],icon:'◉'},
+  {keywords:['grocery','groceries','vegetable','fruit','milk','dairy','kirana','supermarket','mart','bazaar','market','store','fresh','organic','provisions','bigbasket','jiomart'],icon:'▦'},
+  {keywords:['cab','taxi','ride','auto','rickshaw','bus','train','metro','travel','transport','fuel','petrol','diesel','cng','parking','toll','flight','air','ticket','ola','uber','rapido','irctc'],icon:'▷'},
+  {keywords:['medical','medicine','pharmacy','hospital','clinic','doctor','health','chemist','drug','lab','test','scan','dental','eye','nursing','surgical','apollo','medplus'],icon:'+'},
+  {keywords:['shopping','clothes','shirt','pant','shoes','dress','saree','kurta','fashion','garment','tailor','jewel','gold','silver','watch','bag','accessory','myntra','amazon','flipkart','meesho'],icon:'◈'},
+  {keywords:['electricity','power','water','gas','bill','utility','recharge','mobile','broadband','internet','wifi','dth','cable','telephone','landline','airtel','jio','bsnl'],icon:'◆'},
+  {keywords:['school','college','university','tuition','coaching','course','class','fees','exam','book','stationery','education','library','hostel','admission'],icon:'▣'},
+  {keywords:['movie','cinema','theatre','show','event','concert','game','sport','club','party','outing','fun','subscription','streaming','entertainment','netflix','hotstar'],icon:'◎'},
+  {keywords:['emi','loan','insurance','premium','lic','policy','sip','mutual','investment','fd','rd','interest','bank','finance','credit','repay','installment'],icon:'⬡'},
+  {keywords:['rent','maintenance','society','flat','house','room','pg','accommodation','deposit','lease','property'],icon:'⌂'},
+  {keywords:['salary','income','bonus','stipend','pocket','allowance','received','credited','transfer'],icon:'↓'},
+  {keywords:['salon','spa','parlour','haircut','beauty','gym','fitness','yoga','wellness','massage'],icon:'◑'},
+  {keywords:['petrol','fuel','diesel','cng','oil','pump','bpcl','hp','shell','iocl'],icon:'⊕'},
+];
+
+function getMerchantIcon(merchant) {
+  if (!merchant) return null;
+  const lower = merchant.toLowerCase();
+  for (const rule of CATEGORY_RULES) {
+    if (rule.keywords.some(k => lower.includes(k))) return rule.icon;
+  }
+  return null;
+}
+
+const MOCK_TRANSACTIONS = [
+  {id:'mock_1', merchant:'Food Delivery', amount:340, time:'08:30', date:'12 Mar', month:'Mar 2026', bucket:'necessary', source:'manual'},
+  {id:'mock_2', merchant:'Home Loan EMI', amount:24000, time:'01:00', date:'01 Mar', month:'Mar 2026', bucket:'committed', source:'manual'},
+];
+
+// ── STORAGE ──────────────────────────────────────────────────
+const KEYS = {profile:'sn_profile_v2', transactions:'sn_txns_v2', limits:'sn_limits_v2', settings:'sn_settings_v2', onboarded:'sn_onboarded_v2'};
+const DB = {
+  get(k){try{const v=localStorage.getItem(k);return v?JSON.parse(v):null}catch{return null}},
+  set(k,v){try{localStorage.setItem(k,JSON.stringify(v));return true}catch{return false}},
+  remove(k){try{localStorage.removeItem(k)}catch{}},
+  clear(){try{Object.values(KEYS).forEach(k=>localStorage.removeItem(k))}catch{}},
+};
+
+const DEFAULT_LIMITS = {necessary:15000, committed:30000, comfortable:10000, luxury:5000};
+const DEFAULT_SETTINGS = {soundEnabled:true, notifEnabled:true, notifHour:8, notifMinute:0};
+
+// ── MD5 (lightweight) ─────────────────────────────────────────
+function md5(s){
+  function safeAdd(x,y){var lsw=(x&0xFFFF)+(y&0xFFFF),msw=(x>>16)+(y>>16)+(lsw>>16);return(msw<<16)|(lsw&0xFFFF)}
+  function bitRotateLeft(n,c){return(n<<c)|(n>>>(32-c))}
+  function md5cmn(q,a,b,x,s,t){return safeAdd(bitRotateLeft(safeAdd(safeAdd(a,q),safeAdd(x,t)),s),b)}
+  function md5ff(a,b,c,d,x,s,t){return md5cmn((b&c)|((~b)&d),a,b,x,s,t)}
+  function md5gg(a,b,c,d,x,s,t){return md5cmn((b&d)|(c&(~d)),a,b,x,s,t)}
+  function md5hh(a,b,c,d,x,s,t){return md5cmn(b^c^d,a,b,x,s,t)}
+  function md5ii(a,b,c,d,x,s,t){return md5cmn(c^(b|(~d)),a,b,x,s,t)}
+  var str=unescape(encodeURIComponent(s));
+  var bytes=[];for(var i=0;i<str.length;i++)bytes.push(str.charCodeAt(i));
+  bytes.push(0x80);while(bytes.length%64!==56)bytes.push(0);
+  var lo=str.length*8,hi=0;
+  bytes.push(lo&0xFF,(lo>>8)&0xFF,(lo>>16)&0xFF,(lo>>24)&0xFF,hi&0xFF,(hi>>8)&0xFF,(hi>>16)&0xFF,(hi>>24)&0xFF);
+  var a=0x67452301,b=0xEFCDAB89,c=0x98BADCFE,d=0x10325476;
+  for(var i=0;i<bytes.length;i+=64){
+    var M=[];for(var j=0;j<16;j++)M[j]=bytes[i+j*4]|(bytes[i+j*4+1]<<8)|(bytes[i+j*4+2]<<16)|(bytes[i+j*4+3]<<24);
+    var AA=a,BB=b,CC=c,DD=d;
+    a=md5ff(a,b,c,d,M[0],7,-680876936);d=md5ff(d,a,b,c,M[1],12,-389564586);c=md5ff(c,d,a,b,M[2],17,606105819);b=md5ff(b,c,d,a,M[3],22,-1044525330);
+    a=md5ff(a,b,c,d,M[4],7,-176418897);d=md5ff(d,a,b,c,M[5],12,1200080426);c=md5ff(c,d,a,b,M[6],17,-1473231341);b=md5ff(b,c,d,a,M[7],22,-45705983);
+    a=md5ff(a,b,c,d,M[8],7,1770035416);d=md5ff(d,a,b,c,M[9],12,-1958414417);c=md5ff(c,d,a,b,M[10],17,-42063);b=md5ff(b,c,d,a,M[11],22,-1990404162);
+    a=md5ff(a,b,c,d,M[12],7,1804603682);d=md5ff(d,a,b,c,M[13],12,-40341101);c=md5ff(c,d,a,b,M[14],17,-1502002290);b=md5ff(b,c,d,a,M[15],22,1236535329);
+    a=md5gg(a,b,c,d,M[1],5,-165796510);d=md5gg(d,a,b,c,M[6],9,-1069501632);c=md5gg(c,d,a,b,M[11],14,643717713);b=md5gg(b,c,d,a,M[0],20,-373897302);
+    a=md5gg(a,b,c,d,M[5],5,-701558691);d=md5gg(d,a,b,c,M[10],9,38016083);c=md5gg(c,d,a,b,M[15],14,-660478335);b=md5gg(b,c,d,a,M[4],20,-405537848);
+    a=md5gg(a,b,c,d,M[9],5,568446438);d=md5gg(d,a,b,c,M[14],9,-1019803690);c=md5gg(c,d,a,b,M[3],14,-187363961);b=md5gg(b,c,d,a,M[8],20,1163531501);
+    a=md5gg(a,b,c,d,M[13],5,-1444681467);d=md5gg(d,a,b,c,M[2],9,-51403784);c=md5gg(c,d,a,b,M[7],14,1735328473);b=md5gg(b,c,d,a,M[12],20,-1926607734);
+    a=md5hh(a,b,c,d,M[5],4,-378558);d=md5hh(d,a,b,c,M[8],11,-2022574463);c=md5hh(c,d,a,b,M[11],16,1839030562);b=md5hh(b,c,d,a,M[14],23,-35309556);
+    a=md5hh(a,b,c,d,M[1],4,-1530992060);d=md5hh(d,a,b,c,M[4],11,1272893353);c=md5hh(c,d,a,b,M[7],16,-155497632);b=md5hh(b,c,d,a,M[10],23,-1094730640);
+    a=md5hh(a,b,c,d,M[13],4,681279174);d=md5hh(d,a,b,c,M[0],11,-358537222);c=md5hh(c,d,a,b,M[3],16,-722521979);b=md5hh(b,c,d,a,M[6],23,76029189);
+    a=md5hh(a,b,c,d,M[9],4,-640364487);d=md5hh(d,a,b,c,M[12],11,-421815835);c=md5hh(c,d,a,b,M[15],16,530742520);b=md5hh(b,c,d,a,M[2],23,-995338651);
+    a=md5ii(a,b,c,d,M[0],6,-198630844);d=md5ii(d,a,b,c,M[7],10,1126891415);c=md5ii(c,d,a,b,M[14],15,-1416354905);b=md5ii(b,c,d,a,M[5],21,-57434055);
+    a=md5ii(a,b,c,d,M[12],6,1700485571);d=md5ii(d,a,b,c,M[3],10,-1894986606);c=md5ii(c,d,a,b,M[10],15,-1051523);b=md5ii(b,c,d,a,M[1],21,-2054922799);
+    a=md5ii(a,b,c,d,M[8],6,1873313359);d=md5ii(d,a,b,c,M[15],10,-30611744);c=md5ii(c,d,a,b,M[6],15,-1560198380);b=md5ii(b,c,d,a,M[13],21,1309151649);
+    a=md5ii(a,b,c,d,M[4],6,-145523070);d=md5ii(d,a,b,c,M[11],10,-1120210379);c=md5ii(c,d,a,b,M[2],15,718787259);b=md5ii(b,c,d,a,M[9],21,-343485551);
+    a=safeAdd(a,AA);b=safeAdd(b,BB);c=safeAdd(c,CC);d=safeAdd(d,DD);
+  }
+  function i2hex(i){var h='0123456789abcdef';return h[(i>>4)&0xF]+h[i&0xF]}
+  return [a,b,c,d].map(n=>[n&0xFF,(n>>8)&0xFF,(n>>16)&0xFF,(n>>24)&0xFF].map(i2hex).join('')).join('');
+}
+
+// ── APP STATE ─────────────────────────────────────────────────
+let STATE = {
+  screen: 'Home',
+  profile: {name:'', dob:'', city:'', role:'working', photo:null, quote:''},
+  transactions: [],
+  limits: {...DEFAULT_LIMITS},
+  settings: {...DEFAULT_SETTINGS},
+  sliceBucket: null,
+  histFilter: null,
+  limitVals: {...DEFAULT_LIMITS},
+  settingsEdit: null,
+  manualSource: null,
+  manualBucket: null,
+  obRole: null,
+  obPhoto: null,
+};
+
+// ── APP CONTROLLER ─────────────────────────────────────────────
+const APP = {
+
+  // ── INIT ──
+  async init() {
+    setTimeout(() => {
+      // Check if this device is owner
+      const isOwner = localStorage.getItem('sn_owner_verified') === 'true';
+      const onboarded = DB.get(KEYS.onboarded);
+
+      if (!isOwner && !onboarded) {
+        // Fresh device — show lock first
+        document.getElementById('lockScreen').classList.add('visible');
+        document.getElementById('splash').classList.add('hide');
+        setTimeout(() => document.getElementById('splash').remove(), 500);
+        return;
+      }
+
+      this._loadAndStart();
+    }, 1200);
+  },
+
+  async _loadAndStart() {
+    const onboarded = DB.get(KEYS.onboarded);
+    const profile = DB.get(KEYS.profile);
+    const txns = DB.get(KEYS.transactions);
+    const limits = DB.get(KEYS.limits);
+    const settings = DB.get(KEYS.settings);
+
+    if (profile) STATE.profile = profile;
+    if (limits) STATE.limits = limits;
+    if (settings) STATE.settings = settings;
+    if (txns && Array.isArray(txns)) STATE.transactions = txns;
+
+    document.getElementById('splash').classList.add('hide');
+    setTimeout(() => { try{document.getElementById('splash').remove()}catch{} }, 500);
+
+    if (!onboarded) {
+      this._showOnboarding();
+    } else {
+      this._startApp();
+    }
+  },
+
+  // ── LOCK ──
+  unlock() {
+    const val = document.getElementById('lockInput').value.trim();
+    if (!val) return;
+    const hash = md5(val);
+    if (hash === OWNER_HASH) {
+      localStorage.setItem('sn_owner_verified', 'true');
+      document.getElementById('lockScreen').classList.remove('visible');
+      this._loadAndStart();
+    } else {
+      document.getElementById('lockErr').textContent = 'Incorrect password. Try again.';
+      document.getElementById('lockInput').value = '';
+      setTimeout(() => document.getElementById('lockErr').textContent = '', 2000);
+    }
+  },
+
+  // ── ONBOARDING ──
+  _showOnboarding() {
+    // Render roles
+    const rolesEl = document.getElementById('obRoles');
+    rolesEl.innerHTML = Object.entries(ROLES).map(([key, r]) => `
+      <div class="ob-role-btn" data-role="${key}" onclick="APP.obSelectRole('${key}')">
+        <span class="ob-role-icon">${r.icon}</span>
+        <span class="ob-role-name">${r.label}</span>
+        <div class="ob-role-check">✓</div>
+      </div>
+    `).join('');
+    document.getElementById('onboarding').classList.add('visible');
+  },
+
+  obSelectRole(key) {
+    STATE.obRole = key;
+    document.querySelectorAll('.ob-role-btn').forEach(el => {
+      el.classList.toggle('selected', el.dataset.role === key);
+    });
+    this.obValidate();
+  },
+
+  obValidate() {
+    const name = document.getElementById('obName').value.trim();
+    const btn = document.getElementById('obCta');
+    btn.disabled = !(name.length > 1 && STATE.obRole);
+    btn.style.opacity = btn.disabled ? '0.35' : '1';
+  },
+
+  async startJourney() {
+    const name = document.getElementById('obName').value.trim();
+    if (!name || !STATE.obRole) return;
+    const role = ROLES[STATE.obRole];
+    const firstName = name.split(' ')[0];
+    const profile = {
+      name, role: STATE.obRole, photo: STATE.obPhoto,
+      dob: document.getElementById('obDob').value.trim(),
+      city: document.getElementById('obCity').value.trim(),
+      quote: document.getElementById('obQuote').value.trim() || role.nudge(firstName),
+    };
+    STATE.profile = profile;
+    STATE.limits = role.limits;
+    STATE.transactions = [...MOCK_TRANSACTIONS];
+    DB.set(KEYS.profile, profile);
+    DB.set(KEYS.limits, STATE.limits);
+    DB.set(KEYS.settings, DEFAULT_SETTINGS);
+    DB.set(KEYS.transactions, STATE.transactions);
+    DB.set(KEYS.onboarded, true);
+    document.getElementById('onboarding').classList.remove('visible');
+    this._startApp();
+  },
+
+  // ── START APP ──
+  _startApp() {
+    document.getElementById('app').style.display = 'flex';
+    document.getElementById('app').classList.add('fade-in');
+    this.nav('Home');
+  },
+
+  // ── NAVIGATION ──
+  nav(screen, params) {
+    STATE.screen = screen;
+    if (params) STATE[`${screen.toLowerCase()}Params`] = params;
+
+    document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+    const target = document.getElementById(`screen${screen}`);
+    if (target) { target.classList.add('active'); target.classList.add('fade-in'); setTimeout(()=>target.classList.remove('fade-in'),400); }
+
+    const tabScreens = ['Home','Sort','MyMonth','History','ManualAdd'];
+    document.getElementById('tabBar').style.display = tabScreens.includes(screen) ? 'flex' : 'none';
+
+    document.querySelectorAll('.tab-item').forEach(t => t.classList.toggle('active', t.dataset.tab === screen));
+
+    this[`render${screen}`] && this[`render${screen}`]();
+  },
+
+  // ── SUMMARY ──
+  calcSummary() {
+    const s = {total:0, necessary:0, committed:0, comfortable:0, luxury:0};
+    STATE.transactions.forEach(t => {
+      if (t.bucket && BUCKETS[t.bucket]) {
+        s[t.bucket] = (s[t.bucket]||0) + t.amount;
+        s.total += t.amount;
+      }
+    });
+    return s;
+  },
+
+  pending() { return STATE.transactions.filter(t => !t.bucket).length; },
+
+  // ── HOME ──
+  renderHome() {
+    const summary = this.calcSummary();
+    const p = STATE.profile;
+    const hour = new Date().getHours();
+    const greeting = hour<12?'Good Morning':hour<17?'Good Afternoon':'Good Evening';
+    const firstName = p.name?.split(' ')[0] || 'Friend';
+    const roleInfo = ROLES[p.role] || ROLES.working;
+    const pending = this.pending();
+
+    document.getElementById('homeGreeting').textContent = greeting;
+    document.getElementById('homeName').textContent = firstName;
+    document.getElementById('homeRole').textContent = `${roleInfo.icon} ${roleInfo.label}`;
+    document.getElementById('homeQuote').textContent = p.quote || 'Every rupee has a story. Make yours count today.';
+
+    // Avatar
+    document.getElementById('homeAvatarWrap').innerHTML = this._avatarHTML(p, 60);
+
+    // Total
+    const totalStrip = document.getElementById('homeTotalStrip');
+    if (summary.total > 0) {
+      totalStrip.style.display = 'flex';
+      document.getElementById('homeTotalVal').textContent = '₹ ' + summary.total.toLocaleString('en-IN');
+    } else {
+      totalStrip.style.display = 'none';
+    }
+
+    // Pending banner
+    const banner = document.getElementById('homePendingBanner');
+    if (pending > 0) {
+      banner.style.display = 'flex';
+      document.getElementById('pendingTitle').textContent = `${pending} spend${pending>1?'s':''} waiting to be sorted`;
+    } else {
+      banner.style.display = 'none';
+    }
+
+    // Bucket grid
+    const grid = document.getElementById('bucketGrid');
+    grid.innerHTML = Object.entries(BUCKETS).map(([key, cfg]) => {
+      const amt = summary[key] || 0;
+      const limit = STATE.limits[key] || 0;
+      const isOver = limit > 0 && amt > limit;
+      const isNear = limit > 0 && amt >= limit * 0.8 && !isOver;
+      const pct = limit > 0 ? Math.min((amt/limit)*100, 100) : 0;
+      return `
+        <div class="bucket-card${isOver?' over':''}" onclick="APP.nav('MyMonth')">
+          <div class="bucket-card-bar" style="background:${isOver?'var(--danger)':cfg.color}"></div>
+          <div class="bi ${cfg.cls}" style="width:32px;height:32px;font-size:12px;margin-bottom:6px">${cfg.shape}</div>
+          <div class="bucket-amount" style="color:${isOver?'var(--danger)':cfg.color}">${amt>=1000?`₹${(amt/1000).toFixed(1)}k`:`₹${amt}`}</div>
+          <div class="bucket-name">${cfg.label}</div>
+          ${isOver?`<div class="bucket-status" style="color:var(--danger)">OVER LIMIT</div>`:''}
+          ${isNear?`<div class="bucket-status" style="color:var(--warning)">NEAR LIMIT</div>`:''}
+          ${limit>0?`<div class="bucket-progress-track" style="background:${cfg.light}"><div class="bucket-progress-fill" style="background:${isOver?'var(--danger)':isNear?'var(--warning)':cfg.color};width:${pct}%"></div></div>`:''}
+        </div>
+      `;
+    }).join('');
+
+    // Sort badge
+    const badge = document.getElementById('sortTabBadge');
+    if (pending > 0) {
+      badge.style.display = 'flex';
+      document.getElementById('sortTabCount').textContent = pending;
+    } else {
+      badge.style.display = 'none';
+    }
+  },
+
+  // ── SORT ──
+  renderSort() {
+    const p = STATE.profile;
+    document.getElementById('sortAvatarWrap').innerHTML = this._avatarHTML(p, 36);
+    const unsorted = STATE.transactions.filter(t => !t.bucket);
+    document.getElementById('sortCount').textContent = `${unsorted.length} waiting`;
+    document.getElementById('sortBadge').textContent = unsorted.length;
+
+    const listEl = document.getElementById('sortList');
+    const emptyEl = document.getElementById('sortEmpty');
+
+    if (unsorted.length === 0) {
+      listEl.style.display = 'none';
+      emptyEl.style.display = 'flex';
+      return;
+    }
+    emptyEl.style.display = 'none';
+    listEl.style.display = 'block';
+
+    listEl.innerHTML = unsorted.map(t => {
+      const icon = getMerchantIcon(t.merchant);
+      return `
+        <div class="txn-card fade-in" id="txn_${t.id}">
+          <div class="txn-row">
+            <div class="merchant-icon">${icon || '💸'}</div>
+            <div style="flex:1;min-width:0">
+              <div class="txn-merchant">${this._esc(t.merchant)}</div>
+              <div class="txn-meta">${t.date} · ${t.source==='sms'?'📱 SMS':'✍️ Manual'}</div>
+            </div>
+            <div class="txn-amount">₹${t.amount.toLocaleString('en-IN')}</div>
+          </div>
+          ${t.sms?`<div class="sms-preview">${this._esc(t.sms)}</div>`:''}
+          <div class="bucket-picker">
+            ${Object.entries(BUCKETS).map(([key,cfg])=>`
+              <button class="bucket-pick-btn" style="border-color:${cfg.color};background:${cfg.light}" onclick="APP.classify('${t.id}','${key}')">
+                <span class="bi ${cfg.cls}" style="width:22px;height:22px;font-size:10px">${cfg.shape}</span>
+                <span class="bucket-pick-label" style="color:${cfg.color}">${cfg.label}</span>
+              </button>
+            `).join('')}
+          </div>
+          <div class="txn-delete-row">
+            <button class="txn-delete-btn" onclick="APP.deleteTxn('${t.id}')">Delete</button>
+          </div>
+        </div>
+      `;
+    }).join('');
+  },
+
+  classify(id, bucket) {
+    STATE.transactions = STATE.transactions.map(t => t.id===id ? {...t, bucket} : t);
+    DB.set(KEYS.transactions, STATE.transactions);
+    this.showToast(`Sorted to ${BUCKETS[bucket].label} ${BUCKETS[bucket].shape}`);
+    const card = document.getElementById(`txn_${id}`);
+    if (card) {
+      card.style.opacity = '0';
+      card.style.transform = 'translateX(60px)';
+      card.style.transition = 'all 0.3s ease';
+      setTimeout(() => this.renderSort(), 350);
+    }
+    // Update badge
+    const pending = this.pending();
+    const badge = document.getElementById('sortTabBadge');
+    if (pending > 0) { badge.style.display = 'flex'; document.getElementById('sortTabCount').textContent = pending; }
+    else badge.style.display = 'none';
+  },
+
+  deleteTxn(id) {
+    this.showModal('Delete transaction?', 'This cannot be undone.', [
+      {label:'Cancel', cls:'modal-btn-cancel', action:()=>this.closeModal()},
+      {label:'Delete', cls:'modal-btn-danger', action:()=>{
+        STATE.transactions = STATE.transactions.filter(t => t.id !== id);
+        DB.set(KEYS.transactions, STATE.transactions);
+        this.closeModal();
+        this.renderSort();
+        this.showToast('Transaction deleted');
+      }},
+    ]);
+  },
+
+  // ── MY MONTH ──
+  renderMyMonth() {
+    const summary = this.calcSummary();
+    const total = summary.total || 0;
+    const monthName = new Date().toLocaleDateString('en-IN',{month:'long',year:'numeric'});
+    document.getElementById('monthSubtitle').textContent = monthName;
+
+    const buckets = Object.entries(BUCKETS).map(([key,cfg]) => ({
+      key, ...cfg, amount: summary[key]||0,
+      pct: total>0 ? Math.round(((summary[key]||0)/total)*100) : 0,
+    }));
+
+    // Weekly breakdown
+    const weeks = {W1:{},W2:{},W3:{},W4:{}};
+    STATE.transactions.filter(t=>t.bucket).forEach(t=>{
+      const day = parseInt(t.date)||1;
+      const wk = day<=7?'W1':day<=14?'W2':day<=21?'W3':'W4';
+      weeks[wk][t.bucket] = (weeks[wk][t.bucket]||0) + t.amount;
+    });
+    const weekMax = Math.max(...Object.values(weeks).map(w=>Object.values(w).reduce((a,b)=>a+b,0)), 1);
+
+    const content = document.getElementById('myMonthContent');
+
+    if (total === 0) {
+      content.innerHTML = `<div style="text-align:center;padding:56px 0">
+        <div style="font-size:18px;font-weight:700;color:var(--t1);margin-bottom:8px">Nothing sorted yet</div>
+        <div style="font-size:13px;color:var(--t4);margin-bottom:24px">Sort your spends and see<br>your monthly picture here.</div>
+        <button class="action-btn-primary" style="width:auto;padding:12px 24px" onclick="APP.nav('Sort')">Go sort ›</button>
+      </div>`;
+      return;
+    }
+
+    content.innerHTML = `
+      <div class="color-bar">
+        ${buckets.filter(b=>b.amount>0).map(b=>`<div style="flex:${b.amount};background:${b.color}"></div>`).join('')}
+      </div>
+      <div class="color-legend">
+        ${buckets.filter(b=>b.amount>0).map(b=>`<div class="legend-item"><div class="legend-dot" style="background:${b.color}"></div><div class="legend-label">${b.label} ${b.pct}%</div></div>`).join('')}
+      </div>
+      <div class="total-card">
+        <div class="total-card-label">Total this month</div>
+        <div class="total-card-val">₹ ${total.toLocaleString('en-IN')}</div>
+      </div>
+      <div class="weekly-card">
+        <div class="weekly-title">Week by Week</div>
+        <div class="weekly-bars">
+          ${Object.entries(weeks).map(([wk, data])=>{
+            const wkTotal = Object.values(data).reduce((a,b)=>a+b,0);
+            const barH = weekMax>0?(wkTotal/weekMax)*80:0;
+            return `<div class="week-col">
+              <div class="week-val">${wkTotal>0?Math.round(wkTotal/1000)+'k':''}</div>
+              <div class="week-bar-wrap">
+                <div class="week-bar" style="height:${Math.max(barH,2)}px">
+                  ${Object.entries(BUCKETS).map(([bk,cfg])=>{
+                    const bAmt=data[bk]||0;
+                    const bH=wkTotal>0?(bAmt/wkTotal)*Math.max(barH,2):0;
+                    return bAmt>0?`<div style="height:${bH}px;background:${cfg.color};width:100%"></div>`:'';
+                  }).join('')}
+                </div>
+              </div>
+              <div class="week-label">${wk}</div>
+            </div>`;
+          }).join('')}
+        </div>
+      </div>
+      ${buckets.map(b=>`
+        <div class="bucket-detail-card" style="border-left-color:${b.color}" onclick="APP.showSlice(${JSON.stringify(b).replace(/"/g,'&quot;')})">
+          <span class="bi ${b.cls}" style="width:48px;height:48px;font-size:20px">${b.shape}</span>
+          <div class="bdc-info">
+            <div class="bdc-name">${b.label}</div>
+            <div class="bdc-bar-track"><div class="bdc-bar-fill" style="background:${b.color};width:${b.pct}%"></div></div>
+            <div class="bdc-tag">${b.tag}</div>
+          </div>
+          <div class="bdc-right">
+            <div class="bdc-amount" style="color:${b.color}">₹${b.amount.toLocaleString('en-IN')}</div>
+            <div class="bdc-pct">${b.pct}%</div>
+          </div>
+          <div class="bdc-chevron">›</div>
+        </div>
+      `).join('')}
+    `;
+  },
+
+  showSlice(bucket) {
+    STATE.sliceBucket = typeof bucket === 'string' ? JSON.parse(bucket.replace(/&quot;/g,'"')) : bucket;
+    this.nav('SliceDetail');
+  },
+
+  renderSliceDetail() {
+    const b = STATE.sliceBucket;
+    if (!b) { this.nav('MyMonth'); return; }
+    document.getElementById('sliceTitle').textContent = b.label;
+
+    const reflections = {
+      luxury:{yes:"Glad to hear it. Keep an eye on next week.",no:"That's okay. You will recalibrate."},
+      necessary:{yes:"You are taking care of yourself. Well done.",no:"Essentials sometimes surprise us."},
+      committed:{yes:"Your obligations are under control. Great discipline.",no:"Big month for commitments."},
+      comfortable:{yes:"You enjoyed life this month. That matters too.",no:"Small adjustments lead to big changes."},
+    };
+    const msg = reflections[b.key] || reflections.comfortable;
+
+    document.getElementById('sliceContent').innerHTML = `
+      <div class="slice-center fade-in">
+        <span class="bi ${b.cls}" style="width:100px;height:100px;font-size:40px;margin-bottom:14px">${b.shape}</span>
+        <div style="font-family:var(--font-head);font-size:40px;font-weight:800;color:var(--t1);letter-spacing:-1px;margin-bottom:6px">₹ ${b.amount.toLocaleString('en-IN')}</div>
+        <div style="font-size:14px;color:var(--t4);margin-bottom:24px">${b.pct}% of total this month</div>
+        <div class="slice-ring" style="border-color:${b.color}">
+          <div class="ring-pct" style="color:${b.color}">${b.pct}%</div>
+          <div class="ring-label">of total</div>
+        </div>
+        <div class="yn-card" id="ynCard">
+          <div class="yn-question">Was it a good month?</div>
+          <div class="yn-sub">Be honest with yourself. No judgment here.</div>
+          <div class="yn-btns">
+            <button class="yn-btn" style="background:var(--nec)" onclick="APP.ynAnswer(true)">
+              <span class="yn-emoji">🙂</span>Yes
+            </button>
+            <button class="yn-btn" style="background:var(--t3)" onclick="APP.ynAnswer(false)">
+              <span class="yn-emoji">😕</span>No
+            </button>
+          </div>
+        </div>
+      </div>
+    `;
+    document.getElementById('sliceContent')._ynMsg = msg;
+  },
+
+  ynAnswer(yes) {
+    const msg = document.getElementById('sliceContent')._ynMsg;
+    document.getElementById('ynCard').innerHTML = `
+      <div class="yn-answer">
+        <span class="yn-answer-emoji">${yes?'🙂':'😕'}</span>
+        <div class="yn-answer-text">${yes?msg.yes:msg.no}</div>
+        <button class="yn-change-btn" onclick="APP.renderSliceDetail()">Change answer</button>
+      </div>
+    `;
+  },
+
+  shareMonth() {
+    const summary = this.calcSummary();
+    const total = summary.total;
+    const monthName = new Date().toLocaleDateString('en-IN',{month:'long',year:'numeric'});
+    const lines = Object.entries(BUCKETS).map(([k,cfg])=>`${cfg.label}: ₹${(summary[k]||0).toLocaleString('en-IN')} (${total>0?Math.round(((summary[k]||0)/total)*100):0}%)`);
+    const text = [`My Month — ${monthName}`, `Total: ₹${total.toLocaleString('en-IN')}`, '', ...lines, '', 'Generated by Spend-na', '© Sandeep Hakki · hakki.in · 2026'].join('\n');
+    if (navigator.share) { navigator.share({title:`My Month — ${monthName}`, text}).catch(()=>{}); }
+    else { navigator.clipboard.writeText(text).then(()=>this.showToast('Copied to clipboard!')).catch(()=>this.showToast('Share not supported')); }
+  },
+
+  // ── HISTORY ──
+  renderHistory() {
+    const txns = STATE.transactions;
+    document.getElementById('historyCount').textContent = `${txns.length} transactions`;
+
+    // Filter pills
+    const pillsEl = document.getElementById('histFilterPills');
+    if (!pillsEl.hasChildNodes()) {
+      const pills = [{key:null,label:'All'}, ...Object.entries(BUCKETS).map(([k,v])=>({key:k,label:v.label})), {key:'unsorted',label:'Unsorted'}];
+      pillsEl.innerHTML = pills.map(f=>`
+        <button class="filter-pill${STATE.histFilter===f.key?' active':''}" data-key="${f.key}" 
+          style="${STATE.histFilter===f.key&&f.key&&BUCKETS[f.key]?`border-color:${BUCKETS[f.key].color};background:${BUCKETS[f.key].color}`:(STATE.histFilter===f.key?'border-color:var(--dark);background:var(--dark)':'')}"
+          onclick="APP.setHistFilter('${f.key}')">
+          ${f.label}
+        </button>
+      `).join('');
+    }
+
+    const search = document.getElementById('histSearch')?.value?.toLowerCase() || '';
+    const filtered = txns.filter(t => {
+      const ms = !search || t.merchant.toLowerCase().includes(search) || t.amount.toString().includes(search);
+      const mb = !STATE.histFilter || (STATE.histFilter==='unsorted'?!t.bucket:t.bucket===STATE.histFilter);
+      return ms && mb;
+    });
+
+    const grouped = {};
+    filtered.forEach(t => {
+      const k = t.month || 'Unknown';
+      if (!grouped[k]) grouped[k] = [];
+      grouped[k].push(t);
+    });
+
+    const listEl = document.getElementById('historyList');
+    if (filtered.length === 0) {
+      listEl.innerHTML = '<div style="text-align:center;padding:48px;font-size:15px;color:var(--t3)">No results found</div>';
+      return;
+    }
+    listEl.innerHTML = Object.entries(grouped).map(([month, items]) => `
+      <div class="month-group">
+        <div class="month-label">
+          <div class="month-name">${month}</div>
+          <div class="month-total">₹ ${items.reduce((s,t)=>s+t.amount,0).toLocaleString('en-IN')}</div>
+        </div>
+        ${items.map(t => {
+          const cfg = t.bucket ? BUCKETS[t.bucket] : null;
+          const icon = getMerchantIcon(t.merchant);
+          return `
+            <div class="hist-txn-card" id="htxn_${t.id}">
+              <div class="hist-txn-row">
+                <div class="merchant-icon">${icon||'💸'}</div>
+                <div class="hist-txn-info">
+                  <div class="hist-txn-name">${this._esc(t.merchant)}</div>
+                  <div class="hist-txn-date">${t.date} · ${t.time}</div>
+                  ${cfg?`<div class="hist-txn-bucket" style="color:${cfg.color}">${cfg.label}</div>`:''}
+                </div>
+                <div class="hist-txn-right">
+                  <div class="hist-txn-amount">₹${t.amount.toLocaleString('en-IN')}</div>
+                  <div class="hist-txn-actions">
+                    <button class="hist-edit-btn" onclick="APP.toggleHistEdit('${t.id}')">Edit</button>
+                    <span class="hist-sep">|</span>
+                    <button class="hist-del-btn" onclick="APP.deleteHistTxn('${t.id}')">Delete</button>
+                  </div>
+                </div>
+              </div>
+              <div class="inline-edit" id="hedit_${t.id}" style="display:none">
+                <div class="inline-edit-label">CHANGE BUCKET</div>
+                <div class="inline-bucket-row">
+                  ${Object.entries(BUCKETS).map(([key,bc])=>`
+                    <button class="inline-bucket-btn${t.bucket===key?' selected':''}" 
+                      style="${t.bucket===key?`background:${bc.light};border-color:${bc.color}`:''}"
+                      onclick="APP.histClassify('${t.id}','${key}')">
+                      <span class="bi ${bc.cls}" style="width:22px;height:22px;font-size:10px">${bc.shape}</span>
+                      <span class="inline-bucket-label" style="${t.bucket===key?`color:${bc.color};font-weight:800`:''}">${bc.label}</span>
+                    </button>
+                  `).join('')}
+                </div>
+              </div>
+            </div>
+          `;
+        }).join('')}
+      </div>
+    `).join('');
+  },
+
+  setHistFilter(key) {
+    STATE.histFilter = key === 'null' || key === '' ? null : key;
+    document.getElementById('histFilterPills').innerHTML = '';
+    this.renderHistory();
+  },
+
+  toggleHistEdit(id) {
+    const el = document.getElementById(`hedit_${id}`);
+    if (el) el.style.display = el.style.display === 'none' ? 'block' : 'none';
+  },
+
+  histClassify(id, bucket) {
+    STATE.transactions = STATE.transactions.map(t => t.id===id ? {...t, bucket} : t);
+    DB.set(KEYS.transactions, STATE.transactions);
+    this.showToast(`Sorted to ${BUCKETS[bucket].label}`);
+    document.getElementById('histFilterPills').innerHTML = '';
+    this.renderHistory();
+  },
+
+  deleteHistTxn(id) {
+    this.showModal('Delete transaction?', 'This cannot be undone.', [
+      {label:'Cancel', cls:'modal-btn-cancel', action:()=>this.closeModal()},
+      {label:'Delete', cls:'modal-btn-danger', action:()=>{
+        STATE.transactions = STATE.transactions.filter(t => t.id !== id);
+        DB.set(KEYS.transactions, STATE.transactions);
+        this.closeModal();
+        document.getElementById('histFilterPills').innerHTML = '';
+        this.renderHistory();
+        this.showToast('Deleted');
+      }},
+    ]);
+  },
+
+  exportHTML() {
+    const txns = STATE.transactions;
+    const total = txns.reduce((s,t)=>s+t.amount,0);
+    const month = new Date().toLocaleDateString('en-IN',{month:'long',year:'numeric'});
+    const rows = txns.map(t => {
+      const cfg = t.bucket ? BUCKETS[t.bucket] : null;
+      return `<tr><td style="padding:10px 12px;border-bottom:1px solid #f1f5f9;font-size:13px;color:#334155">${t.date}</td><td style="padding:10px 12px;border-bottom:1px solid #f1f5f9;font-size:13px;color:#0f172a;font-weight:600">${t.merchant}</td><td style="padding:10px 12px;border-bottom:1px solid #f1f5f9;font-size:13px;font-weight:700;text-align:right">₹${t.amount.toLocaleString('en-IN')}</td><td style="padding:10px 12px;border-bottom:1px solid #f1f5f9;text-align:center"><span style="background:${cfg?cfg.light:'#f1f5f9'};color:${cfg?cfg.color:'#94a3b8'};font-size:11px;font-weight:700;padding:3px 8px;border-radius:6px">${cfg?cfg.label:'Unsorted'}</span></td></tr>`;
+    }).join('');
+    const bucketCards = Object.entries(BUCKETS).map(([k,cfg])=>{
+      const amt = txns.filter(t=>t.bucket===k).reduce((s,t)=>s+t.amount,0);
+      const pct = total>0?Math.round((amt/total)*100):0;
+      return `<div style="flex:1;min-width:140px;background:${cfg.light};border-radius:14px;padding:14px"><div style="font-size:11px;color:${cfg.color};font-weight:700;letter-spacing:1px;margin-bottom:6px">${cfg.label.toUpperCase()}</div><div style="font-size:20px;font-weight:800;color:${cfg.color}">₹${amt.toLocaleString('en-IN')}</div><div style="font-size:11px;color:#64748b;margin-top:4px">${pct}% of total</div></div>`;
+    }).join('');
+    const html = `<!DOCTYPE html><html><head><meta charset="utf-8"><title>Spend-na — ${month}</title></head><body style="font-family:-apple-system,sans-serif;background:#f8fafc;margin:0;padding:20px"><div style="max-width:700px;margin:0 auto"><div style="background:linear-gradient(135deg,#080e1d,#1f2937);border-radius:20px;padding:24px;margin-bottom:20px"><div style="font-size:26px;font-weight:900;color:#06b6d4">Spend-na</div><div style="font-size:14px;color:#94a3b8;margin-top:4px">Monthly Report — ${month}</div><div style="font-size:38px;font-weight:800;color:#fff;margin-top:16px">₹${total.toLocaleString('en-IN')}</div></div><div style="display:flex;flex-wrap:wrap;gap:12px;margin-bottom:20px">${bucketCards}</div><div style="background:white;border-radius:16px;overflow:hidden"><div style="padding:16px 20px;border-bottom:1px solid #f1f5f9"><div style="font-size:15px;font-weight:800;color:#0f172a">All Transactions</div></div><table style="width:100%;border-collapse:collapse"><tbody>${rows}</tbody></table></div><div style="text-align:center;padding:24px;color:#94a3b8;font-size:11px">Generated by Spend-na · © Sandeep Hakki · hakki.in · 2026</div></div></body></html>`;
+    const blob = new Blob([html], {type:'text/html'});
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a'); a.href=url; a.download=`spend-na-${month.replace(' ','-')}.html`; a.click();
+    URL.revokeObjectURL(url);
+    this.showToast('Report downloaded!');
+  },
+
+  // ── MANUAL ADD ──
+  renderManualAdd() {
+    STATE.manualSource = null;
+    STATE.manualBucket = null;
+    document.getElementById('addAmount').value = '';
+    document.getElementById('addDesc').value = '';
+
+    const sources = [{key:'cash',label:'Cash',icon:'₹'},{key:'upi',label:'UPI',icon:'U'},{key:'others',label:"Others' UPI",icon:'O'},{key:'hand_loan',label:'Hand Loan',icon:'L'}];
+    document.getElementById('sourceGrid').innerHTML = sources.map(o=>`
+      <button class="source-btn" data-source="${o.key}" onclick="APP.selectSource('${o.key}')">
+        <span class="source-icon">${o.icon}</span>
+        <span class="source-label">${o.label}</span>
+      </button>
+    `).join('');
+
+    document.getElementById('bucketOptionGrid').innerHTML = Object.entries(BUCKETS).map(([key,cfg])=>`
+      <button class="bucket-option-btn" data-bucket="${key}" onclick="APP.selectBucket('${key}')">
+        <span class="bi ${cfg.cls}" style="width:34px;height:34px;font-size:14px">${cfg.shape}</span>
+        <div class="bucket-opt-name" style="color:var(--t2)">${cfg.label}</div>
+        <div class="bucket-opt-desc">${cfg.tag}</div>
+        <div class="bucket-opt-check" style="background:${cfg.color}">✓</div>
+      </button>
+    `).join('');
+
+    this.validateManual();
+  },
+
+  selectSource(key) {
+    STATE.manualSource = key;
+    document.querySelectorAll('.source-btn').forEach(b => b.classList.toggle('selected', b.dataset.source === key));
+    this.validateManual();
+  },
+
+  selectBucket(key) {
+    STATE.manualBucket = key;
+    document.querySelectorAll('.bucket-option-btn').forEach(b => {
+      const isSelected = b.dataset.bucket === key;
+      const cfg = BUCKETS[b.dataset.bucket];
+      b.classList.toggle('selected', isSelected);
+      b.style.borderColor = isSelected ? cfg.color : 'var(--cardB)';
+      b.style.background = isSelected ? cfg.light : 'var(--card)';
+      b.querySelector('.bucket-opt-name').style.color = isSelected ? cfg.color : 'var(--t2)';
+      b.querySelector('.bucket-opt-name').style.fontWeight = isSelected ? '800' : '600';
+    });
+    this.validateManual();
+  },
+
+  validateManual() {
+    const amount = parseFloat(document.getElementById('addAmount')?.value || '0');
+    const ok = amount > 0 && STATE.manualSource && STATE.manualBucket;
+    const btn = document.getElementById('addSaveBtn');
+    if (btn) { btn.disabled = !ok; btn.style.opacity = ok ? '1' : '0.3'; }
+  },
+
+  saveManual() {
+    const amount = parseFloat(document.getElementById('addAmount').value);
+    const desc = document.getElementById('addDesc').value.trim();
+    if (!amount || amount <= 0 || !STATE.manualSource || !STATE.manualBucket) return;
+    const now = new Date();
+    const t = {
+      id: `m_${Date.now()}_${Math.random().toString(36).slice(2,7)}`,
+      merchant: desc || 'Manual Entry',
+      amount, source: 'manual', bucket: STATE.manualBucket,
+      time: now.toLocaleTimeString('en-IN',{hour:'2-digit',minute:'2-digit'}),
+      date: now.toLocaleDateString('en-IN',{day:'2-digit',month:'short'}),
+      month: now.toLocaleDateString('en-IN',{month:'short',year:'numeric'}),
+    };
+    STATE.transactions = [t, ...STATE.transactions];
+    DB.set(KEYS.transactions, STATE.transactions);
+    this.showToast(`₹${amount} added to ${BUCKETS[STATE.manualBucket].label}`);
+    this.nav('Home');
+  },
+
+  // ── LIMITS ──
+  renderLimits() {
+    STATE.limitVals = {...STATE.limits};
+    const summary = this.calcSummary();
+    const content = document.getElementById('limitsContent');
+    content.innerHTML = Object.entries(BUCKETS).map(([key,cfg]) => {
+      const amt = summary[key]||0;
+      const limit = STATE.limitVals[key]||0;
+      const pct = limit>0?Math.min((amt/limit)*100,100):0;
+      const isOver = limit>0&&amt>limit;
+      const isNear = limit>0&&amt>=limit*0.8&&!isOver;
+      return `
+        <div class="limit-card" style="border-left-color:${cfg.color}">
+          <div class="limit-header">
+            <span class="bi ${cfg.cls}" style="width:38px;height:38px;font-size:16px">${cfg.shape}</span>
+            <div class="limit-info">
+              <div class="limit-name">${cfg.label}</div>
+              <div class="limit-tag">${cfg.tag}</div>
+            </div>
+            ${isOver?`<span class="limit-status" style="color:var(--danger)">OVER</span>`:''}
+            ${isNear?`<span class="limit-status" style="color:var(--warning)">NEAR</span>`:''}
+          </div>
+          <div class="limit-input-row">
+            <span class="limit-symbol">₹</span>
+            <input class="limit-input" style="color:${cfg.color};border-color:${isOver?'var(--danger)':isNear?'var(--warning)':'var(--cardB)'}" 
+              id="limit_${key}" type="number" value="${STATE.limitVals[key]||0}" 
+              oninput="STATE.limitVals['${key}']=parseFloat(this.value)||0">
+          </div>
+          ${limit>0?`<div class="limit-progress-track" style="background:${cfg.light}"><div class="limit-progress-fill" style="background:${isOver?'var(--danger)':isNear?'var(--warning)':cfg.color};width:${pct}%"></div></div><div class="limit-progress-text">₹${amt.toLocaleString('en-IN')} of ₹${limit.toLocaleString('en-IN')} (${Math.round(pct)}%)</div>`:''}
+          <div class="quick-btns">
+            ${[5000,10000,15000,25000,30000].map(q=>`
+              <button class="quick-btn" style="border-color:${cfg.mid};background:${STATE.limitVals[key]===q?cfg.color:cfg.light};color:${STATE.limitVals[key]===q?'#fff':cfg.color}"
+                onclick="STATE.limitVals['${key}']=${q};document.getElementById('limit_${key}').value=${q};APP.renderLimits()">
+                ${q>=1000?`${q/1000}k`:q}
+              </button>
+            `).join('')}
+          </div>
+        </div>
+      `;
+    }).join('') + `
+      <button class="reset-btn" onclick="APP.resetLimits()">Reset to defaults</button>
+    `;
+  },
+
+  saveLimits() {
+    STATE.limits = {...STATE.limitVals};
+    DB.set(KEYS.limits, STATE.limits);
+    this.showToast('Limits saved ✓');
+    this.nav('Home');
+  },
+
+  resetLimits() {
+    this.showModal('Reset to defaults?', 'This will restore the original limit values.', [
+      {label:'Cancel', cls:'modal-btn-cancel', action:()=>this.closeModal()},
+      {label:'Reset', cls:'modal-btn-secondary', action:()=>{
+        STATE.limitVals = {...DEFAULT_LIMITS};
+        this.closeModal();
+        this.renderLimits();
+        this.showToast('Limits reset');
+      }},
+    ]);
+  },
+
+  // ── SETTINGS ──
+  renderSettings() {
+    STATE.settingsEdit = {...STATE.settings};
+    const p = STATE.profile;
+    const content = document.getElementById('settingsContent');
+    content.innerHTML = `
+      <!-- PROFILE -->
+      <div class="accordion open" id="accProfile">
+        <div class="accordion-header" onclick="APP.toggleAccordion('accProfile')">
+          <div class="accordion-title">👤 My Profile</div>
+          <div class="accordion-toggle">+</div>
+        </div>
+        <div class="accordion-body">
+          <div class="profile-photo-wrap" onclick="APP.pickPhoto('settings')">
+            <div class="profile-photo-circle" id="settingsPhotoCircle">
+              ${p.photo?`<img src="${p.photo}" alt="photo">`:`<span style="font-family:var(--font-head);font-size:28px;font-weight:800;color:var(--white)">${(p.name?.[0]||'S').toUpperCase()}</span>`}
+            </div>
+            <div class="profile-photo-add">+</div>
+          </div>
+          ${[{label:'Name',key:'name',type:'text'},{label:'City',key:'city',type:'text'},{label:'Date of Birth',key:'dob',type:'text',placeholder:'DD/MM/YYYY'}].map(f=>`
+            <div class="settings-field-label">${f.label.toUpperCase()}</div>
+            <input class="settings-input" id="sp_${f.key}" type="${f.type}" value="${this._esc(p[f.key]||'')}" placeholder="${f.placeholder||f.label}">
+          `).join('')}
+          <div class="settings-field-label">MY ROLE</div>
+          ${Object.entries(ROLES).map(([key,r])=>`
+            <div class="settings-role-btn${p.role===key?' selected':''}" data-role="${key}" onclick="APP._settingsSelectRole('${key}')">
+              <span>${r.icon}</span>
+              <span class="settings-role-name">${r.label}</span>
+              ${p.role===key?'<span style="color:var(--brand);font-weight:700;margin-left:auto">✓</span>':''}
+            </div>
+          `).join('')}
+          <div class="settings-field-label">MY DAILY QUOTE</div>
+          <textarea class="settings-textarea" id="sp_quote" placeholder="Something that motivates you...">${this._esc(p.quote||'')}</textarea>
+        </div>
+      </div>
+
+      <!-- NOTIFICATIONS -->
+      <div class="accordion" id="accNotif">
+        <div class="accordion-header" onclick="APP.toggleAccordion('accNotif')">
+          <div class="accordion-title">🔔 Notifications</div>
+          <div class="accordion-toggle">+</div>
+        </div>
+        <div class="accordion-body">
+          <div class="toggle-row">
+            <div><div class="toggle-label">Morning reminder</div></div>
+            <button class="toggle-btn${STATE.settingsEdit.notifEnabled?' on':''}" id="toggleNotif" onclick="APP._toggleSetting('notifEnabled','toggleNotif')">
+              <div class="toggle-knob"></div>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- SOUND -->
+      <div class="accordion" id="accSound">
+        <div class="accordion-header" onclick="APP.toggleAccordion('accSound')">
+          <div class="accordion-title">🔊 Sound Effects</div>
+          <div class="accordion-toggle">+</div>
+        </div>
+        <div class="accordion-body">
+          <div class="toggle-row">
+            <div>
+              <div class="toggle-label">Coin sound on classify</div>
+              <div class="toggle-sub">Respects your phone's silent mode</div>
+            </div>
+            <button class="toggle-btn${STATE.settingsEdit.soundEnabled?' on':''}" id="toggleSound" onclick="APP._toggleSetting('soundEnabled','toggleSound')">
+              <div class="toggle-knob"></div>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- DATA -->
+      <div class="accordion" id="accData">
+        <div class="accordion-header" onclick="APP.toggleAccordion('accData')">
+          <div class="accordion-title">🗄️ My Data</div>
+          <div class="accordion-toggle">+</div>
+        </div>
+        <div class="accordion-body">
+          <div style="padding-top:10px">
+            <button class="data-action-btn" style="background:var(--brandL)" onclick="APP.backupData()">
+              <span class="data-action-icon" style="color:var(--brandD)">↑</span>
+              <div><div class="data-action-title" style="color:var(--brandD)">Backup my data</div><div class="data-action-sub">Save JSON file to your device</div></div>
+            </button>
+            <button class="data-action-btn" style="background:var(--bg);border:1.5px solid var(--cardB)" onclick="APP.restoreData()">
+              <span class="data-action-icon" style="color:var(--t2)">↓</span>
+              <div><div class="data-action-title" style="color:var(--t1)">Restore from backup</div><div class="data-action-sub">Merges with existing data. No duplicates.</div></div>
+            </button>
+            <button class="share-new-app-btn" onclick="APP.shareBlankApp()">
+              🐦 Share Blank App to Someone
+            </button>
+            <button class="data-action-btn" style="background:var(--luxL);border:1.5px solid var(--luxM)" onclick="APP.clearAllData()">
+              <span class="data-action-icon" style="color:var(--danger)">✕</span>
+              <div><div class="data-action-title" style="color:var(--danger)">Clear all data</div><div class="data-action-sub">Backup first is recommended</div></div>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- HOW IT WORKS -->
+      <div class="accordion" id="accHow">
+        <div class="accordion-header" onclick="APP.toggleAccordion('accHow')">
+          <div class="accordion-title">❓ How It Works</div>
+          <div class="accordion-toggle">+</div>
+        </div>
+        <div class="accordion-body">
+          ${[
+            {q:"What is Spend-na?", a:"Not a budget app. Not a tracker. A mirror for your money. It makes you see — clearly — where every rupee goes, sorted into 4 honest buckets."},
+            {q:"How do the 4 buckets work?", a:"Necessary = survival needs. Committed = obligations you can't skip. Comfortable = lifestyle. Luxury = splurge. Sort every spend honestly."},
+            {q:"Does my data go to any server?", a:"Never. All data lives only on your device. No account. No cloud. No tracking. Ever."},
+            {q:"What is the Yes/No question?", a:"After sorting your month, tap any bucket and ask yourself: was it a good month? The answer is for you — not the app."},
+            {q:"How do I share this app?", a:"Use 'Share Blank App to Someone' in Data settings. It shares the app file with no personal data — your data stays private."},
+          ].map(item=>`<div class="faq-item"><div class="faq-q">${item.q}</div><div class="faq-a">${item.a}</div></div>`).join('')}
+        </div>
+      </div>
+
+      <!-- ABOUT -->
+      <div class="accordion" id="accAbout">
+        <div class="accordion-header" onclick="APP.toggleAccordion('accAbout')">
+          <div class="accordion-title">🐦 About Spend-na</div>
+          <div class="accordion-toggle">+</div>
+        </div>
+        <div class="accordion-body">
+          <div class="about-center">
+            <div style="font-size:48px;margin-bottom:12px">🐦</div>
+            <div style="font-family:var(--font-head);font-size:22px;font-weight:900;color:var(--brand);letter-spacing:-0.5px">Spend-na</div>
+            <div style="font-size:12px;color:var(--t4);margin-top:4px">Version 1.0 · PWA</div>
+            <div class="about-divider"></div>
+            <div class="about-built">Built with ♥ by Sandeep Hakki<br>for every Indian who wants to<br>understand their money.</div>
+            <a href="http://www.hakki.in" target="_blank" class="about-link">www.hakki.in</a>
+            <div class="about-copy">© 2026 Sandeep Hakki<br>All rights reserved<br>Spend-na is a product of Hakki Consulting</div>
+          </div>
+        </div>
+      </div>
+    `;
+  },
+
+  toggleAccordion(id) {
+    document.getElementById(id).classList.toggle('open');
+  },
+
+  _settingsSelectRole(key) {
+    document.querySelectorAll('.settings-role-btn').forEach(b => {
+      const isSelected = b.dataset.role === key;
+      b.classList.toggle('selected', isSelected);
+    });
+    STATE.profile.role = key;
+  },
+
+  _toggleSetting(key, btnId) {
+    STATE.settingsEdit[key] = !STATE.settingsEdit[key];
+    document.getElementById(btnId).classList.toggle('on', STATE.settingsEdit[key]);
+  },
+
+  saveSettings() {
+    const p = STATE.profile;
+    p.name = document.getElementById('sp_name')?.value?.trim() || p.name;
+    p.city = document.getElementById('sp_city')?.value?.trim() || p.city;
+    p.dob = document.getElementById('sp_dob')?.value?.trim() || p.dob;
+    p.quote = document.getElementById('sp_quote')?.value?.trim() || p.quote;
+    STATE.profile = p;
+    STATE.settings = {...STATE.settingsEdit};
+    DB.set(KEYS.profile, STATE.profile);
+    DB.set(KEYS.settings, STATE.settings);
+    this.showToast('Settings saved ✓');
+    this.nav('Home');
+  },
+
+  // ── BACKUP/RESTORE ──
+  backupData() {
+    const payload = {
+      version:2, exportedAt:new Date().toISOString(), app:'Spend-na',
+      author:'© Sandeep Hakki · hakki.in',
+      profile:{name:STATE.profile.name, city:STATE.profile.city, role:STATE.profile.role},
+      limits:STATE.limits, transactions:STATE.transactions,
+    };
+    const json = JSON.stringify(payload, null, 2);
+    const blob = new Blob([json], {type:'application/json'});
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a'); a.href=url; a.download=`spend-na-backup-${Date.now()}.json`; a.click();
+    URL.revokeObjectURL(url);
+    this.showToast('Backup downloaded!');
+  },
+
+  restoreData() {
+    const input = document.createElement('input');
+    input.type = 'file'; input.accept = '.json,application/json';
+    input.onchange = async (e) => {
+      const file = e.target.files[0];
+      if (!file) return;
+      try {
+        const text = await file.text();
+        const data = JSON.parse(text);
+        if (!data.transactions || !Array.isArray(data.transactions)) {
+          this.showToast('Invalid backup file'); return;
+        }
+        this.showModal('Restore backup?',
+          `Found ${data.transactions.length} transactions. Merge with existing data?`,
+          [
+            {label:'Cancel', cls:'modal-btn-cancel', action:()=>this.closeModal()},
+            {label:'Restore', cls:'modal-btn-primary', action:()=>{
+              const map = new Map();
+              [...STATE.transactions, ...data.transactions].forEach(t => { if (!map.has(t.id)) map.set(t.id, t); });
+              STATE.transactions = Array.from(map.values());
+              DB.set(KEYS.transactions, STATE.transactions);
+              this.closeModal();
+              this.showToast(`${STATE.transactions.length} transactions loaded`);
+            }},
+          ]
+        );
+      } catch { this.showToast('Could not read file'); }
+    };
+    input.click();
+  },
+
+  shareBlankApp() {
+    // Create a copy of this HTML file with no data — just download
+    this.showModal('Share Blank App',
+      'This will download a clean copy of the app with no personal data. Share that file with anyone!',
+      [
+        {label:'Cancel', cls:'modal-btn-cancel', action:()=>this.closeModal()},
+        {label:'Download blank app', cls:'modal-btn-primary', action:()=>{
+          this.closeModal();
+          // Fetch the current page HTML and strip localStorage calls
+          fetch(window.location.href)
+            .then(r => r.text())
+            .then(html => {
+              // Replace the OWNER_HASH with a fresh value so blank app has no owner
+              const cleanHtml = html.replace(
+                /localStorage\.setItem\('sn_owner_verified'.*?\)/g,
+                'void(0)'
+              );
+              const blob = new Blob([cleanHtml], {type:'text/html'});
+              const url = URL.createObjectURL(blob);
+              const a = document.createElement('a'); a.href=url; a.download='spend-na-app.html'; a.click();
+              URL.revokeObjectURL(url);
+              this.showToast('Blank app downloaded!');
+            })
+            .catch(() => {
+              // Fallback: explain
+              this.showToast('Save this HTML file and share it!');
+            });
+        }},
+      ]
+    );
+  },
+
+  clearAllData() {
+    this.showModal('Clear all data?',
+      'This will delete all your transactions and settings. This cannot be undone.',
+      [
+        {label:'Cancel', cls:'modal-btn-cancel', action:()=>this.closeModal()},
+        {label:'Backup first', cls:'modal-btn-secondary', action:()=>{ this.closeModal(); this.backupData(); }},
+        {label:'Clear everything', cls:'modal-btn-danger', action:()=>{
+          DB.clear();
+          localStorage.removeItem('sn_owner_verified');
+          this.closeModal();
+          location.reload();
+        }},
+      ]
+    );
+  },
+
+  // ── PHOTO PICKER ──
+  pickPhoto(context) {
+    const input = document.createElement('input');
+    input.type = 'file'; input.accept = 'image/*';
+    input.onchange = (e) => {
+      const file = e.target.files[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = (ev) => {
+        const uri = ev.target.result;
+        if (context === 'ob') {
+          STATE.obPhoto = uri;
+          const circle = document.getElementById('obPhotoCircle');
+          circle.innerHTML = `<img src="${uri}" alt="photo" style="width:100%;height:100%;object-fit:cover">`;
+          circle.classList.add('has-photo');
+          document.getElementById('obPhotoCheck').classList.add('visible');
+        } else if (context === 'settings') {
+          STATE.profile.photo = uri;
+          const circle = document.getElementById('settingsPhotoCircle');
+          if (circle) circle.innerHTML = `<img src="${uri}" alt="photo">`;
+        }
+      };
+      reader.readAsDataURL(file);
+    };
+    input.click();
+  },
+
+  // ── MODAL ──
+  showModal(title, sub, buttons) {
+    document.getElementById('modalTitle').textContent = title;
+    document.getElementById('modalSub').textContent = sub;
+    document.getElementById('modalBtns').innerHTML = buttons.map((b,i) => 
+      `<button class="modal-btn ${b.cls}" id="mb_${i}">${b.label}</button>`
+    ).join('');
+    buttons.forEach((b,i) => { document.getElementById(`mb_${i}`).onclick = b.action; });
+    document.getElementById('modalOverlay').classList.add('visible');
+  },
+
+  closeModal() { document.getElementById('modalOverlay').classList.remove('visible'); },
+
+  // ── TOAST ──
+  showToast(msg) {
+    const el = document.getElementById('toast');
+    el.textContent = msg;
+    el.classList.add('show');
+    setTimeout(() => el.classList.remove('show'), 2000);
+  },
+
+  // ── HELPERS ──
+  _esc(s) { return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); },
+
+  _avatarHTML(profile, size) {
+    const letter = (profile?.name?.[0]||'S').toUpperCase();
+    if (profile?.photo) {
+      return `<div class="user-avatar" style="width:${size}px;height:${size}px"><img src="${profile.photo}" alt="avatar"></div>`;
+    }
+    return `<div class="user-avatar" style="width:${size}px;height:${size}px"><span class="user-avatar-letter" style="font-size:${size*0.38}px">${letter}</span></div>`;
+  },
+
+};
+
+// ── KEYBOARD SUPPORT ──
+document.getElementById('lockInput').addEventListener('keydown', e => { if (e.key === 'Enter') APP.unlock(); });
+
+// ── BOOT ──
+APP.init();
+</script>
+</body>
+</html>
