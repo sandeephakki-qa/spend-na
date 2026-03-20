@@ -729,6 +729,127 @@ img { display: block; max-width: 100%; }
 /* UTILITY */
 .fade-up { animation: fu .3s ease; }
 @keyframes fu { from{opacity:0;transform:translateY(8px)} to{opacity:1;transform:translateY(0)} }
+
+/* ═══════════════════════════════════════════════════
+   TAGS
+═══════════════════════════════════════════════════ */
+.tag-section { padding: 0 16px; margin-top: 18px; padding-bottom: 8px; }
+.tag-chips { display: flex; flex-wrap: wrap; gap: 7px; margin-top: 9px; }
+.tag-chip {
+  display: inline-flex; align-items: center; gap: 4px;
+  padding: 10px 13px; border-radius: 20px;
+  min-height: 44px;
+  font-size: 12px; font-weight: 600;
+  border: 1.5px solid var(--fog);
+  background: var(--card); color: var(--slate);
+  cursor: pointer; transition: all .12s;
+  font-family: var(--ff);
+}
+.tag-chip.on {
+  background: var(--tealL); border-color: var(--teal);
+  color: var(--tealD);
+}
+.tag-chip:active { transform: scale(.93); }
+.tag-chip-custom {
+  display: flex; align-items: center; gap: 6px;
+  margin-top: 8px;
+}
+.tag-custom-in {
+  flex: 1; background: var(--card); border: 1.5px solid var(--fog);
+  border-radius: 20px; padding: 7px 13px; font-size: 13px;
+  color: var(--ink); outline: none; font-family: var(--ff);
+  -webkit-user-select: text; user-select: text;
+}
+.tag-custom-in:focus { border-color: var(--teal); }
+.tag-add-btn {
+  background: var(--teal); border: none; border-radius: 20px;
+  padding: 7px 14px; font-size: 12px; font-weight: 700;
+  color: #fff; cursor: pointer; white-space: nowrap;
+  font-family: var(--ff);
+}
+.tag-pill {
+  display: inline-flex; align-items: center; gap: 3px;
+  padding: 3px 8px; border-radius: 12px;
+  font-size: 10px; font-weight: 700;
+  background: var(--tealL); color: var(--tealD);
+  border: 1px solid var(--tealM);
+}
+.tag-pill-rm {
+  background: none; border: none; cursor: pointer;
+  color: var(--tealD); font-size: 11px; padding: 0;
+  line-height: 1; font-family: var(--ff);
+}
+/* Tag filter pill in history */
+.fp.tag-fp {
+  background: var(--tealL); border-color: var(--teal);
+  color: var(--tealD);
+}
+/* Tag summary card in Insights */
+.tag-sum-card {
+  background: var(--card); border-radius: var(--rL);
+  padding: 16px; margin-bottom: 12px;
+  border: 1px solid var(--fog); box-shadow: var(--sh);
+}
+.tag-sum-row {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 9px 0; border-bottom: 1px solid var(--fog);
+}
+.tag-sum-row:last-child { border-bottom: none; }
+.tag-sum-name { font-size: 13px; font-weight: 700; color: var(--ink); }
+.tag-sum-count { font-size: 11px; color: var(--slate); margin-top: 1px; }
+.tag-sum-amt { font-size: 15px; font-weight: 800; color: var(--teal); }
+
+/* ═══════════════════════════════════════════════════
+   SOURCES
+═══════════════════════════════════════════════════ */
+.src-balance-pill {
+  display: flex; flex-direction: column; gap: 6px;
+  background: var(--card); border-radius: var(--rL);
+  padding: 16px; margin-bottom: 16px;
+  border: 1px solid var(--fog); box-shadow: var(--sh);
+}
+.src-pill-row { display: flex; justify-content: space-between; align-items: center; }
+.src-pill-label { font-size: 10px; font-weight: 700; color: var(--slate); letter-spacing: 2px; }
+.src-pill-amt { font-size: 22px; font-weight: 800; }
+.src-pill-sub { display: flex; gap: 12px; margin-top: 4px; }
+.src-pill-sub-item { font-size: 11px; color: var(--slate); }
+.src-status-pill {
+  display: inline-flex; align-items: center; gap: 5px;
+  padding: 5px 12px; border-radius: 20px;
+  font-size: 11px; font-weight: 700;
+}
+.src-entry {
+  background: var(--card); border-radius: var(--r);
+  padding: 13px; border: 1px solid var(--fog);
+  display: flex; gap: 10px; align-items: flex-start;
+  margin-bottom: 8px; box-shadow: var(--sh);
+}
+.src-entry-ic {
+  width: 38px; height: 38px; border-radius: 11px;
+  background: var(--tealL); display: flex;
+  align-items: center; justify-content: center;
+  font-size: 16px; flex-shrink: 0;
+}
+.src-entry-info { flex: 1; min-width: 0; }
+.src-entry-name { font-size: 14px; font-weight: 700; color: var(--ink); }
+.src-entry-meta { font-size: 11px; color: var(--slate); margin-top: 2px; }
+.src-entry-note { font-size: 11px; color: var(--mist); margin-top: 2px; font-style: italic; }
+.src-entry-right { text-align: right; flex-shrink: 0; }
+.src-entry-amt { font-size: 16px; font-weight: 800; }
+.src-entry-acts { display: flex; gap: 6px; justify-content: flex-end; margin-top: 6px; }
+.src-entry-act { font-size: 11px; font-weight: 700; background: none; border: none;
+  cursor: pointer; padding: 3px 6px; border-radius: 6px; font-family: var(--ff); }
+.src-entry-act.edit { color: var(--teal); }
+.src-entry-act.del  { color: var(--err); }
+.src-carry { border-left: 3px solid var(--tealM); }
+.src-month-hdr {
+  font-size: 10px; font-weight: 700; color: var(--mist);
+  letter-spacing: 2.5px; margin: 16px 0 8px;
+}
+.src-empty {
+  display: flex; flex-direction: column; align-items: center;
+  justify-content: center; padding: 60px 24px; text-align: center;
+}
 </style>
 </head>
 <body>
@@ -1024,6 +1145,7 @@ img { display: block; max-width: 100%; }
           <button class="srch-clr" onclick="document.getElementById('srchIn').value='';APP.rHist()">✕</button>
         </div>
         <div class="fbar" id="fBar"></div>
+        <div id="filterNote" style="font-size:10px;color:var(--mist);padding:0 0 4px;display:none">One filter active at a time — tap again to clear</div>
       </div>
       <div class="scr-body" id="histList" style="padding:12px 16px"></div>
     </div>
@@ -1048,9 +1170,21 @@ img { display: block; max-width: 100%; }
           <span class="add-lbl">HOW DID YOU PAY?</span>
           <div class="srcs" id="srcGrid"></div>
         </div>
-        <div class="add-sec" style="margin-top:18px;padding-bottom:40px">
+        <div class="add-sec" style="margin-top:18px">
           <span class="add-lbl">WHICH BUCKET?</span>
           <div class="bkts" id="bktGrid"></div>
+        </div>
+        <div class="tag-section" style="padding-bottom:40px">
+          <span class="add-lbl">TAGS <span style="font-size:9px;color:var(--mist);font-weight:500;letter-spacing:0">optional</span></span>
+          <div class="tag-chips" id="addTagChips"></div>
+          <div class="tag-chip-custom" style="margin-top:10px">
+            <input class="tag-custom-in" id="addTagCustom" type="text"
+              inputmode="text" maxlength="30" placeholder="Custom tag…"
+              autocorrect="off" autocapitalize="none" spellcheck="false"
+              onkeydown="if(event.key==='Enter'){event.preventDefault();APP.addCustomTag();}">
+            <button class="tag-add-btn" onclick="APP.addCustomTag()">Add</button>
+          </div>
+          <div class="tag-chips" id="addTagSelected" style="margin-top:8px"></div>
         </div>
       </div>
     </div>
@@ -1075,6 +1209,18 @@ img { display: block; max-width: 100%; }
       <div class="scr-body" id="setBody" style="padding:16px"></div>
     </div>
 
+    <!-- SOURCES -->
+    <div class="scr" id="sSources">
+      <div style="background:var(--card);padding:12px 16px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--fog);flex-shrink:0;box-shadow:var(--sh)">
+        <div>
+          <div style="font-size:22px;font-weight:800;color:var(--ink)">Sources</div>
+          <div style="font-size:11px;color:var(--slate);margin-top:1px" id="sourcesSub">Where your money comes from</div>
+        </div>
+        <button onclick="APP.openAddSource()" style="background:var(--teal);border:none;border-radius:10px;padding:8px 14px;font-size:13px;font-weight:700;color:#fff;cursor:pointer">+ Add</button>
+      </div>
+      <div class="scr-body" id="sourcesBody" style="padding:16px"></div>
+    </div>
+
   </div><!-- /screens -->
 
   <!-- TAB BAR -->
@@ -1091,6 +1237,9 @@ img { display: block; max-width: 100%; }
     </button>
     <button class="tab" data-t="history" onclick="APP.go('history')" aria-label="History">
       <div class="tab-gl">≡</div><div class="tab-lbl">History</div>
+    </button>
+    <button class="tab" data-t="sources" onclick="APP.go('sources')" aria-label="Sources">
+      <div class="tab-gl">↑</div><div class="tab-lbl">Sources</div>
     </button>
     <button class="tab" data-t="add" onclick="APP.go('add')" aria-label="Add Spend">
       <div class="tab-fab">+</div><div class="tab-lbl">Add</div>
@@ -1157,6 +1306,13 @@ const ICONS=[
   {kw:['rent','maintenance','society','flat','house','room','pg'],i:'🏠'},
   {kw:['salon','spa','haircut','beauty','gym','fitness','yoga','wellness'],i:'💇'},
 ];
+
+// ── PRESET TAGS ───────────────────────────────────────────────
+const PRESET_TAGS = [
+  'Birthday','Marriage','Travel','Medical',
+  'Education','Festival','Vehicle','Gift'
+];
+
 const LS='sn_v4';
 
 // ── STORAGE GUARD ─────────────────────────────────────────────
@@ -1287,14 +1443,37 @@ const DB = {
   },
 };
 
+// ── SOURCES DATABASE ─────────────────────────────────────────
+// Separate from sn_v4 — plug-in, never affects existing data
+const SRC_DB = {
+  load() {
+    try {
+      const r = localStorage.getItem('sn_sources');
+      if (!r) return { sources: [] };
+      const parsed = JSON.parse(r);
+      // Guard: ensure sources is always an array (test SEC-023)
+      if (!Array.isArray(parsed.sources)) return { sources: [] };
+      return parsed;
+    } catch { return { sources: [] }; }
+  },
+  save(d) {
+    try { localStorage.setItem('sn_sources', JSON.stringify(d)); return true; }
+    catch { return false; }
+  }
+};
+
 // ── STATE ─────────────────────────────────────────────────────
 let D=null;
 let S={tab:'home',sliceBk:null,histF:null,addSrc:null,addBkt:null,limVals:{},setRole:null,setToggles:{},unsaved:false,obRole:null,obPhoto:null,install:null,saveBusy:false,loginAttempts:0,loginLockUntil:0,monthOffset:0,_autoSaveTimer:null};
 
+// ── TAGS SESSION STATE ────────────────────────────────────────
+// Module-level — NOT on S or D. Resets on every r_add() call. Never persisted.
+let _addTags = [];
+
 // ── HELPERS ───────────────────────────────────────────────────
-function esc(s){return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
+function esc(s){return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#x27;');}
 function fmt(n){if(n>=100000)return`₹${(n/100000).toFixed(1)}L`;if(n>=1000)return`₹${(n/1000).toFixed(1)}k`;return`₹${n}`;}
-function fmtF(n){return'₹'+(n||0).toLocaleString('en-IN');}
+function fmtF(n){return'₹'+(isFinite(+n)?+n:0).toLocaleString('en-IN');}
 function avHTML(p,sz){
   const s=sz||44,lt=(p?.name?.[0]||'S').toUpperCase();
   if(p?.photo)return`<img src="${p.photo}" style="width:100%;height:100%;object-fit:cover;border-radius:inherit">`;
@@ -1609,8 +1788,8 @@ const APP = {
     S.tab=tab;
     const topbar=document.getElementById('topbar'),tabbar=document.getElementById('tabBar');
     topbar.style.display=tab==='home'?'block':'none';
-    tabbar.style.display=['home','insights','month','history','add'].includes(tab)?'flex':'none';
-    const map={home:'sHome',insights:'sInsights',month:'sMonth',history:'sHist',add:'sAdd',limits:'sLimits',settings:'sSettings',slice:'sSlice'};
+    tabbar.style.display=['home','insights','month','history','sources','add'].includes(tab)?'flex':'none';
+    const map={home:'sHome',insights:'sInsights',month:'sMonth',history:'sHist',add:'sAdd',limits:'sLimits',settings:'sSettings',slice:'sSlice',sources:'sSources'};
     document.querySelectorAll('.scr').forEach(s=>s.classList.remove('on'));
     const el=document.getElementById(map[tab]);if(el)el.classList.add('on');
     document.querySelectorAll('.tab').forEach(t=>t.classList.toggle('on',t.dataset.t===tab));
@@ -1623,6 +1802,29 @@ const APP = {
     const sm=summary(),pend=pending(),lim=D.limits;
     document.getElementById('hHero').innerHTML=sm.total>0?`<div class="h-total"><span class="h-tl">This Month</span><span class="h-tv">${fmtF(sm.total)}</span></div>`:'';
     // insights tab - no badge needed
+
+    // ── Sources indicator (plug-in: only shown if user has added sources this month) ──
+    const currentMonthHome = offsetMonthStr(0);
+    const sdHome = SRC_DB.load();
+    const homeSrcTotal = (sdHome.sources || [])
+      .filter(s => s.month === currentMonthHome)
+      .reduce((sum, s) => sum + (Number(s.amount) || 0), 0);
+    const homeSpendTotal = sm.total;
+    const homeBalance = homeSrcTotal - homeSpendTotal;
+    const srcIndicatorHTML = homeSrcTotal > 0 ? (() => {
+      const nearThresholdHome = homeSrcTotal * 0.1;
+      const balColor = homeBalance < 0 ? '#f43f5e' : homeBalance <= nearThresholdHome ? '#f59e0b' : '#10b981';
+      const dot = homeBalance < 0 ? '🔴' : homeBalance <= nearThresholdHome ? '🟡' : '🟢';
+      return `<div class="dc" onclick="APP.go('sources')">
+        <div class="dc-ic" style="background:var(--tealL)">↑</div>
+        <div class="dc-info">
+          <div class="dc-t">Sources this month: ${fmtF(homeSrcTotal)}</div>
+          <div class="dc-s">Spent: ${fmtF(homeSpendTotal)} · Left: <span style="color:${balColor};font-weight:700">${homeBalance < 0 ? '-' : ''}${fmtF(Math.abs(homeBalance))}</span> ${dot}</div>
+        </div>
+        <div class="dc-ar">›</div>
+      </div>`;
+    })() : '';
+
     document.getElementById('hBody').innerHTML=`
       ${pend>0?`<button class="pend-btn" onclick="APP.go('add')"><div class="p-dot"></div><div class="p-info"><div class="p-t">${pend} spend${pend>1?'s':''} waiting to sort</div><div class="p-s">Tap to classify into buckets</div></div><div class="p-arr">›</div></button>`:''}
       <div class="sec-row"><span class="sec-lbl">THIS MONTH</span><button class="sec-lnk" onclick="APP.go('limits')">Limits ›</button></div>
@@ -1644,6 +1846,7 @@ const APP = {
         }).join('')}
       </div>
       <div class="sec-row" style="margin-top:4px"><span class="sec-lbl">MY DATA</span><button class="sec-lnk" onclick="APP.go('history')">All history ›</button></div>
+      ${srcIndicatorHTML}
       <div class="dc" onclick="APP.saveFile()">
         <div class="dc-ic" style="background:var(--tealL)">💾</div>
         <div class="dc-info"><div class="dc-t">Save my data file</div><div class="dc-s">${D.transactions.length} total records · Last: ${D.lastSaved?new Date(D.lastSaved).toLocaleDateString('en-IN',{day:'2-digit',month:'short',hour:'2-digit',minute:'2-digit'}):'Never'}</div></div>
@@ -1902,8 +2105,7 @@ const APP = {
 
     // ── Monthly history (last 4 months) ──
     const mHistory = {};
-    txns.forEach(t => {
-      const mk = t.month || 'Unknown';
+    txns.forEach(t => {      const mk = t.month || 'Unknown';
       mHistory[mk] = (mHistory[mk]||0) + t.amount;
     });
     const mEntries = Object.entries(mHistory).slice(-4);
@@ -1912,6 +2114,19 @@ const APP = {
     // ── Limits check ──
     const overLimit = Object.entries(D.limits).filter(([k,v]) => v > 0 && bTotals[k] > v);
     const nearLimit = Object.entries(D.limits).filter(([k,v]) => v > 0 && bTotals[k] >= v*0.8 && bTotals[k] <= v);
+
+    // ── Tag summary (lifetime totals across ALL months) ──
+    const tagTotals = {};
+    const tagCounts = {};
+    (D.transactions||[]).forEach(t => {
+      if (!(Number(t.amount) > 0)) return; // skip 0-amount — no meaningful spend (F-013)
+      (t.tags||[]).forEach(tag => {
+        tagTotals[tag] = (tagTotals[tag]||0) + (Number(t.amount)||0);
+        tagCounts[tag] = (tagCounts[tag]||0) + 1;
+      });
+    });
+    // Sort by amount descending (U-015)
+    const tagEntries = Object.entries(tagTotals).sort((a,b) => b[1]-a[1]);
 
     body.innerHTML = `
       <!-- PERSONALITY -->
@@ -1999,6 +2214,20 @@ const APP = {
         </div>
       </div>` : ''}
 
+      <!-- SPENDING BY TAG — only shown when tagged transactions exist (UI-039) -->
+      ${tagEntries.length > 0 ? `
+      <div class="tag-sum-card">
+        <div class="ins-card-title">SPENDING BY TAG</div>
+        ${tagEntries.map(([tag, amt]) => `
+          <div class="tag-sum-row">
+            <div>
+              <div class="tag-sum-name">#${esc(tag)}</div>
+              <div class="tag-sum-count">${tagCounts[tag]} transaction${tagCounts[tag]!==1?'s':''}</div>
+            </div>
+            <div class="tag-sum-amt">${fmtF(amt)}</div>
+          </div>`).join('')}
+      </div>` : ''}
+
       <!-- FOOTER NOTE -->
       <div style="text-align:center;padding:12px 0 4px">
         <div style="font-size:11px;color:var(--mist);line-height:1.8">Insights are based on your sorted transactions.<br>Sort more spends for sharper patterns.</div>
@@ -2025,21 +2254,42 @@ const APP = {
   },
 
   // ── HISTORY ──
+  // ── HISTORY ──
   r_history(){
     const all=D.transactions||[];
     document.getElementById('histCnt').textContent=`${all.length} transaction${all.length!==1?'s':''}`;
     const fbar=document.getElementById('fBar');
     if(!fbar.hasChildNodes()){
-      const pills=[{k:null,l:'All'},...Object.entries(BUCKETS).map(([k,v])=>({k,l:v.l})),{k:'unsorted',l:'Unsorted'}];
-      fbar.innerHTML=pills.map(p=>{const on=S.histF===p.k,cfg=p.k&&BUCKETS[p.k];return`<button class="fp${on?' on':''}" style="${on?(cfg?`border-color:${cfg.c};background:${cfg.c}`:`border-color:var(--ink);background:var(--ink)`):''}" onclick="APP.setHF('${p.k}')">${p.l}</button>`;}).join('');
+      // Step 9: collect all unique tags used across all transactions
+      const allUsedTags=[...new Set((D.transactions||[]).flatMap(t=>t.tags||[]))].sort();
+      const pills=[
+        {k:null,l:'All'},
+        ...Object.entries(BUCKETS).map(([k,v])=>({k,l:v.l})),
+        {k:'unsorted',l:'Unsorted'},
+        ...allUsedTags.map(tag=>({k:`tag:${tag}`,l:`#${tag}`}))
+      ];
+      fbar.innerHTML=pills.map(p=>{
+        const on=S.histF===p.k;
+        const cfg=p.k&&!p.k.startsWith('tag:')&&BUCKETS[p.k];
+        const isTag=p.k&&p.k.startsWith('tag:');
+        return`<button class="fp${on?' on':''}${isTag?' tag-fp':''}" style="${on?(cfg?`border-color:${cfg.c};background:${cfg.c}`:isTag?`border-color:var(--teal);background:var(--teal)`:`border-color:var(--ink);background:var(--ink)`):''}" onclick="APP.setHF('${p.k}')">${esc(p.l)}</button>`;
+      }).join('');
     }
     const q=(document.getElementById('srchIn')?.value||'').toLowerCase();
-    const filt=all.filter(t=>{const ms=!q||t.merchant.toLowerCase().includes(q)||String(t.amount).includes(q);const mb=S.histF==null?true:S.histF==='unsorted'?!t.bucket:t.bucket===S.histF;return ms&&mb;});
+    const filt=all.filter(t=>{
+      const ms=!q||t.merchant.toLowerCase().includes(q)||String(t.amount).includes(q);
+      // Step 9: tag filter coexists with bucket/unsorted filters
+      const mb=S.histF==null?true
+        :S.histF==='unsorted'?!t.bucket
+        :S.histF.startsWith('tag:')?(t.tags||[]).includes(S.histF.slice(4))
+        :t.bucket===S.histF;
+      return ms&&mb;
+    });
     const grp={};filt.forEach(t=>{const k=t.month||'Unknown';if(!grp[k])grp[k]=[];grp[k].push(t);});
     const listEl=document.getElementById('histList');
     if(filt.length===0){
       const isEmpty=all.length===0;
-      listEl.innerHTML=`<div style="display:flex;flex-direction:column;align-items:center;justify-content:center;padding:60px 24px;text-align:center"><div style="font-size:52px;margin-bottom:16px">${isEmpty?'💸':'🔍'}</div><div style="font-size:18px;font-weight:800;color:var(--ink);margin-bottom:8px">${isEmpty?'No transactions yet':'Nothing found'}</div><div style="font-size:14px;color:var(--slate);line-height:1.6">${isEmpty?'Add your first spend<br>to start tracking your money.':'Try a different search<br>or filter.'}</div>${isEmpty?`<button onclick="APP.go('add')" style="margin-top:24px;background:var(--teal);border:none;border-radius:var(--r);padding:12px 24px;font-size:14px;font-weight:700;color:#fff;cursor:pointer">Add a spend ›</button>`:''}</div>`;
+      listEl.innerHTML=`<div style="display:flex;flex-direction:column;align-items:center;justify-content:center;padding:60px 24px;text-align:center"><div style="font-size:52px;margin-bottom:16px">${isEmpty?'\u{1F4B8}':'\u{1F50D}'}</div><div style="font-size:18px;font-weight:800;color:var(--ink);margin-bottom:8px">${isEmpty?'No transactions yet':'Nothing found'}</div><div style="font-size:14px;color:var(--slate);line-height:1.6">${isEmpty?'Add your first spend<br>to start tracking your money.':'Try a different search<br>or filter.'}</div>${isEmpty?`<button onclick="APP.go('add')" style="margin-top:24px;background:var(--teal);border:none;border-radius:var(--r);padding:12px 24px;font-size:14px;font-weight:700;color:#fff;cursor:pointer">Add a spend ›</button>`:''}</div>`;
       return;
     }
     listEl.innerHTML=Object.entries(grp).map(([mon,items])=>`
@@ -2047,21 +2297,47 @@ const APP = {
         <div class="mgrp-hdr"><div class="mgrp-nm">${mon}</div><div class="mgrp-tot">${fmtF(items.reduce((s,t)=>s+t.amount,0))}</div></div>
         ${items.map(t=>{
           const cfg=t.bucket?BUCKETS[t.bucket]:null;
+          const tTags=t.tags||[];
           return`<div class="htxn" id="ht_${t.id}">
             <div class="htxn-row">
               <div class="htxn-ic">${ico(t.merchant)}</div>
-              <div class="htxn-info"><div class="htxn-nm">${esc(t.merchant)}</div><div class="htxn-dt">${t.date} · ${t.time}</div>${cfg?`<div class="htxn-bkt" style="color:${cfg.c}">${cfg.g} ${cfg.l}</div>`:`<div class="htxn-bkt" style="color:var(--mist)">Unsorted</div>`}</div>
+              <div class="htxn-info">
+                <div class="htxn-nm">${esc(t.merchant)}</div>
+                <div class="htxn-dt">${t.date} · ${t.time}</div>
+                ${cfg?`<div class="htxn-bkt" style="color:${cfg.c}">${cfg.g} ${cfg.l}</div>`:`<div class="htxn-bkt" style="color:var(--mist)">Unsorted</div>`}
+                ${tTags.length>0?`<div style="display:flex;flex-wrap:wrap;gap:4px;margin-top:5px">${tTags.map(tag=>`<span class="tag-pill">#${esc(tag)}</span>`).join('')}</div>`:''}
+              </div>
               <div class="htxn-right"><div class="htxn-am">${fmtF(t.amount)}</div><div class="htxn-acts"><button class="h-edit" onclick="APP.tgEdit('${t.id}')">Edit</button><span style="color:var(--fog)">|</span><button class="h-del" onclick="APP.hDel('${t.id}')">Del</button></div></div>
             </div>
             <div class="ie-box" id="ie_${t.id}" style="display:none">
               <span class="ie-lbl">CHANGE BUCKET</span>
               <div class="ie-row">${Object.entries(BUCKETS).map(([bk,bc])=>{const on=t.bucket===bk;return`<button class="ie-btn" style="${on?`border-color:${bc.c};background:${bc.cl}`:''}" onclick="APP.hClassify('${t.id}','${bk}')"><div class="ie-ic" style="background:${bc.cl};color:${bc.c};border-color:${bc.cm}">${bc.g}</div><span class="ie-lb2" style="${on?`color:${bc.c};font-weight:800`:''}">${bc.l}</span></button>`;}).join('')}</div>
+              <span class="ie-lbl" style="margin-top:12px;display:block">TAGS</span>
+              <div class="tag-chips" id="iet_${t.id}">
+                ${PRESET_TAGS.map(tag=>{const on=tTags.includes(tag);return`<button class="tag-chip${on?' on':''}" onclick="APP.hToggleTag('${t.id}','${esc(tag)}')">#${esc(tag)}</button>`;}).join('')}
+              </div>
+              <div class="tag-chip-custom" style="margin-top:8px">
+                <input class="tag-custom-in" id="ietc_${t.id}" type="text" inputmode="text" maxlength="30" placeholder="Custom tag…" autocorrect="off" autocapitalize="none" spellcheck="false" onkeydown="if(event.key==='Enter'){event.preventDefault();APP.hAddCustomTag('${t.id}');}">
+                <button class="tag-add-btn" onclick="APP.hAddCustomTag('${t.id}')">Add</button>
+              </div>
+              <div id="iet_sel_${t.id}" style="display:flex;flex-wrap:wrap;gap:4px;margin-top:8px">
+                ${tTags.map(tag=>`<span class="tag-pill">#${esc(tag)}<button class="tag-pill-rm" onclick="APP.hToggleTag('${t.id}','${esc(tag)}')">\u2715</button></span>`).join('')}
+              </div>
             </div>
           </div>`;
         }).join('')}
       </div>`).join('');
   },
-  setHF(k){S.histF=(k==='null'||!k)?null:k;document.getElementById('fBar').innerHTML='';this.r_history();},
+  setHF(k){
+    const resolved=(k==='null'||!k)?null:k;
+    // Toggle off if tapping the already-active filter (UI-035)
+    S.histF=(resolved!==null&&resolved===S.histF)?null:resolved;
+    // Show hint when any filter is active (BUG-06)
+    const noteEl=document.getElementById('filterNote');
+    if(noteEl)noteEl.style.display=S.histF?'block':'none';
+    document.getElementById('fBar').innerHTML='';
+    this.r_history();
+  },
   tgEdit(id){const el=document.getElementById('ie_'+id);if(el)el.style.display=el.style.display==='none'?'block':'none';},
   hClassify(id,bkt){D.transactions=D.transactions.map(t=>t.id===id?{...t,bucket:bkt}:t);DB.save(D);this.markUnsaved();document.getElementById('fBar').innerHTML='';this.r_history();toast(`→ ${BUCKETS[bkt].l}`);},
   hDel(id){modal('Delete?','Cannot be undone.',[{l:'Cancel',c:'mb-nil',a:()=>this.cm()},{l:'Delete',c:'mb-err',a:()=>{D.transactions=D.transactions.filter(t=>t.id!==id);DB.save(D);this.markUnsaved();this.cm();document.getElementById('fBar').innerHTML='';this.r_history();toast('Deleted');}}]);},
@@ -2096,11 +2372,13 @@ const APP = {
   },
   r_add(){
     S.addSrc=null;S.addBkt=null;
+    _addTags = []; // reset tag session on every Add Spend open (U-007, U-008)
     const ai=document.getElementById('addAmt');if(ai)ai.value='';
     const di=document.getElementById('addDesc');if(di)di.value='';
     document.getElementById('srcGrid').innerHTML=SRCS.map(s=>`<div class="src" data-s="${s.k}" onclick="APP.selSrc('${s.k}')"><div class="src-ic">${s.i}</div><div class="src-lbl">${s.l}</div></div>`).join('');
     document.getElementById('bktGrid').innerHTML=Object.entries(BUCKETS).map(([k,c])=>`<div class="bkt" data-b="${k}" onclick="APP.selBkt('${k}')"><div class="bc-ic" style="background:${c.cl};color:${c.c};border-color:${c.cm}">${c.g}</div><div class="bkt-nm">${c.l}</div><div class="bkt-ds">${c.t}</div><div class="bkt-ck" style="background:${c.c}">✓</div></div>`).join('');
     this.valAdd();
+    this.renderAddTagChips(); // render preset tag chips after bktGrid
   },
   selSrc(k){S.addSrc=k;document.querySelectorAll('.src').forEach(el=>el.classList.toggle('on',el.dataset.s===k));this.valAdd();},
   selBkt(k){
@@ -2132,8 +2410,9 @@ const APP = {
     S.saveBusy=true;
     try{
       const now=new Date();
-      D.transactions=[{id:`t_${Date.now()}_${Math.random().toString(36).slice(2,6)}`,timestamp:now.toISOString(),date:now.toLocaleDateString('en-IN',{day:'2-digit',month:'short'}),time:now.toLocaleTimeString('en-IN',{hour:'2-digit',minute:'2-digit'}),month:now.toLocaleDateString('en-IN',{month:'short',year:'numeric'}),merchant:desc||'Manual Entry',amount:amt,bucket:S.addBkt,source:S.addSrc},...(D.transactions||[])];
+      D.transactions=[{id:`t_${Date.now()}_${Math.random().toString(36).slice(2,6)}`,timestamp:now.toISOString(),date:now.toLocaleDateString('en-IN',{day:'2-digit',month:'short'}),time:now.toLocaleTimeString('en-IN',{hour:'2-digit',minute:'2-digit'}),month:now.toLocaleDateString('en-IN',{month:'short',year:'numeric'}),merchant:desc||'Manual Entry',amount:amt,bucket:S.addBkt,source:S.addSrc,tags:[..._addTags]},...(D.transactions||[])];
       DB.save(D);this.markUnsaved();
+      _addTags = []; // clear after save — no stale tags on next open
       if(navigator.vibrate)navigator.vibrate(50);
       toast(`₹${amt.toLocaleString('en-IN')} → ${BUCKETS[S.addBkt].l}`);
       this.go('home');
@@ -2291,6 +2570,358 @@ const APP = {
       {l:'Save file first',c:'mb-ok',a:()=>{this.cm();this.saveFile();}},
       {l:'Clear everything',c:'mb-err',a:()=>{localStorage.clear();this.cm();location.reload();}},
       {l:'Cancel',c:'mb-nil',a:()=>this.cm()},
+    ]);
+  },
+
+  // ── TAGS ─────────────────────────────────────────────────────
+
+  renderAddTagChips() {
+    const el = document.getElementById('addTagChips');
+    if (!el) return;
+    el.innerHTML = PRESET_TAGS.map(tag => {
+      const on = _addTags.includes(tag);
+      // esc() the tag in onclick attribute to prevent injection (SEC-007)
+      return `<button class="tag-chip${on ? ' on' : ''}"
+        onclick="APP.toggleAddTag('${esc(tag)}')">#${esc(tag)}</button>`;
+    }).join('');
+    this._renderSelectedTags();
+  },
+
+  toggleAddTag(tag) {
+    if (_addTags.includes(tag)) {
+      _addTags = _addTags.filter(t => t !== tag);
+    } else {
+      _addTags.push(tag);
+    }
+    this.renderAddTagChips();
+  },
+
+  addCustomTag() {
+    const inp = document.getElementById('addTagCustom');
+    if (!inp) return;
+    // Sanitise: allow only letters, numbers, spaces, hyphens (SEC-001 to SEC-017)
+    const val = (inp.value || '').trim().replace(/[^a-zA-Z0-9 \-]/g, '').replace(/\s+/g, ' ');
+    if (!val) { inp.value = ''; return; }
+    if (val.length > 30) { toast('Tag too long — max 30 characters'); return; }
+    if (_addTags.includes(val)) { inp.value = ''; return; } // silent dedup (U-009, UI-015)
+    _addTags.push(val);
+    inp.value = '';
+    this.renderAddTagChips();
+  },
+
+  _renderSelectedTags() {
+    const el = document.getElementById('addTagSelected');
+    if (!el) return;
+    if (_addTags.length === 0) { el.innerHTML = ''; return; }
+    el.innerHTML = _addTags.map(tag =>
+      `<span class="tag-pill">#${esc(tag)}<button class="tag-pill-rm" onclick="APP.toggleAddTag('${esc(tag)}')">✕</button></span>`
+    ).join('');
+  },
+
+  // History retroactive tagging
+  hToggleTag(txnId, tag) {
+    D.transactions = D.transactions.map(t => {
+      if (t.id !== txnId) return t;
+      const tags = t.tags || [];
+      const newTags = tags.includes(tag)
+        ? tags.filter(tg => tg !== tag)
+        : [...tags, tag];
+      return { ...t, tags: newTags };
+    });
+    DB.save(D);
+    this.markUnsaved();
+    this._refreshTxnTagUI(txnId);
+  },
+
+  hAddCustomTag(txnId) {
+    const inp = document.getElementById(`ietc_${txnId}`);
+    if (!inp) return;
+    // Same sanitisation as addCustomTag (SEC-001 to SEC-017)
+    const val = (inp.value || '').trim().replace(/[^a-zA-Z0-9 \-]/g, '').replace(/\s+/g, ' ');
+    if (!val) { inp.value = ''; return; }
+    if (val.length > 30) { toast('Tag too long — max 30 characters'); return; }
+    const txn = D.transactions.find(t => t.id === txnId);
+    if (!txn) return;
+    if ((txn.tags || []).includes(val)) { inp.value = ''; return; } // silent dedup
+    D.transactions = D.transactions.map(t =>
+      t.id === txnId ? { ...t, tags: [...(t.tags || []), val] } : t
+    );
+    DB.save(D);
+    this.markUnsaved();
+    inp.value = '';
+    this._refreshTxnTagUI(txnId);
+  },
+
+  _refreshTxnTagUI(txnId) {
+    const txn = D.transactions.find(t => t.id === txnId);
+    if (!txn) return;
+    const tTags = txn.tags || [];
+
+    // Refresh tag pill display on the transaction card in History
+    const cardEl = document.getElementById('ht_' + txnId);
+    if (cardEl) {
+      const infoEl = cardEl.querySelector('.htxn-info');
+      if (infoEl) {
+        let pillsRow = infoEl.querySelector('.txn-tag-pills');
+        if (tTags.length === 0) {
+          if (pillsRow) pillsRow.remove();
+        } else {
+          if (!pillsRow) {
+            pillsRow = document.createElement('div');
+            pillsRow.className = 'txn-tag-pills';
+            pillsRow.style.cssText = 'display:flex;flex-wrap:wrap;gap:4px;margin-top:5px';
+            infoEl.appendChild(pillsRow);
+          }
+          pillsRow.innerHTML = tTags.map(t => `<span class="tag-pill">#${esc(t)}</span>`).join('');
+        }
+      }
+    }
+
+    // Refresh preset chip states in edit box
+    const chipsEl = document.getElementById('iet_' + txnId);
+    if (chipsEl) {
+      chipsEl.innerHTML = PRESET_TAGS.map(t => {
+        const on = tTags.includes(t);
+        return `<button class="tag-chip${on?' on':''}" onclick="APP.hToggleTag('${txnId}','${esc(t)}')">#${esc(t)}</button>`;
+      }).join('');
+    }
+
+    // Refresh selected pills row in edit box
+    const selEl = document.getElementById('iet_sel_' + txnId);
+    if (selEl) {
+      selEl.innerHTML = tTags.map(t =>
+        `<span class="tag-pill">#${esc(t)}<button class="tag-pill-rm" onclick="APP.hToggleTag('${txnId}','${esc(t)}')">&#x2715;</button></span>`
+      ).join('');
+    }
+
+    // Rebuild filter bar so new tag pills appear (BUG-07)
+    document.getElementById('fBar').innerHTML = '';
+    this.r_history();
+    // Re-open the edit box that r_history just re-rendered closed (BUG-01 core fix)
+    const ieEl = document.getElementById('ie_' + txnId);
+    if (ieEl) ieEl.style.display = 'block';
+  },
+
+  // ── SOURCES ──────────────────────────────────────────────────
+
+  r_sources() {
+    const sd = SRC_DB.load();
+    const currentMonth = offsetMonthStr(0);
+    const prevMonth = offsetMonthStr(-1);
+
+    // ── Carry Forward Logic ──
+    // Only run if previous month had source entries with non-zero total (test U-025, U-026)
+    const prevSources = (sd.sources || []).filter(s => s.month === prevMonth);
+    const hasCarryForCurrentMonth = (sd.sources || []).some(
+      s => s.month === currentMonth && s.type === 'carry_forward'
+    );
+
+    if (prevSources.length > 0 && !hasCarryForCurrentMonth) {
+      const prevSrcTotal = prevSources.reduce((sum, s) => sum + (Number(s.amount) || 0), 0);
+      if (prevSrcTotal === 0) { /* no carry — U-025 */ } else {
+        const prevSpendTotal = summary(prevMonth).total;
+        const carryAmt = prevSrcTotal - prevSpendTotal;
+        // Only create carry forward if amount is non-zero (test U-026)
+        if (carryAmt !== 0) {
+          const now = new Date();
+          sd.sources = sd.sources || [];
+          sd.sources.unshift({
+            id: `src_cf_${Date.now()}`,
+            timestamp: now.toISOString(),
+            date: now.toLocaleDateString('en-IN', {day:'2-digit', month:'short', year:'numeric'}),
+            month: currentMonth,
+            name: 'Carried Forward',
+            amount: carryAmt,
+            note: `Balance from ${prevMonth}`,
+            type: 'carry_forward'
+          });
+          SRC_DB.save(sd);
+        }
+      }
+    }
+
+    // ── Calculate balance ──
+    const thisMonthSources = (sd.sources || []).filter(s => s.month === currentMonth);
+    const srcTotal = thisMonthSources.reduce((sum, s) => sum + (Number(s.amount) || 0), 0);
+    const spendTotal = summary(currentMonth).total;
+    const balance = srcTotal - spendTotal;
+
+    const bodyEl = document.getElementById('sourcesBody');
+    if (!bodyEl) return;
+
+    // Update subtitle with live entry count (BUG-04)
+    const subEl = document.getElementById('sourcesSub');
+    if (subEl) {
+      subEl.textContent = thisMonthSources.length > 0
+        ? `${thisMonthSources.length} source${thisMonthSources.length > 1 ? 's' : ''} · ${currentMonth}`
+        : 'Where your money comes from';
+    }
+
+    // ── Empty state ──
+    if (thisMonthSources.length === 0) {
+      bodyEl.innerHTML = `
+        <div class="src-empty">
+          <div style="font-size:52px;margin-bottom:16px">💰</div>
+          <div style="font-size:20px;font-weight:800;color:var(--ink);margin-bottom:8px">Track where your money comes from</div>
+          <div style="font-size:14px;color:var(--slate);line-height:1.6;margin-bottom:24px">Add your salary, freelance income,<br>or any money you received this month.</div>
+          <button onclick="APP.openAddSource()" style="background:var(--teal);border:none;border-radius:var(--r);padding:13px 28px;font-size:14px;font-weight:700;color:#fff;cursor:pointer">+ Add Source</button>
+        </div>`;
+      return;
+    }
+
+    // ── Balance pill states ──
+    let pillBg, pillColor, pillBorder, pillMsg;
+    const nearThreshold = srcTotal * 0.1;
+    if (balance < 0) {
+      pillBg = '#fff1f2'; pillColor = '#f43f5e'; pillBorder = '#fda4af';
+      pillMsg = 'Heads up — your spending has crossed your sources this month.';
+    } else if (balance <= nearThreshold) {
+      pillBg = '#fffbeb'; pillColor = '#f59e0b'; pillBorder = '#fde68a';
+      pillMsg = 'Running low on your sources for this month.';
+    } else {
+      pillBg = '#ecfdf5'; pillColor = '#10b981'; pillBorder = '#6ee7b7';
+      pillMsg = '';
+    }
+
+    // ── Passbook list — newest first ──
+    const entries = [...thisMonthSources].sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
+    const listHTML = entries.map(s => {
+      const isCarry = s.type === 'carry_forward';
+      const amtColor = s.amount < 0 ? 'var(--err)' : 'var(--ok)';
+      const amtPrefix = s.amount < 0 ? '-' : '+';
+      return `<div class="src-entry${isCarry ? ' src-carry' : ''}" id="sre_${s.id}">
+        <div class="src-entry-ic">${isCarry ? '↩' : '↑'}</div>
+        <div class="src-entry-info">
+          <div class="src-entry-name">${esc(s.name)}${isCarry ? ' 🔒' : ''}</div>
+          <div class="src-entry-meta">${s.date} · ${s.month}</div>
+          ${s.note ? `<div class="src-entry-note">${esc(s.note)}</div>` : ''}
+          ${!isCarry ? `<div class="src-entry-acts">
+            <button class="src-entry-act edit" onclick="APP.editSource('${s.id}')">Edit</button>
+            <button class="src-entry-act del"  onclick="APP.deleteSource('${s.id}')">Delete</button>
+          </div>` : '<div class="src-entry-meta" style="margin-top:4px;color:var(--mist);font-size:10px">Auto-calculated · cannot be deleted</div>'}
+        </div>
+        <div class="src-entry-right">
+          <div class="src-entry-amt" style="color:${amtColor}">${amtPrefix}${fmtF(Math.abs(s.amount))}</div>
+        </div>
+      </div>`;
+    }).join('');
+
+    bodyEl.innerHTML = `
+      <div class="src-balance-pill">
+        <div class="src-pill-row">
+          <span class="src-pill-label">BALANCE THIS MONTH</span>
+          <span class="src-status-pill" style="background:${pillBg};color:${pillColor};border:1.5px solid ${pillBorder}">
+            ${balance < 0 ? '⚠' : balance <= nearThreshold ? '⚡' : '✓'} ${balance < 0 ? 'Overspent' : balance <= nearThreshold ? 'Running low' : 'On track'}
+          </span>
+        </div>
+        <div class="src-pill-amt" style="color:${pillColor}">${balance < 0 ? '-' : ''}${fmtF(Math.abs(balance))}</div>
+        <div class="src-pill-sub">
+          <span class="src-pill-sub-item">↑ In: ${fmtF(srcTotal)}</span>
+          <span class="src-pill-sub-item">↓ Spent: ${fmtF(spendTotal)}</span>
+        </div>
+        ${balance < 0 || balance <= nearThreshold ? `<div style="font-size:12px;color:${pillColor};margin-top:6px;line-height:1.5">${pillMsg}</div>` : ''}
+      </div>
+      <div class="src-month-hdr">THIS MONTH · ${currentMonth}</div>
+      ${listHTML}
+      <div style="height:20px"></div>
+    `;
+  },
+
+  openAddSource(prefill) {
+    const isEdit = !!prefill;
+    const now = new Date();
+    const defaultDate = now.toLocaleDateString('en-IN', {day:'2-digit', month:'short', year:'numeric'});
+
+    modal(
+      isEdit ? 'Edit Source' : '+ Add Source',
+      `<div style="display:flex;flex-direction:column;gap:14px;margin-top:8px">
+        <div>
+          <div style="font-size:10px;font-weight:700;color:var(--slate);letter-spacing:2px;margin-bottom:7px">SOURCE NAME</div>
+          <input id="srcName" class="add-in" type="text" inputmode="text" maxlength="60"
+            placeholder="e.g. Salary, Freelance, Gift from Dad"
+            value="${esc(prefill?.name || '')}">
+        </div>
+        <div>
+          <div style="font-size:10px;font-weight:700;color:var(--slate);letter-spacing:2px;margin-bottom:7px">AMOUNT RECEIVED (₹)</div>
+          <input id="srcAmt" class="add-in" type="number" inputmode="decimal" min="0.01" step="any"
+            placeholder="₹ e.g. 50000" value="${prefill?.amount || ''}">
+        </div>
+        <div>
+          <div style="font-size:10px;font-weight:700;color:var(--slate);letter-spacing:2px;margin-bottom:7px">NOTE (optional)</div>
+          <input id="srcNote" class="add-in" type="text" inputmode="text" maxlength="100"
+            placeholder="Optional — e.g. April salary, Client payment"
+            value="${esc(prefill?.note || '')}">
+        </div>
+        <div style="font-size:11px;color:var(--mist)">Date: ${prefill?.date || defaultDate}</div>
+      </div>`,
+      [
+        { l: 'Cancel', c: 'mb-nil', a: () => this.cm() },
+        { l: isEdit ? 'Save Changes' : 'Add Source', c: 'mb-ok', a: () => {
+          const name = (document.getElementById('srcName')?.value || '').trim();
+          const rawAmt = document.getElementById('srcAmt')?.value || '';
+          const amt = parseFloat(rawAmt);
+          const note = (document.getElementById('srcNote')?.value || '').trim();
+
+          if (!name) { toast('Please enter a source name'); return; }
+          // Validate amount: must be a finite positive number (tests SEC-007 to SEC-014)
+          if (!rawAmt || isNaN(amt) || !isFinite(amt) || amt <= 0) {
+            toast('Please enter a valid amount'); return;
+          }
+
+          const sd = SRC_DB.load();
+          sd.sources = sd.sources || [];
+
+          if (isEdit) {
+            sd.sources = sd.sources.map(s =>
+              s.id === prefill.id ? { ...s, name, amount: amt, note } : s
+            );
+            toast('Source updated ✓');
+          } else {
+            const entryNow = new Date();
+            sd.sources.unshift({
+              id: `src_${Date.now()}_${Math.random().toString(36).slice(2,6)}`,
+              timestamp: entryNow.toISOString(),
+              date: entryNow.toLocaleDateString('en-IN', {day:'2-digit', month:'short', year:'numeric'}),
+              month: offsetMonthStr(0),
+              name,
+              amount: amt,
+              note,
+              type: 'income'
+            });
+            toast(`${fmtF(amt)} added to Sources ✓`);
+          }
+
+          SRC_DB.save(sd);
+          this.cm();
+          this.r_sources();
+        }}
+      ]
+    );
+    // Auto-focus name field so keyboard appears immediately (UI-009)
+    setTimeout(() => {
+      const nameEl = document.getElementById('srcName');
+      if (nameEl) nameEl.focus();
+    }, 150);
+  },
+
+  editSource(id) {
+    const sd = SRC_DB.load();
+    const entry = (sd.sources || []).find(s => s.id === id);
+    if (!entry) return;
+    this.openAddSource(entry);
+  },
+
+  deleteSource(id) {
+    modal('Delete source entry?', 'This cannot be undone.', [
+      { l: 'Cancel', c: 'mb-nil', a: () => this.cm() },
+      { l: 'Delete', c: 'mb-err', a: () => {
+        const sd = SRC_DB.load();
+        sd.sources = (sd.sources || []).filter(s => s.id !== id);
+        SRC_DB.save(sd);
+        this.cm();
+        this.r_sources();
+        toast('Source deleted');
+      }}
     ]);
   },
 };
