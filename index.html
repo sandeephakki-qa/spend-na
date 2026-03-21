@@ -1,3 +1,427 @@
+<!--
+╔══════════════════════════════════════════════════════════════════════╗
+║        SPEND-NA v4  ·  index.html  ·  MASTER SECTION INDEX          ║
+║     Single-file PWA — HTML + CSS + JS in one file by design         ║
+║     Author: Sandeep Hakki  ·  hakki.in  ·  © 2026                   ║
+╠══════════════════════════════════════════════════════════════════════╣
+║                                                                      ║
+║  WHY ONE FILE?                                                       ║
+║  PWA on GitHub Pages. One URL = entire app. No build step.          ║
+║  Service worker caches one file = perfect offline. Zero deps.       ║
+║  Separation would require a bundler, CI/CD, and fragile caching.    ║
+║                                                                      ║
+║  HOW TO NAVIGATE                                                     ║
+║  Use Ctrl+G / Cmd+G (Go to line) in your editor.                   ║
+║  All line numbers below are AFTER this index comment is inserted.   ║
+║                                                                      ║
+╠══════════════════════════════════════════════════════════════════════╣
+║  SECTION 1 — CSS  (lines 17–853, inside <style> tag)                ║
+╠══════════════════════════════════════════════════════════════════════╣
+║                                                                      ║
+║   17   CSS Variables & Root          :root { --teal, --ink... }     ║
+║   49   App Shell & Viewport          #app, display:flex             ║
+║   67   Tablet Layout                 @media (min-width: 600px)      ║
+║  115   Desktop Layout                @media (min-width: 1200px)     ║
+║  128   Page System                   .pg { display:none }           ║
+║                                      .pg.on { display:flex }        ║
+║  157   Splash Screen                 #pgSplash, .sp-logo-wrap       ║
+║  199   Forgot Password Screen        #pgForgot                      ║
+║  227   Onboarding Screen             #pgOb, .fg-grp, .role-card     ║
+║  282   Main App Shell                #pgApp                         ║
+║  289   Top Bar                       .topbar, .tb-name, .tb-av      ║
+║  307   Save Bar                      #saveBar                       ║
+║  312   Screen Container              .screens, .scr, .scr-body      ║
+║  319   Screen Header                 .shdr, .shdr-back              ║
+║  325   Tab Bar                       #tabBar, .tab, .tab-fab        ║
+║  336   Home Screen                   .h-hero, .h-total, .bgrid      ║
+║                                      .bc (bucket card), .dc (data)  ║
+║  376   Add Spend Screen              .amt-hero, .add-sec, .srcs     ║
+║                                      .src (payment), .bkts, .bkt   ║
+║  402   Sort / Pending Screen         .txc, .bkpick, .bkp            ║
+║  423   My Month Screen               .mm-hero, .mm-bar, .wk-card    ║
+║                                      .brow (bucket row)             ║
+║  456   History Screen                .hist-hdr, .htxn, .ie-box      ║
+║                                      .fp (filter pill), .mgrp-hdr   ║
+║  510   Limits Screen                 .lim-card, .lc-hdr, .lc-in    ║
+║  529   Settings Screen               .acc, .acc-hdr, .acc-body      ║
+║                                      .s-lbl, .s-in, .act, .pw-box  ║
+║  573   Modal                         #modal, .m-box, .mb buttons    ║
+║  590   Toast                         #toast                         ║
+║  596   Install Banner                #iBanner, .ib-txt              ║
+║  607   Trust Screen                  #pgTrust (first open only)     ║
+║  696   Insights Screen               .ins-card, .ins-bar-row        ║
+║                                      .personality-badge, .mcomp     ║
+║  734   Tags CSS                      .tag-chip, .tag-pill           ║
+║                                      .tag-chip.on, .tag-section     ║
+║                                      .tag-sum-card, .tag-sum-row    ║
+║  803   Sources CSS                   .src-balance-pill              ║
+║                                      .src-entry, .src-carry         ║
+║                                      .src-status-pill               ║
+║  853   </style>                                                      ║
+║                                                                      ║
+╠══════════════════════════════════════════════════════════════════════╣
+║  SECTION 2 — HTML  (lines 855–1268, inside <body> tag)              ║
+╠══════════════════════════════════════════════════════════════════════╣
+║                                                                      ║
+║  855   <body> opens                                                  ║
+║  856   #app wrapper                  outermost container             ║
+║                                                                      ║
+║  860   pgSplash      Animated splash (1.5s, shown on boot)          ║
+║  870   pgTrust       Trust/privacy screen (first open only)         ║
+║                      CTA: trustAccepted() / trustSkip()             ║
+║  953   pgLock        Password lock screen                           ║
+║                      Input: lkIn, Error: lkErr, CTA: unlock()       ║
+║  977   pgForgot      Forgot password — import file to recover       ║
+║ 1011   pgOb          Onboarding (new user setup)                    ║
+║                      Fields: obName, obDob, obCity, obQuote         ║
+║                      Roles: obRoles, Photo: obPhoto                 ║
+║                      Password: obPw1/2, CTA: startJourney()        ║
+║ 1064   pgApp         Main app shell (shown after login)             ║
+║ 1088   #topbar       Greeting + quote bar (home only)               ║
+║ 1089   #screens      All tab content screens:                       ║
+║ 1092     sHome       Home — bucket grid + data cards                ║
+║ 1100     sInsights   Insights — personality, stats, charts          ║
+║ 1112     sMonth      My Month — totals + week chart + bucket rows   ║
+║ 1124     sSlice      Bucket detail (drills down from Month)         ║
+║ 1134     sHist       History — search + filter + transaction list   ║
+║ 1154     sAdd        Add Spend — amount, desc, payment, bucket, tag ║
+║ 1193     sLimits     Budget Limits — per-bucket limit inputs        ║
+║ 1203     sSettings   Settings — accordions for profile/pw/data      ║
+║ 1213     sSources    Sources — balance pill + passbook list         ║
+║ 1227   #tabBar       Bottom navigation (6 tabs: Home→Add)           ║
+║ 1253   #modal        Shared bottom-sheet modal                      ║
+║ 1261   #toast        Floating toast notification                    ║
+║ 1263   #iBanner      PWA install banner (Android Chrome only)       ║
+║                                                                      ║
+╠══════════════════════════════════════════════════════════════════════╣
+║  SECTION 3 — JAVASCRIPT  (lines 1269–2962, inside <script> tag)     ║
+╠══════════════════════════════════════════════════════════════════════╣
+║                                                                      ║
+║  ── CONSTANTS ──────────────────────────────────────────────────    ║
+║  1276  BUCKETS       4 buckets: necessary/committed/comfortable/    ║
+║                      luxury — each has label, colour, icon, desc    ║
+║  1282  ROLES         5 roles: student/home_manager/working/         ║
+║                      business/retired — each has default limits     ║
+║  1289  SRCS          4 payment methods: cash/upi/others_upi/        ║
+║                      hand_loan                                      ║
+║  1295  ICONS         12 keyword→emoji rules for auto-icon on        ║
+║                      transaction description                        ║
+║  1311  PRESET_TAGS   8 tag suggestions: Birthday, Marriage,         ║
+║                      Travel, Medical, Education, Festival,          ║
+║                      Vehicle, Gift                                  ║
+║  1316  LS            'sn_v4' — main localStorage key               ║
+║                                                                      ║
+║  ── STORAGE GUARDS ─────────────────────────────────────────────    ║
+║  1319  isStorageAvailable()   Private/incognito mode guard          ║
+║  1325  md5(s)                 Password hashing (pure JS, no lib)    ║
+║                                                                      ║
+║  ── DATABASE ───────────────────────────────────────────────────    ║
+║  1368  DB object                                                     ║
+║  1369    .empty()       Returns fresh data schema (see schema below)║
+║  1381    .load()        Read + parse from localStorage sn_v4        ║
+║  1383    .save(d)       Stringify + write to localStorage sn_v4     ║
+║  1395    .exportFile(d) Create spend-na-data.json download          ║
+║  1416    .saveToSameFile(d)  File System Access API (Chrome/Android)║
+║  1434    .importFile()  File picker → parse JSON → return data obj  ║
+║                                                                      ║
+║  1448  SRC_DB object   Sources feature — separate key sn_sources    ║
+║  1449    .load()        Read sn_sources, default { sources: [] }    ║
+║  1458    .save(d)       Write to localStorage sn_sources            ║
+║                                                                      ║
+║  ── STATE ──────────────────────────────────────────────────────    ║
+║  1466  D              Live data object — loaded from sn_v4          ║
+║  1467  S              UI state object:                              ║
+║                         tab, sliceBk, histF, addSrc, addBkt,       ║
+║                         limVals, setRole, setToggles, unsaved,      ║
+║                         obRole, obPhoto, install, saveBusy,        ║
+║                         loginAttempts, loginLockUntil,              ║
+║                         monthOffset, _autoSaveTimer                 ║
+║  1471  _addTags        Session array — tags for current Add Spend   ║
+║                        Reset to [] every time r_add() is called     ║
+║                                                                      ║
+║  ── HELPER FUNCTIONS ───────────────────────────────────────────    ║
+║  1474  esc(s)          HTML-escape string (prevents XSS)            ║
+║  1475  fmt(n)          Compact rupee: ₹1.2k / ₹1.2L               ║
+║  1476  fmtF(n)         Full Indian locale: ₹1,23,456               ║
+║  1477  avHTML(p,sz)    Avatar HTML — photo or initials circle       ║
+║  1482  ico(m)          Merchant name → emoji icon via ICONS table   ║
+║  1483  summary(month)  Bucket totals for a month string             ║
+║                        Returns {total, necessary, committed,        ║
+║                        comfortable, luxury}                         ║
+║                        month = 'Apr 2026' format. null = all time  ║
+║  1484  offsetMonthStr  Returns 'Apr 2026' for offset 0/-1/-2...    ║
+║  1485  offsetMonthLong Returns 'April 2026' (long form)            ║
+║  1486  pending()       Count of transactions with no bucket set     ║
+║  1489  toast(msg,ms)   Bottom floating notification (auto-dismiss)  ║
+║  1490  modal(t,b,btns) Bottom-sheet modal with button array         ║
+║                        btns: [{l:label, c:css-class, a:onclick}]   ║
+║                                                                      ║
+║  ── APP OBJECT (1499–2927) ─────────────────────────────────────    ║
+║  1499  const APP = {                                                 ║
+║                                                                      ║
+║    ── Core / Page System ──────────────────────────────────────     ║
+║    1500  show(id)           Hide all .pg, show #id page             ║
+║    1507  cm()               Close bottom-sheet modal                ║
+║                                                                      ║
+║    ── Trust Screen ────────────────────────────────────────────     ║
+║    1510  [comment] ── TRUST SCREEN ──                               ║
+║    1511  trustAccepted()    "I understand" → check data → route     ║
+║    1525  trustSkip()        "Load my data file" → import → launch   ║
+║                                                                      ║
+║    ── Boot ────────────────────────────────────────────────────     ║
+║    1538  boot()             App entry point:                        ║
+║                             • storage guard check                   ║
+║                             • service worker registration           ║
+║                             • PWA install banner                    ║
+║                             • splash → trust/lock/onboard/launch    ║
+║                                                                      ║
+║    ── Auth / Lock ─────────────────────────────────────────────     ║
+║    1584  togglePw()         Show/hide password input (eye button)   ║
+║    1592  unlock()           Validate password on lock screen        ║
+║                             Rate-limits: 5 attempts → 30s lockout  ║
+║    1610  [comment] ── FORGOT PASSWORD ──                            ║
+║    1612  showTrustAgain()   Re-show trust screen from lock          ║
+║    1619  showForgot()       Navigate to pgForgot                    ║
+║    1621  forgotRecover()    Import data file → verify → offer reset ║
+║    1636  _setNewPasswordFrom(data)  Set new pw + restore all data   ║
+║    1671  clearAllFresh()    Nuclear wipe — clears localStorage      ║
+║                                                                      ║
+║    ── Onboarding ──────────────────────────────────────────────     ║
+║    1679  buildRoles()       Render role selection cards in pgOb     ║
+║    1685  obRole(k)          Select a role during onboarding         ║
+║    1690  obVal()            Validate ob form → enable/disable CTA   ║
+║    1700  startJourney()     Save new user → DB.save → launch        ║
+║                                                                      ║
+║    ── App Shell ───────────────────────────────────────────────     ║
+║    1721  [comment] ── LAUNCH ──                                     ║
+║    1722  launch()           show(pgApp) + go('home')                ║
+║    1727  [comment] ── SAVE ──                                       ║
+║    1728  markUnsaved()      Sets S.unsaved + auto-save after 800ms  ║
+║    1738  saveFile()         DB.exportFile(D) + toast                ║
+║    1745  [comment] ── PHOTO ──                                      ║
+║    1746  pickPhoto(ctx)     File picker → resize to 200px → store   ║
+║    1773  [comment] ── TOPBAR ──                                     ║
+║    1774  refreshTop()       Update greeting, name, role, quote, av  ║
+║    1786  [comment] ── NAVIGATION ──                                 ║
+║    1787  go(tab)            Navigate between tabs:                  ║
+║                             • hides/shows topbar (home only)        ║
+║                             • shows/hides tabBar                    ║
+║                             • maps tab name → screen element id     ║
+║                             • calls r_{tab}() if method exists      ║
+║                                                                      ║
+║    ── Home Screen ─────────────────────────────────────────────     ║
+║    1799  [comment] ── HOME ──                                       ║
+║    1800  r_home()           Render home: hHero + hBody              ║
+║                             • bucket grid (4 cards with limits)     ║
+║                             • data cards: save/load/share           ║
+║    1869  loadFile()         Import JSON + offer load/merge          ║
+║                                                                      ║
+║    ── Sort / Pending ──────────────────────────────────────────     ║
+║    1892  [comment] ── SORT ──                                       ║
+║    1893  r_sort()           Render unsorted transactions list       ║
+║    1922  classify(id,bkt)   Assign bucket → animate out card        ║
+║    1931  delTxn(id)         Delete transaction (with confirm modal) ║
+║                                                                      ║
+║    ── My Month ────────────────────────────────────────────────     ║
+║    1938  [comment] ── MY MONTH ──                                   ║
+║    1939  r_month()          Render month: hero + chart + buckets    ║
+║                             Uses S.monthOffset (0=current, -1=prev) ║
+║    1984  _mmNav(dir)        Step month offset + re-render           ║
+║    1991  showSlice(bk)      Set S.sliceBk + go('slice')             ║
+║    1992  r_slice()          Render bucket detail + transaction list ║
+║    2018  ynA(yes,msg)       "Was this a good month?" response card  ║
+║                                                                      ║
+║    ── Insights ────────────────────────────────────────────────     ║
+║    2021  [comment] ── INSIGHTS ──                                   ║
+║    2022  r_insights()       Render full insights screen:            ║
+║                             • spending personality detection        ║
+║                             • sharp insight text                    ║
+║                             • stats row (total entries, streak)     ║
+║                             • bucket breakdown bars                 ║
+║                             • top bucket + heaviest week            ║
+║                             • month-by-month comparison chart       ║
+║                             • spending by tag (if tags exist)       ║
+║                                                                      ║
+║    ── Share / Export ──────────────────────────────────────────     ║
+║    2238  shareMonth()  [1]  Share month summary via native share    ║
+║    2345  exportHTML()       Export full history as .html file       ║
+║    2362  shareMonth()  [2]  Share month as text (copy/native share) ║
+║                             NOTE: Two shareMonth() methods exist.   ║
+║                             [1] = HTML file version (line 2238)     ║
+║                             [2] = text/copy version (line 2362)     ║
+║                                                                      ║
+║    ── History ─────────────────────────────────────────────────     ║
+║    2256  [comment] ── HISTORY ──                                    ║
+║    2258  r_history()        Render history:                         ║
+║                             • search input                          ║
+║                             • filter pills (buckets + tags)         ║
+║                             • grouped by month                      ║
+║                             • inline edit (bucket + tag change)     ║
+║    2331  setHF(k)           Set history filter (bucket or tag:*)    ║
+║    2341  tgEdit(id)         Toggle inline edit box visibility       ║
+║    2342  hClassify(id,bkt)  Change bucket from history inline edit  ║
+║    2343  hDel(id)           Delete transaction from history         ║
+║    2622  hToggleTag(txnId, tag)   Toggle tag on existing txn        ║
+║    2636  hAddCustomTag(txnId)     Add custom tag from history       ║
+║                                                                      ║
+║    ── Add Spend ───────────────────────────────────────────────     ║
+║    2373  r_add()            Reset + render add spend form           ║
+║                             Resets: S.addSrc, S.addBkt, _addTags   ║
+║    2383  selSrc(k)          Select payment method chip              ║
+║    2384  selBkt(k)          Select bucket card                      ║
+║    2389  valAdd()           Validate → enable/disable Save button   ║
+║    2400  saveManual()       Create + prepend transaction to D       ║
+║                             Includes tags:[..._addTags]             ║
+║    2578  renderAddTagChips()  Render preset tag chips in add form   ║
+║    2590  toggleAddTag(tag)    Toggle preset tag in _addTags         ║
+║    2599  addCustomTag()       Sanitise + add custom tag             ║
+║    2612  _renderSelectedTags() Show active tags as removable pills  ║
+║                                                                      ║
+║    ── Limits ──────────────────────────────────────────────────     ║
+║    2424  [comment] ── LIMITS ──                                     ║
+║    2425  r_limits()         Render per-bucket limit input cards     ║
+║    2441  setLimQuick(k,v)   Quick-fill a limit value                ║
+║    2442  saveLimits()       D.limits = S.limVals → DB.save          ║
+║    2443  resetLimits()      Reset to role defaults (confirm modal)  ║
+║                                                                      ║
+║    ── Settings ────────────────────────────────────────────────     ║
+║    2445  [comment] ── SETTINGS ──                                   ║
+║    2446  r_settings()       Render settings accordions:             ║
+║                             • Profile (name, city, dob, role, quote)║
+║                             • Change Password                       ║
+║                             • Notifications                         ║
+║                             • Data Management (save/load/clear)     ║
+║                             • About                                 ║
+║    2520  tgAcc(id)          Toggle accordion open/closed            ║
+║    2521  sRole(k)           Select role in settings                 ║
+║    2522  tglSet(k,id)       Toggle a settings switch                ║
+║    2524  changePw()         Verify old pw → set new → save          ║
+║    2538  saveSettings()     Save profile + settings → go('home')    ║
+║    2550  shareBlank()       Copy/share app URL (zero data shared)   ║
+║    2568  clearAll()         Clear all localStorage (confirm modal)  ║
+║                                                                      ║
+║    ── Tags Feature ────────────────────────────────────────────     ║
+║    2576  [comment] ── TAGS ──                                       ║
+║    2578  renderAddTagChips()   [see Add Spend section above]        ║
+║    2590  toggleAddTag(tag)     [see Add Spend section above]        ║
+║    2599  addCustomTag()        [see Add Spend section above]        ║
+║    2612  _renderSelectedTags() [see Add Spend section above]        ║
+║    2622  hToggleTag(txnId,tag) [see History section above]          ║
+║    2636  hAddCustomTag(txnId)  [see History section above]          ║
+║                                                                      ║
+║    ── Sources Feature ─────────────────────────────────────────     ║
+║    2705  [comment] ── SOURCES ──                                    ║
+║    2707  r_sources()        Render sources screen:                  ║
+║                             • carry forward check + auto-insert     ║
+║                             • balance calculation (srcTotal-spent)  ║
+║                             • balance pill (green/amber/red)        ║
+║                             • passbook list (newest first)          ║
+║                             • empty state                           ║
+║    2830  openAddSource(prefill)  Add/Edit source modal              ║
+║                             Fields: name, amount, note, date        ║
+║                             prefill = existing entry for edit mode  ║
+║    2907  editSource(id)     Find entry → openAddSource(entry)       ║
+║    2914  deleteSource(id)   Confirm → remove from SRC_DB            ║
+║                                                                      ║
+║  2927  }; // end APP object                                          ║
+║                                                                      ║
+║  ── UTILITIES (after APP) ──────────────────────────────────────    ║
+║  2928  setupDobInput(id)    DD/MM/YYYY date formatter for inputs    ║
+║  2945  APP.boot()           Kick off the app on page load           ║
+║  2947  Swipe-back gesture   touchstart/touchend — swipe right       ║
+║                             to go back on sub-screens               ║
+║                             BACK_SCREENS: sort/slice/add/           ║
+║                             limits/settings → home/month/home       ║
+║  2962  </script>                                                     ║
+║                                                                      ║
+║  ── SERVICE WORKER ─────────────────────────────────────────────    ║
+║  2965  <script>             sw.js registration (external sw file)   ║
+║  2973  </script>                                                     ║
+║                                                                      ║
+╠══════════════════════════════════════════════════════════════════════╣
+║  DATA SCHEMA  (localStorage key: sn_v4)                             ║
+╠══════════════════════════════════════════════════════════════════════╣
+║                                                                      ║
+║  {                                                                   ║
+║    app:          'Spend-na',                                         ║
+║    version:      4,                                                  ║
+║    created:      ISO timestamp string,                               ║
+║    lastSaved:    ISO timestamp string,                               ║
+║    passwordHash: md5 string (empty = no password),                  ║
+║    profile: {                                                        ║
+║      name:  string,                                                  ║
+║      role:  'student'|'home_manager'|'working'|                     ║
+║             'business'|'retired',                                    ║
+║      photo: base64 string | null,                                    ║
+║      dob:   'DD/MM/YYYY' string,                                     ║
+║      city:  string,                                                  ║
+║      quote: string                                                   ║
+║    },                                                                ║
+║    limits: {                                                         ║
+║      necessary:   number,                                            ║
+║      committed:   number,                                            ║
+║      comfortable: number,                                            ║
+║      luxury:      number                                             ║
+║    },                                                                ║
+║    settings: { notif: boolean },                                     ║
+║    transactions: [                                                   ║
+║      {                                                               ║
+║        id:        't_{timestamp}_{random4}',                         ║
+║        timestamp: ISO string,                                        ║
+║        date:      'DD Mon'    e.g. '05 Apr',                        ║
+║        time:      'HH:MM'     e.g. '14:30',                        ║
+║        month:     'Mon YYYY'  e.g. 'Apr 2026'  ← GROUP KEY         ║
+║        merchant:  string  (description / merchant name),            ║
+║        amount:    number,                                            ║
+║        bucket:    'necessary'|'committed'|'comfortable'|            ║
+║                   'luxury' | undefined (= unsorted),                ║
+║        source:    'cash'|'upi'|'others_upi'|'hand_loan',           ║
+║        tags:      string[]  optional — may be absent on old records ║
+║                   ALWAYS read as: t.tags || []                      ║
+║      }                                                               ║
+║    ],                                                                ║
+║    pushToken: null                                                   ║
+║  }                                                                   ║
+║                                                                      ║
+╠══════════════════════════════════════════════════════════════════════╣
+║  ALL localStorage & sessionStorage KEYS                              ║
+╠══════════════════════════════════════════════════════════════════════╣
+║                                                                      ║
+║  localStorage (persist across sessions):                            ║
+║  sn_v4             Main data object (all transactions + profile)    ║
+║  sn_trust_seen     '1' = user has accepted trust screen             ║
+║  sn_sources        Sources feature data { sources: [...] }          ║
+║                                                                      ║
+║  sessionStorage (cleared when tab/browser closes):                  ║
+║  [none currently — reserved for future backup warning flags]        ║
+║                                                                      ║
+╠══════════════════════════════════════════════════════════════════════╣
+║  PENDING FEATURES (separate coding chat prompts)                    ║
+╠══════════════════════════════════════════════════════════════════════╣
+║                                                                      ║
+║  ✅ Sources (Money In)       DONE — in this file                    ║
+║  ✅ Tags                     DONE — in this file                    ║
+║  ⏳ Export & Backup          prompt: spend-na-export-backup.md      ║
+║  ⏳ Migration Wizard         prompt: spend-na-browser-migration.md  ║
+║  ⏳ UI Redesign              pending design discussion               ║
+║  ⏳ Recurring Expenses       pending design discussion               ║
+║  ⏳ Weekly/Monthly Report    pending design discussion               ║
+║                                                                      ║
+╠══════════════════════════════════════════════════════════════════════╣
+║  CODING RULES (for all future prompts)                              ║
+╠══════════════════════════════════════════════════════════════════════╣
+║                                                                      ║
+║  1. NEVER modify DB.empty() schema without full impact analysis     ║
+║  2. NEVER modify DB.save() or DB.load() — they only touch sn_v4    ║
+║  3. NEVER modify summary() — it only reads D.transactions           ║
+║  4. ALWAYS use t.tags || [] — tags field may be absent on old txns  ║
+║  5. ALWAYS use esc() before inserting user text into innerHTML      ║
+║  6. New features get their own localStorage key, NOT inside sn_v4   ║
+║  7. The app is PRODUCTION — zero breaking changes, ever             ║
+║  8. Update this index line numbers after every feature addition     ║
+║                                                                      ║
+╚══════════════════════════════════════════════════════════════════════╝
+-->
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -834,6 +1258,122 @@ img { display: block; max-width: 100%; }
 .src-entry-name { font-size: 14px; font-weight: 700; color: var(--ink); }
 .src-entry-meta { font-size: 11px; color: var(--slate); margin-top: 2px; }
 .src-entry-note { font-size: 11px; color: var(--mist); margin-top: 2px; font-style: italic; }
+
+/* ═══════════════════════════════════════════════════
+   MIGRATION WIZARD
+═══════════════════════════════════════════════════ */
+#pgMigrate {
+  background: var(--paper);
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+}
+#pgMigrate::-webkit-scrollbar { display: none; }
+.mw-wrap {
+  padding: calc(var(--safe-t) + 24px) 22px calc(var(--safe-b) + 32px);
+  display: flex; flex-direction: column; min-height: 100%;
+}
+.mw-header {
+  display: flex; align-items: center; justify-content: space-between;
+  margin-bottom: 24px;
+}
+.mw-back {
+  font-size: 14px; font-weight: 700; color: var(--teal);
+  background: none; border: none; cursor: pointer; padding: 4px 0;
+}
+.mw-skip {
+  font-size: 12px; font-weight: 600; color: var(--mist);
+  background: none; border: none; cursor: pointer; padding: 4px 0;
+}
+.mw-steps { display: flex; gap: 6px; margin-bottom: 28px; }
+.mw-step-dot {
+  flex: 1; height: 4px; border-radius: 2px; background: var(--fog);
+  transition: background .3s;
+}
+.mw-step-dot.done { background: var(--teal); }
+.mw-step-dot.active { background: var(--tealM); }
+.mw-icon {
+  width: 64px; height: 64px; border-radius: 18px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 28px; margin-bottom: 18px;
+}
+.mw-title {
+  font-size: 22px; font-weight: 800; color: var(--ink);
+  letter-spacing: -.5px; margin-bottom: 8px; line-height: 1.2;
+}
+.mw-sub { font-size: 14px; color: var(--slate); line-height: 1.65; margin-bottom: 22px; }
+.mw-instr {
+  background: var(--card); border-radius: var(--rL);
+  border: 1px solid var(--fog); padding: 16px;
+  margin-bottom: 16px; box-shadow: var(--sh);
+}
+.mw-instr-step {
+  display: flex; align-items: flex-start; gap: 12px;
+  padding: 10px 0; border-bottom: 1px solid var(--fog);
+}
+.mw-instr-step:last-child { border-bottom: none; padding-bottom: 0; }
+.mw-step-num {
+  width: 24px; height: 24px; border-radius: 12px;
+  background: var(--teal); color: #fff;
+  font-size: 11px; font-weight: 800;
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0; margin-top: 1px;
+}
+.mw-step-text { font-size: 13px; color: var(--ink); line-height: 1.6; flex: 1; }
+.mw-step-text strong { color: var(--tealD); }
+.mw-warn {
+  background: #fffbeb; border: 1px solid #fde68a;
+  border-radius: var(--r); padding: 12px 14px; margin-bottom: 16px;
+}
+.mw-warn-title { font-size: 12px; font-weight: 700; color: #92400e; margin-bottom: 4px; }
+.mw-warn-text  { font-size: 11px; color: #b45309; line-height: 1.6; }
+.mw-safe {
+  background: #f0fdf4; border: 1px solid #a7f3d0;
+  border-radius: var(--r); padding: 12px 14px; margin-bottom: 16px;
+}
+.mw-safe-text { font-size: 11px; color: #065f46; line-height: 1.6; }
+.mw-url-box {
+  background: var(--ink); border-radius: var(--r);
+  padding: 14px 16px; margin-bottom: 16px;
+  display: flex; align-items: center; gap: 10px;
+}
+.mw-url-text {
+  font-size: 12px; color: #7dd3fc; flex: 1;
+  word-break: break-all; font-family: monospace;
+}
+.mw-url-copy {
+  background: var(--teal); border: none; border-radius: 8px;
+  padding: 7px 12px; font-size: 11px; font-weight: 700;
+  color: #fff; cursor: pointer; white-space: nowrap; flex-shrink: 0;
+}
+.mw-btn-primary {
+  width: 100%; background: var(--teal); border: none;
+  border-radius: var(--rL); padding: 16px;
+  font-size: 15px; font-weight: 800; color: #fff;
+  cursor: pointer; transition: transform .1s; margin-bottom: 10px;
+  font-family: var(--ff);
+}
+.mw-btn-primary:active { transform: scale(.97); }
+.mw-btn-secondary {
+  width: 100%; background: var(--card);
+  border: 1.5px solid var(--fog); border-radius: var(--rL);
+  padding: 14px; font-size: 14px; font-weight: 700;
+  color: var(--slate); cursor: pointer; transition: transform .1s;
+  font-family: var(--ff);
+}
+.mw-btn-secondary:active { transform: scale(.97); }
+.mw-export-done {
+  background: #f0fdf4; border: 1px solid #a7f3d0;
+  border-radius: var(--r); padding: 12px 14px; margin-bottom: 16px;
+  display: none;
+}
+.mw-export-done.show { display: block; }
+.mw-export-done-text { font-size: 12px; color: #065f46; font-weight: 600; }
+
+/* ═══════════════════════════════════════════════════
+   SAFARI NUDGE BANNER
+═══════════════════════════════════════════════════ */
+#safariNudge { display: none; }
+#safariNudge.on { display: flex; }
 .src-entry-right { text-align: right; flex-shrink: 0; }
 .src-entry-amt { font-size: 16px; font-weight: 800; }
 .src-entry-acts { display: flex; gap: 6px; justify-content: flex-end; margin-top: 6px; }
@@ -850,6 +1390,32 @@ img { display: block; max-width: 100%; }
   display: flex; flex-direction: column; align-items: center;
   justify-content: center; padding: 60px 24px; text-align: center;
 }
+/* ── SMART BANNER ── */
+#smartBanner { background: var(--ink); padding: 10px 14px; display: flex; align-items: center; gap: 10px; position: relative; min-height: 48px; flex-shrink: 0; }
+.sbn-dot { width: 6px; height: 6px; border-radius: 3px; flex-shrink: 0; transition: background .3s; }
+.sbn-text { font-size: 11px; color: #e2e8f0; flex: 1; line-height: 1.4; }
+.sbn-action { font-size: 10px; color: #7dd3fc; font-weight: 700; white-space: nowrap; flex-shrink: 0; cursor: pointer; padding: 4px 6px; }
+.sbn-dots { display: flex; gap: 3px; position: absolute; bottom: 5px; right: 14px; }
+.sbn-d { width: 12px; height: 3px; border-radius: 2px; background: #334155; transition: all .3s; }
+.sbn-d.on { background: #0ea5e9; width: 16px; }
+/* ── FOCUS MODE (accessibility) ── */
+body.focus-mode { font-size: 17px; }
+body.focus-mode .tab-gl { font-size: 24px; }
+body.focus-mode .tab-lbl { font-size: 12px; }
+body.focus-mode .bc-amt { font-size: 20px; }
+body.focus-mode .bc-nm { font-size: 12px; }
+body.focus-mode .htxn-nm { font-size: 16px; }
+body.focus-mode .htxn-dt { font-size: 13px; }
+body.focus-mode .add-lbl { font-size: 12px; letter-spacing: 2px; }
+body.focus-mode .amt-in { font-size: 54px; }
+body.focus-mode .add-in { font-size: 17px; padding: 15px; }
+body.focus-mode .src { padding: 14px 8px; }
+body.focus-mode .src-lbl { font-size: 13px; }
+body.focus-mode .mb { padding: 17px; font-size: 16px; }
+body.focus-mode .shdr-title { font-size: 18px; }
+body.focus-mode .dc-t { font-size: 16px; }
+body.focus-mode .dc-s { font-size: 13px; }
+body.focus-mode #tabBar { padding: 12px 0 calc(var(--safe-b) + 12px); }
 </style>
 </head>
 <body>
@@ -887,37 +1453,33 @@ img { display: block; max-width: 100%; }
       </div>
     </div>
 
-    <!-- THREE PILLARS -->
-    <div class="trust-pillars">
-      <div class="trust-pillar">
-        <div class="trust-pillar-icon" style="background:#ecfdf5">🔒</div>
-        <div>
-          <div class="trust-pillar-title">Stored only on your device</div>
-          <div class="trust-pillar-desc">All your transactions, buckets, and profile are saved in your phone's local storage. No account. No registration. No email. Just your phone.</div>
-        </div>
+    <!-- Collapsible trust details -->
+    <div id="trustAccordion" style="margin: 0 0 16px">
+      <div onclick="APP.toggleTrustAccordion()" style="display:flex;justify-content:space-between;align-items:center;padding:14px 20px;background:#f8fafc;border-radius:12px;cursor:pointer;border:1px solid #e2e8f0">
+        <span style="font-size:13px;font-weight:700;color:#0f172a">How does this work? ›</span>
+        <span id="trustToggleIcon" style="font-size:12px;color:#0ea5e9;font-weight:700">expand</span>
       </div>
-      <div class="trust-pillar">
-        <div class="trust-pillar-icon" style="background:#eff6ff">📵</div>
-        <div>
-          <div class="trust-pillar-title">Works without internet</div>
-          <div class="trust-pillar-desc">After the first load, Spend-na works fully offline. No internet = no data risk. Your spends are recorded even on a flight or in a basement.</div>
+      <div id="trustDetails" style="display:none;margin-top:8px;flex-direction:column;gap:0;background:#fff;border-radius:12px;border:1px solid #e2e8f0;overflow:hidden">
+        <div style="display:flex;align-items:center;gap:12px;padding:12px 16px;border-bottom:1px solid #f8fafc">
+          <div style="width:32px;height:32px;border-radius:9px;background:#f0fdf4;display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0">🔒</div>
+          <div><div style="font-size:13px;font-weight:700;color:#0f172a">Stored only on your device</div><div style="font-size:11px;color:#64748b;margin-top:1px">No account, no cloud, no email. Just your phone.</div></div>
         </div>
-      </div>
-      <div class="trust-pillar">
-        <div class="trust-pillar-icon" style="background:#faf5ff">👁️</div>
-        <div>
-          <div class="trust-pillar-title">Nobody can read your data</div>
-          <div class="trust-pillar-desc">We don't have a server. We don't have a database. We literally cannot see your data — because it never comes to us. Not even the app owner.</div>
+        <div style="display:flex;align-items:center;gap:12px;padding:12px 16px;border-bottom:1px solid #f8fafc">
+          <div style="width:32px;height:32px;border-radius:9px;background:#eff6ff;display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0">📡</div>
+          <div><div style="font-size:13px;font-weight:700;color:#0f172a">Works fully offline</div><div style="font-size:11px;color:#64748b;margin-top:1px">No internet = no data risk. Works on a flight.</div></div>
         </div>
-      </div>
-      <div class="trust-pillar">
-        <div class="trust-pillar-icon" style="background:#fff7ed">📁</div>
-        <div>
-          <div class="trust-pillar-title">You control the backup</div>
-          <div class="trust-pillar-desc">You can save your data as a JSON file to your phone, WhatsApp, or Google Drive anytime. Import it back on any device. You hold the key — literally.</div>
+        <div style="display:flex;align-items:center;gap:12px;padding:12px 16px;border-bottom:1px solid #f8fafc">
+          <div style="width:32px;height:32px;border-radius:9px;background:#fff7ed;display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0">👁</div>
+          <div><div style="font-size:13px;font-weight:700;color:#0f172a">Nobody can read your data</div><div style="font-size:11px;color:#64748b;margin-top:1px">We have no server. Not even the app owner can see it.</div></div>
+        </div>
+        <div style="display:flex;align-items:center;gap:12px;padding:12px 16px">
+          <div style="width:32px;height:32px;border-radius:9px;background:#fdf4ff;display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0">🗂</div>
+          <div><div style="font-size:13px;font-weight:700;color:#0f172a">You control the backup</div><div style="font-size:11px;color:#64748b;margin-top:1px">Save as JSON to your phone or Google Drive anytime.</div></div>
         </div>
       </div>
     </div>
+    <div style="display:none"><!-- removed trust-pillars -->
+    </div><!-- /trustAccordion -->
 
     <!-- FORGOT PASSWORD — EXPLAINED UPFRONT -->
     <div class="trust-forgot-box">
@@ -941,10 +1503,9 @@ img { display: block; max-width: 100%; }
     <button class="trust-cta" onclick="APP.trustAccepted()">
       I understand — Let's begin →
     </button>
-    <div class="trust-already">
-      Already have an account?
-      <button onclick="APP.trustSkip()">Load my data file</button>
-    </div>
+    <button onclick="APP.trustSkip()" style="width:100%;background:#e0f2fe;border:none;border-radius:12px;padding:14px;font-size:14px;font-weight:700;color:#0369a1;cursor:pointer;margin-top:10px;font-family:var(--ff)">
+      📂 Already have an account? Load my data file
+    </button>
 
   </div>
 </div>
@@ -1174,17 +1735,19 @@ img { display: block; max-width: 100%; }
           <span class="add-lbl">WHICH BUCKET?</span>
           <div class="bkts" id="bktGrid"></div>
         </div>
-        <div class="tag-section" style="padding-bottom:40px">
-          <span class="add-lbl">TAGS <span style="font-size:9px;color:var(--mist);font-weight:500;letter-spacing:0">optional</span></span>
-          <div class="tag-chips" id="addTagChips"></div>
-          <div class="tag-chip-custom" style="margin-top:10px">
-            <input class="tag-custom-in" id="addTagCustom" type="text"
-              inputmode="text" maxlength="30" placeholder="Custom tag…"
-              autocorrect="off" autocapitalize="none" spellcheck="false"
-              onkeydown="if(event.key==='Enter'){event.preventDefault();APP.addCustomTag();}">
-            <button class="tag-add-btn" onclick="APP.addCustomTag()">Add</button>
+        <div style="padding:0 16px;margin-top:14px;padding-bottom:40px">
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px">
+            <span class="add-lbl">TAGS <span style="font-size:9px;color:var(--mist);font-weight:500;letter-spacing:0;text-transform:none">optional</span></span>
+            <button onclick="APP._toggleCustomTag()" style="font-size:10px;color:var(--teal);font-weight:700;background:none;border:none;cursor:pointer;font-family:var(--ff)">+ Custom</button>
           </div>
-          <div class="tag-chips" id="addTagSelected" style="margin-top:8px"></div>
+          <div id="addTagChips" style="display:flex;gap:6px;overflow-x:auto;padding-bottom:4px;-webkit-overflow-scrolling:touch"></div>
+          <div id="addTagCustomArea" style="display:none;margin-top:8px">
+            <div class="tag-chip-custom">
+              <input class="tag-custom-in" id="addTagCustom" type="text" inputmode="text" maxlength="30" placeholder="Custom tag…" autocorrect="off" autocapitalize="none" spellcheck="false" onkeydown="if(event.key==='Enter'){event.preventDefault();APP.addCustomTag();}">
+              <button class="tag-add-btn" onclick="APP.addCustomTag()">Add</button>
+            </div>
+          </div>
+          <div id="addTagSelected" style="display:flex;flex-wrap:wrap;gap:4px;margin-top:6px"></div>
         </div>
       </div>
     </div>
@@ -1224,6 +1787,12 @@ img { display: block; max-width: 100%; }
   </div><!-- /screens -->
 
   <!-- TAB BAR -->
+  <div id="smartBanner" style="display:none">
+    <div class="sbn-dot" id="sbnDot"></div>
+    <div class="sbn-text" id="sbnText"></div>
+    <div class="sbn-action" id="sbnAction" onclick="APP.sbnTap()"></div>
+    <div class="sbn-dots" id="sbnDots"></div>
+  </div>
   <div id="tabBar">
     <button class="tab on" data-t="home" onclick="APP.go('home')" aria-label="Home">
       <div class="tab-gl">⬡</div><div class="tab-lbl">Home</div>
@@ -1249,6 +1818,13 @@ img { display: block; max-width: 100%; }
 </div><!-- /pgApp -->
 </div><!-- /app -->
 
+<!-- ══════════════ MIGRATION WIZARD ══════════════ -->
+<div class="pg" id="pgMigrate">
+  <div class="mw-wrap" id="mwWrap">
+    <!-- Rendered dynamically by APP.renderMWStep() -->
+  </div>
+</div>
+
 <!-- MODAL -->
 <div id="modal" onclick="if(event.target===this)APP.cm()">
   <div class="m-box">
@@ -1264,6 +1840,16 @@ img { display: block; max-width: 100%; }
   <div class="ib-txt">Add Spend-na to your home screen for the best experience.</div>
   <button class="ib-install" id="iBannerBtn">Install</button>
   <button class="ib-close" onclick="document.getElementById('iBanner').classList.remove('on')">✕</button>
+</div>
+
+<!-- iOS Chrome → Safari nudge — shown every session on Chrome iOS -->
+<div id="safariNudge" style="display:none;background:#0f172a;border-top:1px solid #1e293b;padding:10px 16px;align-items:center;gap:10px;z-index:801;position:relative">
+  <div style="font-size:16px;flex-shrink:0">🧭</div>
+  <div style="flex:1;font-size:11px;color:#e2e8f0;line-height:1.5">
+    <strong style="color:#7dd3fc">Switch to Safari</strong> — your files will save to the Files app where you can always find them.
+  </div>
+  <button onclick="APP.openMigrationWizard('home')" style="background:var(--teal);border:none;border-radius:8px;padding:7px 12px;font-size:11px;font-weight:700;color:#fff;cursor:pointer;white-space:nowrap;flex-shrink:0">How? →</button>
+  <button onclick="document.getElementById('safariNudge').classList.remove('on')" style="background:none;border:none;color:var(--slate);font-size:16px;cursor:pointer;padding:4px;min-width:30px;min-height:30px;display:flex;align-items:center;justify-content:center;flex-shrink:0">✕</button>
 </div>
 
 <script>
@@ -1407,6 +1993,7 @@ const DB = {
     a.href=url;
     a.download='spend-na-data.json'; // Always same filename — easy to overwrite
     a.click();
+    localStorage.setItem('sn_last_exported', new Date().toISOString());
     URL.revokeObjectURL(url);
   },
   // Try to overwrite the SAME file using File System Access API (Chrome Android + Desktop)
@@ -1464,7 +2051,7 @@ const SRC_DB = {
 
 // ── STATE ─────────────────────────────────────────────────────
 let D=null;
-let S={tab:'home',sliceBk:null,histF:null,addSrc:null,addBkt:null,limVals:{},setRole:null,setToggles:{},unsaved:false,obRole:null,obPhoto:null,install:null,saveBusy:false,loginAttempts:0,loginLockUntil:0,monthOffset:0,_autoSaveTimer:null};
+let S={tab:'home',sliceBk:null,histF:null,addSrc:null,addBkt:null,limVals:{},setRole:null,setToggles:{},unsaved:false,obRole:null,obPhoto:null,install:null,saveBusy:false,loginAttempts:0,loginLockUntil:0,monthOffset:0,monthExpanded:null,_autoSaveTimer:null};
 
 // ── TAGS SESSION STATE ────────────────────────────────────────
 // Module-level — NOT on S or D. Resets on every r_add() call. Never persisted.
@@ -1475,7 +2062,7 @@ function esc(s){return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').
 function fmt(n){if(n>=100000)return`₹${(n/100000).toFixed(1)}L`;if(n>=1000)return`₹${(n/1000).toFixed(1)}k`;return`₹${n}`;}
 function fmtF(n){return'₹'+(isFinite(+n)?+n:0).toLocaleString('en-IN');}
 function avHTML(p,sz){
-  const s=sz||44,lt=(p?.name?.[0]||'S').toUpperCase();
+  const s=sz||44,lt=((p&&p.name&&p.name[0])||'S').toUpperCase();
   if(p?.photo)return`<img src="${p.photo}" style="width:100%;height:100%;object-fit:cover;border-radius:inherit">`;
   return`<span style="font-size:${Math.round(s*.38)}px;font-weight:800;color:#fff">${lt}</span>`;
 }
@@ -1484,6 +2071,23 @@ function summary(monthStr){const s={total:0};Object.keys(BUCKETS).forEach(k=>s[k
 function offsetMonthStr(offset){const d=new Date();d.setDate(1);d.setMonth(d.getMonth()+offset);return d.toLocaleDateString('en-IN',{month:'short',year:'numeric'});}
 function offsetMonthLong(offset){const d=new Date();d.setDate(1);d.setMonth(d.getMonth()+offset);return d.toLocaleDateString('en-IN',{month:'long',year:'numeric'});}
 function pending(){return(D?.transactions||[]).filter(t=>!t.bucket).length;}
+
+// ── PLATFORM DETECTION ────────────────────────────────────────
+function detectPlatform(){
+  const ua = navigator.userAgent;
+  const isIOS = /iPad|iPhone|iPod/.test(ua) && !window.MSStream;
+  const isChromeIOS = /CriOS/.test(ua);
+  const isAndroid = /Android/.test(ua);
+  const isSafariIOS = isIOS && /Safari/.test(ua) && !isChromeIOS;
+  const isDesktop = !isIOS && !isAndroid;
+  const isStandalone = window.navigator.standalone === true ||
+    window.matchMedia('(display-mode: standalone)').matches;
+  const isNativeBrowser =
+    (isIOS && (isSafariIOS || isStandalone)) ||
+    (isAndroid && !isChromeIOS) ||
+    isDesktop;
+  return { isIOS, isChromeIOS, isAndroid, isSafariIOS, isDesktop, isStandalone, isNativeBrowser };
+}
 function updSaveBar(){/* save bar removed — auto-save is silent */}
 
 function toast(msg,ms=2200){const el=document.getElementById('toast');el.textContent=msg;el.classList.add('on');clearTimeout(el._t);el._t=setTimeout(()=>el.classList.remove('on'),ms);}
@@ -1508,18 +2112,68 @@ const APP = {
 
 
   // ── TRUST SCREEN ──
+  toggleTrustAccordion() {
+    const body = document.getElementById('trustDetails');
+    const icon = document.getElementById('trustToggleIcon');
+    if (!body || !icon) return;
+    const isHidden = body.style.display === 'none' || body.style.display === '';
+    body.style.display = isHidden ? 'flex' : 'none';
+    body.style.flexDirection = 'column';
+    icon.textContent = isHidden ? 'collapse' : 'expand';
+  },
+
   trustAccepted(){
-    // Mark trust as seen
     localStorage.setItem('sn_trust_seen','1');
     const saved = DB.load();
-    if(saved && saved.passwordHash){
-      D = saved; this.show('pgLock');
-    } else if(saved){
-      D = saved; this.launch();
-    } else {
-      // Fresh start — go to onboarding
-      this.buildRoles(); this.show('pgOb');setupDobInput('obDob');
+    if(saved && saved.passwordHash){ D=saved; this.show('pgLock'); return; }
+    if(saved){ D=saved; this.launch(); return; }
+    // New user — check browser before onboarding
+    const p = detectPlatform();
+    const warned = localStorage.getItem('sn_browser_warned');
+    if(!p.isNativeBrowser && !warned){
+      localStorage.setItem('sn_browser_warned','1');
+      this._showNewUserBrowserWarning();
+      return;
     }
+    this.buildRoles(); this.show('pgOb'); setupDobInput('obDob');
+  },
+
+  _showNewUserBrowserWarning(){
+    const p = detectPlatform();
+    const appUrl = window.location.href.split('?')[0].split('#')[0];
+    const browserMsg = p.isChromeIOS
+      ? 'You\'re opening Spend-na in <strong>Chrome on iPhone</strong>. Files you export won\'t be easy to find — they go to Chrome\'s hidden Downloads, not your Files app.'
+      : 'You\'re using a non-native browser. For the best experience and easy file access, open Spend-na in your device\'s native browser.';
+    const recommendedBrowser = p.isIOS ? 'Safari' : 'your default browser';
+    modal(
+      '🧭 One moment',
+      `<div style="font-size:13px;line-height:1.7">
+        <div style="background:#fffbeb;border-radius:var(--r);padding:12px 14px;margin-bottom:14px;border:1px solid #fde68a">
+          <div style="font-size:12px;font-weight:700;color:#92400e;margin-bottom:4px">Browser recommendation</div>
+          <div style="font-size:11px;color:#b45309">${browserMsg}</div>
+        </div>
+        <div style="font-size:12px;color:var(--slate);margin-bottom:10px">
+          <strong>Recommended:</strong> Open in <strong>${recommendedBrowser}</strong> for files to save where you can always find them.
+        </div>
+        <div style="background:var(--paper);border-radius:var(--r);padding:11px 13px;font-size:11px;color:var(--slate)">
+          App URL: <span style="color:var(--teal);font-weight:700;word-break:break-all">${esc(appUrl)}</span>
+        </div>
+      </div>`,
+      [
+        {l:`Switch to ${recommendedBrowser} first`,c:'mb-ok',a:()=>{
+          this.cm();
+          if(navigator.clipboard){
+            navigator.clipboard.writeText(appUrl)
+              .then(()=>toast('URL copied — open '+recommendedBrowser+' and paste it',3500))
+              .catch(()=>{});
+          }
+        }},
+        {l:'Continue in this browser anyway',c:'mb-nil',a:()=>{
+          this.cm();
+          this.buildRoles(); this.show('pgOb'); setupDobInput('obDob');
+        }},
+      ]
+    );
   },
 
   async trustSkip(){
@@ -1563,14 +2217,18 @@ const APP = {
       const saved = DB.load();
       const trustSeen = localStorage.getItem('sn_trust_seen');
 
-      if (!trustSeen) {
-        // First ever open — show trust screen regardless
+      if (!trustSeen && !saved) {
+        // Absolute first-timer — no trust flag, no data
         this.show('pgTrust');
-        // Pre-load data in background so trust → lock works
-        if (saved) D = saved;
+      } else if (!trustSeen && saved) {
+        // Edge case: has data but trust not yet marked (upgraded user)
+        localStorage.setItem('sn_trust_seen', '1');
+        D = saved;
+        if (saved.passwordHash) { this.show('pgLock'); }
+        else { this.launch(); }
       } else if (!saved) {
         // Seen trust but no data — go to onboarding
-        this.buildRoles(); this.show('pgOb');setupDobInput('obDob'); 
+        this.buildRoles(); this.show('pgOb'); setupDobInput('obDob');
       } else if (saved.passwordHash) {
         // Has data + password — show lock
         D = saved; this.show('pgLock');
@@ -1722,6 +2380,131 @@ const APP = {
   launch(){
     this.show('pgApp');
     this.go('home');
+    this.startBanner();
+    this.initFocusMode();
+    setTimeout(()=>this._checkBrowserNudge(), 800);
+    setTimeout(()=>this._check7DayBackupWarning(), 2200);
+  },
+
+  _checkBrowserNudge(){
+    const p = detectPlatform();
+    if(p.isIOS && p.isChromeIOS && !p.isStandalone){
+      const el = document.getElementById('safariNudge');
+      if(el) el.classList.add('on');
+    }
+  },
+
+  _check7DayBackupWarning(){
+    const lastExp = localStorage.getItem('sn_last_exported');
+    const shownThisSession = sessionStorage.getItem('sn_backup_warned');
+    if(shownThisSession) return;
+    const daysSince = lastExp
+      ? Math.floor((Date.now()-new Date(lastExp).getTime())/(1000*60*60*24))
+      : null;
+    if(daysSince !== null && daysSince < 7) return;
+    sessionStorage.setItem('sn_backup_warned','1');
+    const msg = daysSince === null
+      ? 'You haven\'t saved your data file yet. Your data lives only in this browser — if Chrome\'s data is cleared or you switch phones, it\'s gone.'
+      : `You last saved your data file ${daysSince} days ago. Save now to keep your backup fresh.`;
+    modal(
+      '💾 Backup reminder',
+      `<div style="font-size:13px;color:var(--slate);line-height:1.7">
+        <div style="background:#fffbeb;border-radius:var(--r);padding:12px;margin-bottom:14px;border:1px solid #fde68a;color:#92400e;font-size:12px">${msg}</div>
+        <div style="font-size:12px">Your data file is your backup AND your password recovery key. Save it regularly.</div>
+      </div>`,
+      [
+        {l:'Save now',c:'mb-ok',a:()=>{this.cm();this.saveFile();}},
+        {l:'Remind me later',c:'mb-nil',a:()=>this.cm()},
+      ]
+    );
+  },
+
+  // ── SMART BANNER ─────────────────────────────────────────────
+  _sbnIdx: 0,
+  _sbnTimer: null,
+
+  _buildBannerMessages() {
+    const msgs = [];
+    const now = new Date();
+    const daysLeft = new Date(now.getFullYear(), now.getMonth() + 1, 0).getDate() - now.getDate();
+    const sm = summary();
+    const currentMonth = offsetMonthStr(0);
+    msgs.push({ dot:'#f59e0b', text:'💡 Tag your spends to track events like birthdays, travel and festivals separately', action:'Add ›', target:'add' });
+    msgs.push({ dot:'#0ea5e9', text:'💾 Save your data file regularly — it\'s your backup AND your password recovery key', action:'Settings ›', target:'settings' });
+    msgs.push({ dot:'#8b5cf6', text:'📊 Check your Insights to discover your spending personality and patterns', action:'Insights ›', target:'insights' });
+    if (daysLeft <= 5) msgs.push({ dot:'#f43f5e', text:`📅 Only ${daysLeft} day${daysLeft!==1?'s':''} left in ${currentMonth} — review your month before it closes`, action:'Month ›', target:'month' });
+    const sdHome = SRC_DB.load();
+    const hasSources = (sdHome.sources||[]).some(s=>s.month===currentMonth);
+    if (!hasSources) msgs.push({ dot:'#10b981', text:'💰 Add your income to Sources to see exactly how much you have left this month', action:'Sources ›', target:'sources' });
+    Object.entries(D.limits||{}).forEach(([k,lim])=>{
+      if (lim > 0 && sm[k] >= lim * 0.8) {
+        const pct = Math.round((sm[k]/lim)*100);
+        const isOver = sm[k] > lim;
+        msgs.push({ dot: isOver?'#ef4444':'#f59e0b', text:`${isOver?'⚠':'⚡'} ${BUCKETS[k]?.l||k} is ${isOver?'over':'at '+pct+'% of'} your monthly limit`, action:'Limits ›', target:'limits' });
+      }
+    });
+    const pendingCount = pending();
+    if (pendingCount > 0) msgs.push({ dot:'#f43f5e', text:`🗂 You have ${pendingCount} unsorted spend${pendingCount!==1?'s':''} waiting — sort them into buckets`, action:'Add ›', target:'add' });
+    msgs.push({ dot:'#64748b', text:'🔒 Your data never leaves this device. No server, no cloud, no tracking. Ever.', action:'', target:'' });
+    msgs.push({ dot:'#0ea5e9', text:'📈 Use the Month view to see week-by-week spending patterns', action:'Month ›', target:'month' });
+    return msgs;
+  },
+
+  sbnTap() {
+    const msgs = this._buildBannerMessages();
+    const target = msgs[this._sbnIdx]?.target;
+    if (target) this.go(target);
+  },
+
+  startBanner() {
+    const el = document.getElementById('smartBanner');
+    if (!el) return;
+    el.style.display = 'flex';
+    this._sbnIdx = 0;
+    this._renderBanner();
+    clearInterval(this._sbnTimer);
+    this._sbnTimer = setInterval(() => {
+      const msgs = this._buildBannerMessages();
+      this._sbnIdx = (this._sbnIdx + 1) % msgs.length;
+      this._renderBanner();
+    }, 5000);
+  },
+
+  _renderBanner() {
+    const msgs = this._buildBannerMessages();
+    if (!msgs.length) return;
+    const m = msgs[this._sbnIdx];
+    const dot = document.getElementById('sbnDot');
+    const text = document.getElementById('sbnText');
+    const action = document.getElementById('sbnAction');
+    const dotsEl = document.getElementById('sbnDots');
+    if (!dot || !text || !action || !dotsEl) return;
+    dot.style.background = m.dot;
+    text.textContent = m.text;
+    action.textContent = m.action;
+    action.style.display = m.action ? 'block' : 'none';
+    const total = Math.min(msgs.length, 5);
+    dotsEl.innerHTML = Array.from({length: total}, (_,i) =>
+      `<div class="sbn-d${i === this._sbnIdx % total ? ' on' : ''}"></div>`
+    ).join('');
+  },
+
+  // ── FOCUS MODE ──
+  initFocusMode() {
+    const saved = D?.settings?.focusMode;
+    const isLargeFont = window.devicePixelRatio > 2.5 && window.screen.width < 390;
+    const shouldEnable = saved === true || (saved === undefined && isLargeFont);
+    document.body.classList.toggle('focus-mode', !!shouldEnable);
+  },
+
+  setFocusMode(on) {
+    if (!D.settings) D.settings = {};
+    D.settings.focusMode = on;
+    DB.save(D);
+    document.body.classList.toggle('focus-mode', on);
+    toast(on ? 'Focus mode on — larger text & tap targets' : 'Focus mode off');
+    // Re-render settings to sync toggle state
+    if (S.tab === 'settings') this.r_settings();
   },
 
   // ── SAVE ──
@@ -1735,11 +2518,60 @@ const APP = {
     },800);
   },
 
+
   async saveFile(){
     // iOS-safe: always use direct download (no showSaveFilePicker which triggers iOS file picker screen)
     DB.exportFile(D);
-    S.unsaved=false;
-    toast(`${D.transactions.length} records saved to your device ✓`);
+    S.unsaved = false;
+    setTimeout(()=>this._showExportGuidance(), 400);
+  },
+
+  _showExportGuidance(){
+    const p = detectPlatform();
+    let title, body;
+    if(p.isIOS && p.isChromeIOS){
+      title = '💾 File saved — find it in Chrome';
+      body = `<div style="font-size:13px;line-height:1.7">
+        <div style="background:#fffbeb;border-radius:var(--r);padding:12px;margin-bottom:12px;border:1px solid #fde68a">
+          <div style="font-size:12px;font-weight:700;color:#92400e;margin-bottom:3px">⚠ Chrome hides downloads from the Files app</div>
+          <div style="font-size:11px;color:#b45309">Your file is saved but only visible inside Chrome.</div>
+        </div>
+        <div style="font-size:12px;font-weight:700;color:var(--ink);margin-bottom:8px">To find your file:</div>
+        <div style="background:var(--paper);border-radius:var(--r);padding:12px;font-size:12px;line-height:2.2">
+          <div>1. Tap Chrome <strong>⋮</strong> menu → <strong>Downloads</strong></div>
+          <div>2. Find <strong>spend-na-data.json</strong></div>
+          <div>3. Tap → Share → <strong>Save to Files</strong> → Downloads → Save</div>
+        </div>
+        <div style="margin-top:12px;font-size:11px;color:var(--teal);font-weight:600">💡 Switch to Safari so files always go to the Files app automatically.</div>
+      </div>`;
+    } else if(p.isIOS){
+      title = '💾 File saved to Files app';
+      body = `<div style="font-size:13px;line-height:1.7">
+        <div style="background:#f0fdf4;border-radius:var(--r);padding:12px;margin-bottom:12px;border:1px solid #a7f3d0">
+          <div style="font-size:12px;font-weight:700;color:#065f46;margin-bottom:3px">✅ ${D.transactions.length} records exported</div>
+          <div style="font-size:11px;color:#059669">Saved as spend-na-data.json</div>
+        </div>
+        <div style="font-size:12px;color:var(--slate)">Open the <strong>Files app</strong> → Downloads to find it. Consider saving to iCloud Drive for an extra backup.</div>
+      </div>`;
+    } else if(p.isAndroid){
+      title = '💾 File saved to Downloads';
+      body = `<div style="font-size:13px;line-height:1.7">
+        <div style="background:#f0fdf4;border-radius:var(--r);padding:12px;margin-bottom:12px;border:1px solid #a7f3d0">
+          <div style="font-size:12px;font-weight:700;color:#065f46;margin-bottom:3px">✅ ${D.transactions.length} records exported</div>
+          <div style="font-size:11px;color:#059669">Saved as spend-na-data.json</div>
+        </div>
+        <div style="font-size:12px;color:var(--slate)">Open <strong>Files</strong> or <strong>My Files</strong> app → Downloads folder to find it.</div>
+      </div>`;
+    } else {
+      title = '💾 File saved';
+      body = `<div style="font-size:13px;color:var(--slate);line-height:1.7">
+        <div style="background:#f0fdf4;border-radius:var(--r);padding:12px;border:1px solid #a7f3d0;margin-bottom:12px">
+          <div style="font-size:12px;font-weight:700;color:#065f46">✅ ${D.transactions.length} records exported</div>
+        </div>
+        Check your browser's <strong>Downloads folder</strong> for spend-na-data.json.
+      </div>`;
+    }
+    modal(title, body, [{l:'Got it ✓',c:'mb-ok',a:()=>this.cm()}]);
   },
 
   // ── PHOTO ──
@@ -1847,21 +2679,6 @@ const APP = {
       </div>
       <div class="sec-row" style="margin-top:4px"><span class="sec-lbl">MY DATA</span><button class="sec-lnk" onclick="APP.go('history')">All history ›</button></div>
       ${srcIndicatorHTML}
-      <div class="dc" onclick="APP.saveFile()">
-        <div class="dc-ic" style="background:var(--tealL)">💾</div>
-        <div class="dc-info"><div class="dc-t">Save my data file</div><div class="dc-s">${D.transactions.length} total records · Last: ${D.lastSaved?new Date(D.lastSaved).toLocaleDateString('en-IN',{day:'2-digit',month:'short',hour:'2-digit',minute:'2-digit'}):'Never'}</div></div>
-        <div class="dc-ar">↓</div>
-      </div>
-      <div class="dc" onclick="APP.loadFile()">
-        <div class="dc-ic" style="background:#ecfdf5">📂</div>
-        <div class="dc-info"><div class="dc-t">Load from my file</div><div class="dc-s">Restore all records from backup</div></div>
-        <div class="dc-ar">↑</div>
-      </div>
-      <div class="dc" onclick="APP.shareBlank()">
-        <div class="dc-ic" style="background:#eff6ff">🔗</div>
-        <div class="dc-info"><div class="dc-t">Share app with a friend</div><div class="dc-s">Send the app link — zero data shared</div></div>
-        <div class="dc-ar">↗</div>
-      </div>
       <div class="foot"><div class="foot-t">🔒 All data stays only on your device</div><a href="http://www.hakki.in" target="_blank" class="foot-lk">© Sandeep Hakki · hakki.in · 2026</a></div>
     `;
   },
@@ -1972,12 +2789,28 @@ const APP = {
         </div>
         ${Object.entries(BUCKETS).map(([k,c])=>{
           const amt=sm[k]||0,pct=total>0?Math.round((amt/total)*100):0,limit=D.limits[k]||0,isOver=limit>0&&amt>limit;
-          return`<div class="brow" style="border-left-color:${c.c}" onclick="APP.showSlice('${k}')">
-            <div class="bc-ic" style="background:${c.cl};color:${c.c};border-color:${c.cm};width:42px;height:42px;flex-shrink:0">${c.g}</div>
-            <div class="br-info"><div class="br-nm">${c.l}</div><div class="br-bar"><div class="br-bfill" style="background:${isOver?'#ef4444':c.c};width:${pct}%"></div></div><div class="br-tag">${c.t}</div></div>
-            <div class="br-right"><div class="br-am" style="color:${isOver?'#ef4444':c.c}">${fmtF(amt)}</div><div class="br-pct">${pct}%</div></div>
-            <div class="br-chv">›</div>
-          </div>`;
+          const isExp = S.monthExpanded === k;
+          const bTxns = (D.transactions||[]).filter(t=>t.bucket===k&&t.month===mStr).slice(0,5);
+          return`<div style="margin-bottom:8px">
+  <div class="brow" style="border-left-color:${c.c};border-left-width:4px;border-radius:${isExp?'14px 14px 0 0':'14px'};margin-bottom:0" onclick="APP._toggleMonthRow('${k}')">
+    <div class="bc-ic" style="background:${c.cl};color:${c.c};border-color:${c.cm};width:42px;height:42px;flex-shrink:0">${c.g}</div>
+    <div class="br-info"><div class="br-nm">${c.l}</div><div class="br-bar"><div class="br-bfill" style="background:${isOver?'#ef4444':c.c};width:${pct}%"></div></div><div class="br-tag">${c.t}</div></div>
+    <div class="br-right"><div class="br-am" style="color:${isOver?'#ef4444':c.c}">${fmtF(amt)}</div><div class="br-pct">${pct}%</div></div>
+    <div class="br-chv" style="transform:${isExp?'rotate(90deg)':'none'};transition:transform .2s">›</div>
+  </div>
+  ${isExp ? `<div style="background:${c.cl};border-radius:0 0 14px 14px;padding:10px 12px;border:1.5px solid ${c.cm};border-top:none">
+    <div style="font-size:9px;font-weight:700;color:${c.c};letter-spacing:1.5px;margin-bottom:8px">TRANSACTIONS · ${mLong}</div>
+    ${bTxns.length===0
+      ? `<div style="font-size:12px;color:${c.c};opacity:.6;text-align:center;padding:8px">No transactions this month</div>`
+      : bTxns.map(t=>`<div style="display:flex;align-items:center;gap:8px;padding:7px 0;border-bottom:1px solid ${c.cm}20">
+          <span style="font-size:16px">${ico(t.merchant)}</span>
+          <div style="flex:1;min-width:0"><div style="font-size:12px;font-weight:700;color:${c.c};white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${esc(t.merchant)}</div><div style="font-size:9px;color:${c.c};opacity:.7;margin-top:1px">${t.date} · ${t.time}</div></div>
+          <div style="font-size:13px;font-weight:700;color:${c.c};flex-shrink:0">${fmtF(t.amount)}</div>
+        </div>`).join('')}
+    ${bTxns.length > 0 ? `<div onclick="APP.showSlice('${k}')" style="text-align:center;padding:8px 0 2px;font-size:11px;font-weight:700;color:${c.c};cursor:pointer">See all ${(D.transactions||[]).filter(t=>t.bucket===k&&t.month===mStr).length} transactions ›</div>` : ''}
+  </div>` : ''}
+</div>`;
+        }).join('')}
         }).join('')}
       </div>`;
   },
@@ -1985,6 +2818,12 @@ const APP = {
     const newOff=(S.monthOffset||0)+dir;
     if(newOff>0)return; // Can't go into the future
     S.monthOffset=newOff;
+    S.monthExpanded=null; // reset expanded row on month change
+    this.r_month();
+  },
+
+  _toggleMonthRow(bk) {
+    S.monthExpanded = S.monthExpanded === bk ? null : bk;
     this.r_month();
   },
 
@@ -2375,15 +3214,35 @@ const APP = {
     _addTags = []; // reset tag session on every Add Spend open (U-007, U-008)
     const ai=document.getElementById('addAmt');if(ai)ai.value='';
     const di=document.getElementById('addDesc');if(di)di.value='';
-    document.getElementById('srcGrid').innerHTML=SRCS.map(s=>`<div class="src" data-s="${s.k}" onclick="APP.selSrc('${s.k}')"><div class="src-ic">${s.i}</div><div class="src-lbl">${s.l}</div></div>`).join('');
-    document.getElementById('bktGrid').innerHTML=Object.entries(BUCKETS).map(([k,c])=>`<div class="bkt" data-b="${k}" onclick="APP.selBkt('${k}')"><div class="bc-ic" style="background:${c.cl};color:${c.c};border-color:${c.cm}">${c.g}</div><div class="bkt-nm">${c.l}</div><div class="bkt-ds">${c.t}</div><div class="bkt-ck" style="background:${c.c}">✓</div></div>`).join('');
+    document.getElementById('srcGrid').innerHTML=SRCS.map(s=>
+      `<div class="src" data-s="${s.k}" onclick="APP.selSrc('${s.k}')" style="flex:1;padding:10px 6px;border-radius:12px;border:1.5px solid var(--fog);background:var(--card);cursor:pointer;text-align:center;transition:all .12s">
+        <div style="font-size:14px;font-weight:700;color:var(--slate)">${s.i}</div>
+        <div style="font-size:9px;font-weight:700;color:var(--slate);margin-top:3px">${s.l}</div>
+      </div>`
+    ).join('');
+    document.getElementById('bktGrid').innerHTML=Object.entries(BUCKETS).map(([k,c])=>
+      `<div class="bkt" data-b="${k}" onclick="APP.selBkt('${k}')" style="flex:1;padding:10px 6px;border-radius:12px;border:1.5px solid var(--fog);background:var(--card);cursor:pointer;text-align:center;transition:all .12s;position:relative">
+        <div style="width:24px;height:24px;border-radius:7px;background:${c.cl};border:1px solid ${c.cm};color:${c.c};font-size:11px;display:flex;align-items:center;justify-content:center;margin:0 auto 4px">${c.g}</div>
+        <div style="font-size:9px;font-weight:700;color:var(--slate)">${c.l.length>7?c.l.slice(0,7)+'…':c.l}</div>
+        <div id="bktck_${k}" style="display:none;position:absolute;top:-5px;right:-5px;width:13px;height:13px;border-radius:7px;background:${c.c};font-size:7px;font-weight:900;color:#fff;align-items:center;justify-content:center">✓</div>
+      </div>`
+    ).join('');
     this.valAdd();
     this.renderAddTagChips(); // render preset tag chips after bktGrid
   },
   selSrc(k){S.addSrc=k;document.querySelectorAll('.src').forEach(el=>el.classList.toggle('on',el.dataset.s===k));this.valAdd();},
   selBkt(k){
     S.addBkt=k;
-    document.querySelectorAll('.bkt').forEach(el=>{const ek=el.dataset.b,c=BUCKETS[ek],on=ek===k;el.classList.toggle('on',on);el.style.borderColor=on?c.c:'var(--fog)';el.style.background=on?c.cl:'var(--card)';el.querySelector('.bkt-nm').style.color=on?c.c:'var(--slate)';});
+    Object.entries(BUCKETS).forEach(([bk,c])=>{
+      const el=document.querySelector(`.bkt[data-b="${bk}"]`);
+      const ck=document.getElementById(`bktck_${bk}`);
+      if(!el)return;
+      const on=bk===k;
+      el.style.borderColor=on?c.c:'var(--fog)';
+      el.style.borderWidth=on?'2px':'1.5px';
+      el.style.background=on?c.cl:'var(--card)';
+      if(ck)ck.style.display=on?'flex':'none';
+    });
     this.valAdd();
   },
   valAdd(){
@@ -2446,6 +3305,18 @@ const APP = {
   r_settings(){
     S.setRole=D.profile.role;S.setToggles={...D.settings};const p=D.profile;
     document.getElementById('setBody').innerHTML=`
+      <div style="background:var(--card);border-radius:var(--rL);margin-bottom:8px;border:1px solid var(--fog);overflow:hidden;box-shadow:var(--sh)">
+        <div class="tgl-row" style="padding:16px">
+          <div class="tgl-inf">
+            <div class="tgl-lbl">Focus Mode</div>
+            <div class="tgl-sub">Larger text & bigger tap targets — helpful for reading glasses users</div>
+          </div>
+          <button class="tgl${(D.settings&&D.settings.focusMode)?' on':''}" id="focusTgl" onclick="APP.setFocusMode(!(D.settings&&D.settings.focusMode))">
+            <div class="tgl-k"></div>
+          </button>
+        </div>
+      </div>
+
       <div class="acc open" id="acc-p">
         <div class="acc-hdr" onclick="APP.tgAcc('acc-p')"><div class="acc-title">👤 My Profile</div><div class="acc-tog">+</div></div>
         <div class="acc-body">
@@ -2499,6 +3370,62 @@ const APP = {
         </div>
       </div>
 
+      <div class="acc" id="acc-bb">
+        <div class="acc-hdr" onclick="APP.tgAcc('acc-bb')"><div class="acc-title">🧭 Browser & Backup</div><div class="acc-tog">+</div></div>
+        <div class="acc-body">
+          ${(()=>{
+            const p = detectPlatform();
+            const lastExp = localStorage.getItem('sn_last_exported');
+            const daysSince = lastExp
+              ? Math.floor((Date.now()-new Date(lastExp).getTime())/(1000*60*60*24))
+              : null;
+            const expLabel = lastExp
+              ? `Last exported ${daysSince === 0 ? 'today' : daysSince+'d ago'} · ${new Date(lastExp).toLocaleDateString('en-IN',{day:'2-digit',month:'short',year:'numeric'})}`
+              : 'Never exported';
+            const isStale = daysSince === null || daysSince >= 7;
+            return `
+              <div style="background:${isStale?'#fffbeb':'#f0fdf4'};border-radius:var(--r);padding:12px 14px;margin-bottom:14px;border:1px solid ${isStale?'#fde68a':'#a7f3d0'}">
+                <div style="font-size:11px;font-weight:700;color:${isStale?'#92400e':'#065f46'};margin-bottom:3px">${isStale?'⚠ Backup is stale':'✅ Backup up to date'}</div>
+                <div style="font-size:11px;color:${isStale?'#b45309':'#059669'}">${expLabel}</div>
+              </div>
+              <button onclick="APP.saveFile()" style="width:100%;background:var(--teal);border:none;border-radius:var(--r);padding:13px;font-size:14px;font-weight:700;color:#fff;cursor:pointer;margin-bottom:10px;font-family:var(--ff)">💾 Export my data now</button>
+              ${(!p.isNativeBrowser) ? `
+              <div style="background:var(--paper);border-radius:var(--r);padding:13px;border:1px solid var(--fog);margin-bottom:10px">
+                <div style="font-size:13px;font-weight:700;color:var(--ink);margin-bottom:4px">🧭 Switch to native browser</div>
+                <div style="font-size:11px;color:var(--slate);margin-bottom:10px;line-height:1.6">${p.isChromeIOS
+                  ? 'You\'re using Chrome on iPhone. Switching to Safari means your files always save to the Files app.'
+                  : 'Using a non-native browser? Switch to your device\'s default browser for the best experience.'}</div>
+                <button onclick="APP.openMigrationWizard('settings')" style="width:100%;background:var(--card);border:1.5px solid var(--teal);border-radius:var(--r);padding:11px;font-size:13px;font-weight:700;color:var(--teal);cursor:pointer;font-family:var(--ff)">Start migration guide →</button>
+              </div>` : `
+              <div style="background:#f0fdf4;border-radius:var(--r);padding:12px 14px;border:1px solid #a7f3d0">
+                <div style="font-size:12px;color:#065f46">✅ You're using the recommended browser. Files save to the Files app automatically.</div>
+              </div>`}
+            `;
+          })()}
+        </div>
+      </div>
+
+      <div class="acc" id="acc-data">
+        <div class="acc-hdr" onclick="APP.tgAcc('acc-data')"><div class="acc-title">💾 Data Management</div><div class="acc-tog">+</div></div>
+        <div class="acc-body">
+          <div style="font-size:12px;color:var(--slate);line-height:1.6;margin-bottom:14px">
+            Your data file is your backup AND your password recovery key. Save it weekly to your phone or Google Drive.
+          </div>
+          <button onclick="APP.saveFile()" class="act" style="background:var(--tealL);border:none">
+            <span class="act-ic">💾</span>
+            <div><div class="act-t" style="color:var(--tealD)">Save my data file</div><div class="act-s" id="dataMgmtSaveInfo"></div></div>
+          </button>
+          <button onclick="APP.loadFile()" class="act" style="background:var(--paper);border:1.5px solid var(--fog)">
+            <span class="act-ic">📂</span>
+            <div><div class="act-t">Load from my file</div><div class="act-s">Restore all records from backup</div></div>
+          </button>
+          <button onclick="APP.shareBlank()" class="act" style="background:var(--paper);border:1.5px solid var(--fog)">
+            <span class="act-ic">🔗</span>
+            <div><div class="act-t">Share app with a friend</div><div class="act-s">Send app link — zero personal data shared</div></div>
+          </button>
+        </div>
+      </div>
+
       <div class="acc" id="acc-ab">
         <div class="acc-hdr" onclick="APP.tgAcc('acc-ab')"><div class="acc-title"><img src="data:image/png;base64,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" style="width:18px;height:18px;object-fit:contain;vertical-align:middle;margin-right:6px">About Spend-na</div><div class="acc-tog">+</div></div>
         <div class="acc-body">
@@ -2516,6 +3443,8 @@ const APP = {
     `;
     // after document.getElementById('setBody').innerHTML = `...`;
     setupDobInput('sp-db'); // ← add this line
+    const dmEl = document.getElementById('dataMgmtSaveInfo');
+    if (dmEl) dmEl.textContent = `${D.transactions.length} total records · Last: ${D.lastSaved ? new Date(D.lastSaved).toLocaleDateString('en-IN',{day:'2-digit',month:'short',hour:'2-digit',minute:'2-digit'}) : 'Never'}`;
   },
   tgAcc(id){document.getElementById(id).classList.toggle('open');},
   sRole(k){S.setRole=k;document.querySelectorAll('.s-role').forEach(el=>el.classList.toggle('on',el.dataset.r===k));},
@@ -2573,16 +3502,194 @@ const APP = {
     ]);
   },
 
+  // ── MIGRATION WIZARD ─────────────────────────────────────────
+
+  openMigrationWizard(returnTo){
+    S._mwReturn = returnTo || 'home';
+    S._mwStep = 1;
+    S._mwExported = false;
+    this.show('pgMigrate');
+    this.renderMWStep();
+  },
+
+  renderMWStep(){
+    const step = S._mwStep;
+    const wrap = document.getElementById('mwWrap');
+    if(!wrap) return;
+    const appUrl = window.location.href.split('?')[0].split('#')[0];
+    const p = detectPlatform();
+    const dots = [1,2,3,4].map(n =>
+      `<div class="mw-step-dot ${n < step ? 'done' : n === step ? 'active' : ''}"></div>`
+    ).join('');
+    const header = `
+      <div class="mw-header">
+        <button class="mw-back" onclick="APP._mwBack()">← Back</button>
+        <button class="mw-skip" onclick="APP._mwSkip()">Skip all</button>
+      </div>
+      <div class="mw-steps">${dots}</div>`;
+
+    if(step === 1){
+      const lastExp = localStorage.getItem('sn_last_exported');
+      const expLabel = lastExp
+        ? `Last exported: ${new Date(lastExp).toLocaleDateString('en-IN',{day:'2-digit',month:'short',year:'numeric'})}`
+        : 'You have not exported yet';
+      wrap.innerHTML = `${header}
+        <div class="mw-icon" style="background:var(--tealL)">💾</div>
+        <div class="mw-title">Step 1 — Save your data first</div>
+        <div class="mw-sub">Before switching browsers, export your data file. This is the bridge that carries all your records to Safari.</div>
+        <div class="mw-safe">
+          <div class="mw-safe-text">🔒 <strong>Your data is safe.</strong> Everything currently in this browser's storage stays there until you clear it. Take your time — no rush.</div>
+        </div>
+        <div class="mw-instr">
+          <div style="font-size:11px;color:var(--slate);margin-bottom:8px">${expLabel}</div>
+          <div style="font-size:13px;color:var(--ink)">Tap the button below to export <strong>${D.transactions.length} records</strong> to a file.</div>
+        </div>
+        <div class="mw-export-done" id="mwExpDone">
+          <div class="mw-export-done-text">✅ File exported! Now move it to the Files app before continuing.</div>
+        </div>
+        <button class="mw-btn-primary" onclick="APP._mwExport()">Export my data now</button>
+        <button class="mw-btn-secondary" onclick="APP._mwNextStep()">I already have my file → Next</button>`;
+
+    } else if(step === 2){
+      if(p.isChromeIOS){
+        wrap.innerHTML = `${header}
+          <div class="mw-icon" style="background:#fff7ed">📁</div>
+          <div class="mw-title">Step 2 — Move file to Files app</div>
+          <div class="mw-sub">Your file is in Chrome's Downloads. Safari can't see it there. Move it to the Files app first.</div>
+          <div class="mw-warn">
+            <div class="mw-warn-title">⚠ Don't skip this step</div>
+            <div class="mw-warn-text">If you skip this, you won't be able to import your data in Safari. Your data won't be lost, but you'll have to come back to Chrome to redo the export.</div>
+          </div>
+          <div class="mw-instr">
+            <div class="mw-instr-step"><div class="mw-step-num">1</div><div class="mw-step-text">Tap the Chrome menu <strong>⋮</strong> (top right of your browser)</div></div>
+            <div class="mw-instr-step"><div class="mw-step-num">2</div><div class="mw-step-text">Tap <strong>Downloads</strong></div></div>
+            <div class="mw-instr-step"><div class="mw-step-num">3</div><div class="mw-step-text">Find <strong>spend-na-data.json</strong> → tap it</div></div>
+            <div class="mw-instr-step"><div class="mw-step-num">4</div><div class="mw-step-text">Tap the <strong>Share icon</strong> → <strong>Save to Files</strong> → <strong>Downloads</strong> → Save</div></div>
+          </div>
+          <div class="mw-safe"><div class="mw-safe-text">✅ Once saved to Files, Safari can see and import it.</div></div>
+          <button class="mw-btn-primary" onclick="APP._mwNextStep()">I've moved the file → Next</button>
+          <button class="mw-btn-secondary" onclick="APP._mwNextStep()">Skip this step</button>`;
+      } else {
+        S._mwStep = 3;
+        this.renderMWStep();
+      }
+
+    } else if(step === 3){
+      const browserName = p.isIOS ? 'Safari' : 'your default browser';
+      wrap.innerHTML = `${header}
+        <div class="mw-icon" style="background:#e0f2fe">🧭</div>
+        <div class="mw-title">Step 3 — Open in ${browserName}</div>
+        <div class="mw-sub">${p.isIOS
+          ? 'Open Safari and go to the Spend-na URL. Then add it to your home screen for the best experience.'
+          : 'Open your default browser and go to the Spend-na URL.'
+        }</div>
+        <div style="font-size:10px;color:var(--slate);letter-spacing:2px;font-weight:700;margin-bottom:8px">APP URL</div>
+        <div class="mw-url-box">
+          <div class="mw-url-text">${esc(appUrl)}</div>
+          <button class="mw-url-copy" id="mwCopyBtn" onclick="APP._mwCopyUrl('${esc(appUrl)}')">Copy</button>
+        </div>
+        ${p.isIOS ? `
+        <div class="mw-instr">
+          <div class="mw-instr-step"><div class="mw-step-num">1</div><div class="mw-step-text">Open the <strong>Safari</strong> app</div></div>
+          <div class="mw-instr-step"><div class="mw-step-num">2</div><div class="mw-step-text">Tap the address bar and <strong>paste the URL</strong></div></div>
+          <div class="mw-instr-step"><div class="mw-step-num">3</div><div class="mw-step-text">Tap <strong>Share ↑</strong> → <strong>Add to Home Screen</strong> → Add</div></div>
+          <div class="mw-instr-step"><div class="mw-step-num">4</div><div class="mw-step-text">Open Spend-na from your <strong>home screen icon</strong></div></div>
+        </div>` : `
+        <div class="mw-instr">
+          <div class="mw-instr-step"><div class="mw-step-num">1</div><div class="mw-step-text">Open your <strong>default browser</strong></div></div>
+          <div class="mw-instr-step"><div class="mw-step-num">2</div><div class="mw-step-text">Paste the URL and open Spend-na</div></div>
+        </div>`}
+        <button class="mw-btn-primary" onclick="APP._mwNextStep()">I've opened it → Next</button>
+        <button class="mw-btn-secondary" onclick="APP._mwSkip()">Stay in this browser</button>`;
+
+    } else if(step === 4){
+      wrap.innerHTML = `${header}
+        <div class="mw-icon" style="background:#f0fdf4">📂</div>
+        <div class="mw-title">Step 4 — Import your data</div>
+        <div class="mw-sub">Once you're in Safari (or your home screen app), import your data file to restore everything.</div>
+        <div class="mw-instr">
+          <div class="mw-instr-step"><div class="mw-step-num">1</div><div class="mw-step-text">Open Spend-na in <strong>Safari</strong></div></div>
+          <div class="mw-instr-step"><div class="mw-step-num">2</div><div class="mw-step-text">Complete the onboarding (name, password)</div></div>
+          <div class="mw-instr-step"><div class="mw-step-num">3</div><div class="mw-step-text">On the home screen, tap <strong>Load from my file</strong></div></div>
+          <div class="mw-instr-step"><div class="mw-step-num">4</div><div class="mw-step-text">Pick <strong>spend-na-data.json</strong> from your Files app → Downloads</div></div>
+          <div class="mw-instr-step"><div class="mw-step-num">5</div><div class="mw-step-text">All your <strong>${D.transactions.length} records</strong> will be restored ✅</div></div>
+        </div>
+        <div class="mw-safe">
+          <div class="mw-safe-text">🔒 Your data in this Chrome browser stays safe until you clear Chrome's browsing data. You can always come back here if needed.</div>
+        </div>
+        <button class="mw-btn-primary" onclick="APP._mwFinish()">Got it — I'm all set ✓</button>
+        <button class="mw-btn-secondary" onclick="APP._mwSkip()">Stay in this browser</button>`;
+    }
+  },
+
+  _mwExport(){
+    DB.exportFile(D);
+    S.unsaved = false;
+    S._mwExported = true;
+    const doneEl = document.getElementById('mwExpDone');
+    if(doneEl) doneEl.classList.add('show');
+    toast(`${D.transactions.length} records exported ✓`);
+  },
+
+  _mwNextStep(){
+    S._mwStep = Math.min(S._mwStep + 1, 4);
+    this.renderMWStep();
+    const wrap = document.getElementById('mwWrap');
+    if(wrap) wrap.scrollTop = 0;
+  },
+
+  _mwBack(){
+    if(S._mwStep <= 1){
+      this._mwReturn();
+    } else {
+      S._mwStep = Math.max(S._mwStep - 1, 1);
+      this.renderMWStep();
+    }
+  },
+
+  _mwSkip(){ this._mwReturn(); },
+
+  _mwFinish(){
+    sessionStorage.setItem('sn_mw_done', '1');
+    this._mwReturn();
+  },
+
+  _mwReturn(){
+    const dest = S._mwReturn || 'home';
+    if(dest === 'trust'){ this.show('pgTrust'); }
+    else if(dest === 'settings'){ this.go('settings'); }
+    else { this.go('home'); }
+  },
+
+  _mwCopyUrl(url){
+    if(navigator.clipboard){
+      navigator.clipboard.writeText(url).then(()=>{
+        const btn = document.getElementById('mwCopyBtn');
+        if(btn){ btn.textContent = 'Copied!'; setTimeout(()=>{ if(btn) btn.textContent = 'Copy'; }, 2000); }
+      }).catch(()=>toast('Could not copy — please copy manually'));
+    } else {
+      toast('Copy not available — please copy the URL manually');
+    }
+  },
+
   // ── TAGS ─────────────────────────────────────────────────────
+
+  _toggleCustomTag() {
+    const el = document.getElementById('addTagCustomArea');
+    if (!el) return;
+    el.style.display = el.style.display === 'none' ? 'block' : 'none';
+    if (el.style.display === 'block') {
+      setTimeout(() => document.getElementById('addTagCustom')?.focus(), 100);
+    }
+  },
 
   renderAddTagChips() {
     const el = document.getElementById('addTagChips');
     if (!el) return;
-    el.innerHTML = PRESET_TAGS.map(tag => {
+    const allChips = [...PRESET_TAGS, ..._addTags.filter(t => !PRESET_TAGS.includes(t))];
+    el.innerHTML = allChips.map(tag => {
       const on = _addTags.includes(tag);
-      // esc() the tag in onclick attribute to prevent injection (SEC-007)
-      return `<button class="tag-chip${on ? ' on' : ''}"
-        onclick="APP.toggleAddTag('${esc(tag)}')">#${esc(tag)}</button>`;
+      return `<div onclick="APP.toggleAddTag('${esc(tag)}')" style="flex-shrink:0;padding:6px 11px;border-radius:16px;border:1.5px solid ${on?'var(--teal)':'var(--fog)'};background:${on?'var(--tealL)':'var(--card)'};font-size:11px;font-weight:600;color:${on?'var(--tealD)':'var(--slate)'};cursor:pointer;white-space:nowrap;transition:all .12s">#${esc(tag)}</div>`;
     }).join('');
     this._renderSelectedTags();
   },
@@ -2961,15 +4068,6 @@ APP.boot();
 })();
 </script>
 
-<!-- Service Worker Registration -->
-<script>
-if ('serviceWorker' in navigator) {
-  navigator.serviceWorker.register('sw.js').then(registration => {
-    console.log('Service Worker registered:', registration);
-  }).catch(error => {
-    console.error('Service Worker registration failed:', error);
-  });
-}
-</script>
+<!-- Service Worker Registration disabled: sw.js not bundled in single-file build -->
 </body>
 </html>
