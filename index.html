@@ -2810,7 +2810,7 @@ const APP = {
     ${bTxns.length > 0 ? `<div onclick="APP.showSlice('${k}')" style="text-align:center;padding:8px 0 2px;font-size:11px;font-weight:700;color:${c.c};cursor:pointer">See all ${(D.transactions||[]).filter(t=>t.bucket===k&&t.month===mStr).length} transactions ›</div>` : ''}
   </div>` : ''}
 </div>`;
-        }).join('')}
+        
         }).join('')}
       </div>`;
   },
