@@ -6522,6 +6522,7 @@
       r_home() {
         this.refreshTop();
         const sm = summary(), pend = pending(), lim = D.limits;
+        const _streakHTML = '';
         document.getElementById('hHero').innerHTML = sm.total > 0 ? `<div class="h-total"><span class="h-tl">This Month</span><span class="h-tv">${fmtF(sm.total)}</span></div>` : '';
         // insights tab - no badge needed
 
