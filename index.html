@@ -4399,6 +4399,58 @@
     body.focus-mode #tabBar {
       padding: 12px 0 calc(var(--safe-b) + 12px);
     }
+  /* ── AI FEATURES CSS ─────────────────────────────────── */
+  /* Smart Add bar */
+  .ai-add-bar{display:flex;align-items:center;gap:10px;background:var(--card);border:1.5px solid var(--fog);border-radius:16px;padding:12px 14px;margin:12px 16px 0;box-shadow:0 2px 8px rgba(0,0,0,.06)}
+  .ai-add-input{flex:1;border:none;background:none;font-size:15px;color:var(--ink);font-family:var(--ff);outline:none;min-width:0}
+  .ai-add-input::placeholder{color:var(--mist)}
+  .ai-add-btn{width:36px;height:36px;border-radius:10px;border:none;background:var(--tealL);color:var(--tealD);font-size:16px;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:background .12s}
+  .ai-add-btn:active{background:var(--teal);color:#fff}
+  .ai-add-btn:disabled{opacity:.4;cursor:not-allowed}
+  /* AI confirmation card */
+  .ai-confirm-card{margin:10px 16px;background:var(--card);border-radius:16px;border:1.5px solid var(--teal);overflow:hidden;animation:fadeUp .2s ease}
+  .ai-confirm-row{display:flex;align-items:center;gap:10px;padding:12px 14px;border-bottom:1px solid var(--fog)}
+  .ai-confirm-row:last-child{border-bottom:none}
+  .ai-confirm-label{font-size:10px;font-weight:700;color:var(--mist);letter-spacing:1.5px;text-transform:uppercase;width:64px;flex-shrink:0}
+  .ai-confirm-value{flex:1;font-size:14px;font-weight:600;color:var(--ink)}
+  .ai-confirm-edit{font-size:11px;color:var(--teal);font-weight:700;background:none;border:none;cursor:pointer;font-family:var(--ff);padding:0}
+  .ai-save-btn{display:block;width:calc(100% - 32px);margin:10px 16px;padding:14px;background:var(--teal);color:#fff;border:none;border-radius:14px;font-size:15px;font-weight:700;font-family:var(--ff);cursor:pointer;letter-spacing:.3px}
+  .ai-save-btn:active{opacity:.85}
+  .ai-manual-toggle{text-align:center;padding:8px 0 4px;font-size:12px;color:var(--mist);cursor:pointer;font-family:var(--ff)}
+  .ai-manual-toggle span{color:var(--teal);font-weight:600}
+  /* AI status / thinking */
+  .ai-status{font-size:12px;color:var(--mist);padding:6px 16px 0;min-height:20px;font-style:italic}
+  /* Voice indicator */
+  .ai-voice-ring{display:inline-block;width:36px;height:36px;border-radius:10px;background:#fee2e2;color:#ef4444;border:none;font-size:18px;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all .15s}
+  .ai-voice-ring.recording{background:#ef4444;color:#fff;animation:pulse 1s infinite}
+  /* Photo scan */
+  .ai-photo-btn{width:36px;height:36px;border-radius:10px;background:#ede9fe;color:#7c3aed;border:none;font-size:16px;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+  /* OCR progress */
+  .ai-ocr-progress{margin:8px 16px;font-size:12px;color:var(--teal);font-weight:600;display:none}
+  /* AI Insight card on Home */
+  .ai-insight-card{margin:0 16px 14px;background:linear-gradient(135deg,var(--tealL),#ede9fe22);border:1px solid var(--teal);border-radius:16px;padding:14px 16px;position:relative}
+  .ai-insight-eyebrow{font-size:9px;font-weight:800;color:var(--tealD);letter-spacing:2px;text-transform:uppercase;margin-bottom:5px}
+  .ai-insight-text{font-size:13px;color:var(--ink);font-weight:500;line-height:1.5}
+  .ai-insight-close{position:absolute;top:10px;right:12px;background:none;border:none;font-size:14px;color:var(--mist);cursor:pointer;font-family:var(--ff)}
+  /* AI Reaction toast — slightly taller */
+  .ai-reaction{font-size:13px;line-height:1.4}
+  /* Monthly Story card */
+  .ai-story-card{margin:12px 16px;background:var(--card);border-radius:16px;padding:16px;border-left:3px solid var(--teal)}
+  .ai-story-eyebrow{font-size:9px;font-weight:800;color:var(--tealD);letter-spacing:2px;margin-bottom:8px}
+  .ai-story-text{font-size:13px;color:var(--ink);line-height:1.7}
+  /* Honest Mirror card */
+  .ai-mirror-card{margin:12px 16px;background:#fffbeb;border-radius:16px;padding:16px;border:1px solid #fde68a}
+  .ai-mirror-text{font-size:13px;color:#92400e;line-height:1.6;margin-bottom:10px}
+  .ai-mirror-btn{background:#f59e0b;color:#fff;border:none;border-radius:10px;padding:9px 16px;font-size:13px;font-weight:700;cursor:pointer;font-family:var(--ff)}
+  /* Forecast card */
+  .ai-forecast-card{margin:0 16px 14px;background:var(--card);border-radius:16px;padding:14px 16px;border:1px solid var(--fog)}
+  .ai-forecast-eyebrow{font-size:9px;font-weight:800;color:var(--mist);letter-spacing:2px;margin-bottom:6px}
+  .ai-forecast-text{font-size:13px;color:var(--ink);line-height:1.5}
+  .ai-forecast-bar{height:6px;background:var(--fog);border-radius:3px;margin-top:10px;overflow:hidden}
+  .ai-forecast-fill{height:100%;border-radius:3px;background:var(--teal);transition:width .4s ease}
+  @keyframes fadeUp{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+  @keyframes pulse{0%,100%{box-shadow:0 0 0 0 rgba(239,68,68,.4)}50%{box-shadow:0 0 0 8px rgba(239,68,68,0)}}
+
   </style>
 </head>
 
@@ -4693,6 +4745,17 @@
         <!-- HOME -->
         <div class="scr" id="sHome">
           <div class="scr-body">
+            <!-- AI cards injected by JS before hero -->
+            <div id="aiInsightCard" style="display:none" class="ai-insight-card">
+              <div class="ai-insight-eyebrow">✨ AI INSIGHT</div>
+              <div class="ai-insight-text" id="aiInsightText"></div>
+              <button class="ai-insight-close" onclick="APP.aiDismissInsight()">×</button>
+            </div>
+            <div id="aiForecastCard" style="display:none" class="ai-forecast-card">
+              <div class="ai-forecast-eyebrow">📈 MONTH FORECAST</div>
+              <div class="ai-forecast-text" id="aiForecastText"></div>
+              <div class="ai-forecast-bar"><div class="ai-forecast-fill" id="aiForecastFill" style="width:0%"></div></div>
+            </div>
             <div class="h-hero" id="hHero"></div>
             <div class="h-body fade-up" id="hBody"></div>
           </div>
@@ -4724,6 +4787,15 @@
               ↑</button>
           </div>
           <div class="scr-body" id="mmBody"></div>
+          <!-- AI cards for month screen -->
+          <div id="aiStoryCard" style="display:none" class="ai-story-card">
+            <div class="ai-story-eyebrow">📖 YOUR MONTH IN WORDS</div>
+            <div class="ai-story-text" id="aiStoryText"></div>
+          </div>
+          <div id="aiMirrorCard" style="display:none" class="ai-mirror-card">
+            <div class="ai-mirror-text" id="aiMirrorText"></div>
+            <button class="ai-mirror-btn" id="aiMirrorBtn" onclick="APP.aiMirrorAction()">Update Limit</button>
+          </div>
         </div>
 
         <!-- SLICE -->
@@ -4766,6 +4838,50 @@
               disabled>Save</button>
           </div>
           <div class="scr-body">
+
+            <!-- ── AI SMART ADD ── -->
+            <div class="ai-add-bar">
+              <input class="ai-add-input" id="aiAddInput" type="text" inputmode="text"
+                placeholder="Say it, type it or scan a bill…"
+                oninput="APP.aiAddParse(this.value)"
+                onkeydown="if(event.key==='Enter'){event.preventDefault();APP.aiAddConfirm();}">
+              <!-- Voice button -->
+              <button class="ai-voice-ring" id="aiVoiceBtn" onclick="APP.aiVoiceToggle()" title="Voice input">🎤</button>
+              <!-- Photo/scan button -->
+              <button class="ai-photo-btn" onclick="APP.aiPhotoTrigger()" title="Scan receipt">📷</button>
+              <input type="file" id="aiPhotoInput" accept="image/*" capture="environment" style="display:none" onchange="APP.aiPhotoProcess(this)">
+            </div>
+            <div class="ai-status" id="aiStatus"></div>
+            <div class="ai-ocr-progress" id="aiOcrProgress">📷 Reading receipt…</div>
+
+            <!-- AI confirmation card (hidden until parsed) -->
+            <div class="ai-confirm-card" id="aiConfirmCard" style="display:none">
+              <div class="ai-confirm-row">
+                <span class="ai-confirm-label">AMOUNT</span>
+                <span class="ai-confirm-value" id="aiCfAmt">—</span>
+                <button class="ai-confirm-edit" onclick="APP.aiEditField('amt')">Edit</button>
+              </div>
+              <div class="ai-confirm-row">
+                <span class="ai-confirm-label">FOR</span>
+                <span class="ai-confirm-value" id="aiCfDesc">—</span>
+                <button class="ai-confirm-edit" onclick="APP.aiEditField('desc')">Edit</button>
+              </div>
+              <div class="ai-confirm-row">
+                <span class="ai-confirm-label">BUCKET</span>
+                <span class="ai-confirm-value" id="aiCfBkt">—</span>
+                <button class="ai-confirm-edit" onclick="APP.aiEditField('bkt')">Edit</button>
+              </div>
+              <div class="ai-confirm-row">
+                <span class="ai-confirm-label">PAY VIA</span>
+                <span class="ai-confirm-value" id="aiCfSrc">—</span>
+                <button class="ai-confirm-edit" onclick="APP.aiEditField('src')">Edit</button>
+              </div>
+            </div>
+            <button class="ai-save-btn" id="aiSaveBtn" style="display:none" onclick="APP.aiSaveConfirmed()">✅ Save Spend</button>
+            <div class="ai-manual-toggle" id="aiManualToggle" onclick="APP.aiToggleManual()">or <span>add manually ↓</span></div>
+
+            <!-- MANUAL FORM (collapsible) -->
+            <div id="aiManualForm" style="display:none">
             <div class="amt-hero">
               <span class="amt-sym">₹</span>
               <input class="amt-in" id="addAmt" type="number" inputmode="decimal" placeholder="0" min="1" max="9999999"
@@ -4804,6 +4920,7 @@
               </div>
               <div id="addTagSelected" style="display:flex;flex-wrap:wrap;gap:4px;margin-top:6px"></div>
             </div>
+            </div><!-- end aiManualForm -->
           </div>
         </div>
 
@@ -7135,6 +7252,795 @@
         }
       });
     }
+
+    // ═══════════════════════════════════════════════════════════════════
+    // AI FEATURES — Spend-na
+    // Features: Smart Add (Text + Voice + Photo), AI Reactions,
+    //           Home Insight, Spend Forecast, Monthly Story, Honest Mirror
+    // All on-device. No API key. No server. Works: iOS Safari, iOS Chrome, Android Chrome.
+    // ═══════════════════════════════════════════════════════════════════
+
+    // ── AI STATE ────────────────────────────────────────────────────
+    const AI = {
+      parsed: null,       // current parsed result {amt, desc, bkt, src}
+      voiceRec: null,     // SpeechRecognition instance
+      voiceActive: false, // is mic recording?
+      ocrWorker: null,    // Tesseract worker (reused)
+      mirrorBucket: null, // which bucket the mirror is about
+    };
+
+    // ── BUCKET KEYWORD MAP (for auto-categorization) ─────────────────
+    const AI_BKT_KEYWORDS = {
+      necessary: [
+        'rice','dal','atta','milk','bread','egg','vegetable','veg','sabzi','grocery','groceries',
+        'kirana','provision','medicine','medical','doctor','hospital','clinic','pharmacy','chemist',
+        'tablet','injection','lab','test','scan','rent','emi','loan','electricity','bill','water',
+        'gas','lpg','cylinder','mobile','recharge','internet','wifi','broadband','school','fees',
+        'tuition','bus','auto','rickshaw','metro','train','ticket','petrol','diesel','fuel','cng',
+        'maintenance','repair','plumber','electrician','maid','salary','insurance','lic','sip',
+        'mutual fund','ppf','nps','tax','challan','fine','hospital','medicine','medical',
+        'health','swiggy','zomato','food','lunch','dinner','breakfast','tiffin','mess','canteen',
+        'chai','tea','coffee','snack','biscuit'
+      ],
+      committed: [
+        'emi','loan','credit card','insurance','lic','premium','sip','mutual fund','ppf',
+        'subscription','netflix','hotstar','prime','spotify','gym','membership','rent advance',
+        'deposit','maintenance','society','broadband','annual','yearly','quarterly'
+      ],
+      comfortable: [
+        'shopping','clothes','shirt','trouser','shoe','apparel','salon','haircut','spa','massage',
+        'movie','cinema','pvr','inox','outing','picnic','weekend','party','gift','present',
+        'decoration','amazon','flipkart','meesho','myntra','ajio','electronics','gadget',
+        'mobile phone','laptop','headphone','earphone','watch','perfume','cosmetic','beauty',
+        'makeup','skincare','household','furniture','cushion','curtain'
+      ],
+      luxury: [
+        'restaurant','fine dining','bar','pub','alcohol','beer','wine','whisky','party','club',
+        'lounge','resort','hotel','holiday','trip','vacation','tour','flight','air ticket',
+        'cab','uber','ola','rapido','international','foreign','jewellery','gold','diamond',
+        'luxury','branded','designer','premium','expensive','iphone','macbook','ps5','xbox',
+        'gaming','concert','event','show','ticket'
+      ]
+    };
+
+    // ── MERCHANT → BUCKET map for OCR ───────────────────────────────
+    const AI_MERCHANT_MAP = {
+      swiggy:'necessary', zomato:'necessary', blinkit:'necessary', zepto:'necessary',
+      bigbasket:'necessary', dunzo:'necessary', jiomart:'necessary', dmart:'necessary',
+      apollo:'necessary', medplus:'necessary', netmeds:'necessary', '1mg':'necessary',
+      ola:'necessary', uber:'necessary', rapido:'necessary', irctc:'necessary',
+      netflix:'committed', hotstar:'committed', primevideo:'committed', spotify:'committed',
+      amazon:'comfortable', flipkart:'comfortable', myntra:'comfortable', ajio:'comfortable',
+      meesho:'comfortable', nykaa:'comfortable', tatacliq:'comfortable',
+    };
+
+    // ── PARSE NLT (natural language text) ────────────────────────────
+    // Returns {amt, desc, bkt, src} or null
+    function aiParseText(raw) {
+      if (!raw || raw.trim().length < 2) return null;
+      const text = raw.trim();
+
+      // 1. Extract amount — look for number patterns
+      let amt = null;
+      const amtPatterns = [
+        /(?:rs\.?|₹|inr)\s*([0-9,]+(?:\.[0-9]{1,2})?)/i,
+        /([0-9,]+(?:\.[0-9]{1,2})?)\s*(?:rs\.?|₹|rupees?)/i,
+        /^([0-9,]+(?:\.[0-9]{1,2})?)\s/,        // starts with number
+        /\s([0-9,]+(?:\.[0-9]{1,2})?)$/,         // ends with number
+        /([0-9,]+(?:\.[0-9]{1,2})?)/,             // any number
+      ];
+      for (const p of amtPatterns) {
+        const m = text.match(p);
+        if (m) { const v = parseFloat(m[1].replace(/,/g,'')); if (v > 0 && v < 9999999) { amt = v; break; } }
+      }
+      if (!amt) return null;
+
+      // 2. Extract description — remove amount and common filler words
+      let desc = text
+        .replace(/(?:rs\.?|₹|inr)\s*[0-9,]+(?:\.[0-9]{1,2})?/gi, '')
+        .replace(/[0-9,]+(?:\.[0-9]{1,2})?\s*(?:rs\.?|₹|rupees?)/gi, '')
+        .replace(/^[0-9,]+(?:\.[0-9]{1,2})?/, '')
+        .replace(/[0-9,]+(?:\.[0-9]{1,2})?$/, '')
+        .replace(/\b(spent|spend|paid|pay|on|for|at|to|towards|bought|purchase|today|yesterday|just|the|a|an)\b/gi, ' ')
+        .replace(/\s+/g, ' ').trim();
+      if (!desc) desc = 'Spend';
+      // Title-case first letter
+      desc = desc.charAt(0).toUpperCase() + desc.slice(1);
+
+      // 3. Auto-categorize bucket
+      const lower = text.toLowerCase();
+      let bkt = null;
+      // Check merchant map first
+      for (const [merchant, b] of Object.entries(AI_MERCHANT_MAP)) {
+        if (lower.includes(merchant)) { bkt = b; break; }
+      }
+      // Then keyword scoring
+      if (!bkt) {
+        const scores = {necessary:0, committed:0, comfortable:0, luxury:0};
+        for (const [b, kws] of Object.entries(AI_BKT_KEYWORDS)) {
+          for (const kw of kws) { if (lower.includes(kw)) scores[b] += 1; }
+        }
+        const best = Object.entries(scores).sort((a,b)=>b[1]-a[1])[0];
+        if (best[1] > 0) bkt = best[0];
+      }
+      if (!bkt) bkt = 'necessary'; // safe default
+
+      // 4. Source — use last used, default to upi
+      const src = (S && S.addSrc) || (D && D.lastSrc) || 'upi';
+
+      return { amt, desc, bkt, src };
+    }
+
+    // ── SHOW AI CONFIRMATION CARD ────────────────────────────────────
+    function aiShowConfirm(parsed) {
+      if (!parsed) return;
+      AI.parsed = parsed;
+      const card = document.getElementById('aiConfirmCard');
+      const saveBtn = document.getElementById('aiSaveBtn');
+      if (!card) return;
+      document.getElementById('aiCfAmt').textContent = '₹' + parsed.amt.toLocaleString('en-IN');
+      document.getElementById('aiCfDesc').textContent = parsed.desc;
+      document.getElementById('aiCfBkt').textContent = (BUCKETS[parsed.bkt] ? BUCKETS[parsed.bkt].g + ' ' + BUCKETS[parsed.bkt].l : parsed.bkt);
+      const srcObj = SRCS.find(s => s.k === parsed.src);
+      document.getElementById('aiCfSrc').textContent = srcObj ? srcObj.i + ' ' + srcObj.l : parsed.src;
+      card.style.display = 'block';
+      if (saveBtn) saveBtn.style.display = 'block';
+      // Also pre-fill manual form fields silently
+      const amtEl = document.getElementById('addAmt');
+      const descEl = document.getElementById('addDesc');
+      if (amtEl) { amtEl.value = parsed.amt; }
+      if (descEl) { descEl.value = parsed.desc; }
+      APP.selBkt(parsed.bkt);
+      APP.selSrc(parsed.src);
+    }
+
+    // ── CLEAR AI STATE ───────────────────────────────────────────────
+    function aiClear() {
+      AI.parsed = null;
+      const card = document.getElementById('aiConfirmCard');
+      const saveBtn = document.getElementById('aiSaveBtn');
+      const status = document.getElementById('aiStatus');
+      if (card) card.style.display = 'none';
+      if (saveBtn) saveBtn.style.display = 'none';
+      if (status) status.textContent = '';
+    }
+
+    // ── AI REACTION after save ───────────────────────────────────────
+    function aiReaction(amt, desc, bkt, transactions) {
+      const txns = transactions || [];
+      const lower = (desc || '').toLowerCase();
+      const now = new Date();
+      const hour = now.getHours();
+      const currentMonth = offsetMonthStr(0);
+      const monthTxns = txns.filter(t => t.month === currentMonth);
+
+      // Pattern 1: same merchant this week
+      const weekAgo = Date.now() - 7 * 86400000;
+      const sameRecent = txns.filter(t =>
+        t.merchant && t.merchant.toLowerCase() === lower &&
+        new Date(t.timestamp).getTime() > weekAgo
+      ).length;
+      if (sameRecent >= 2 && lower.length > 2) {
+        const emoji = ico(desc);
+        return `${emoji} ${desc} — ${sameRecent + 1}rd time this week!`;
+      }
+
+      // Pattern 2: biggest spend this month
+      const monthAmts = monthTxns.map(t => t.amount);
+      if (monthAmts.length > 0 && amt > Math.max(...monthAmts)) {
+        return `Biggest spend this month — hope it was worth it! 🎯`;
+      }
+
+      // Pattern 3: late night
+      if (hour >= 22 || hour < 4) {
+        return `Late night ₹${amt.toLocaleString('en-IN')} logged 🌙`;
+      }
+
+      // Pattern 4: under budget
+      if (bkt && D.limits && D.limits[bkt] > 0) {
+        const spent = monthTxns.filter(t => t.bucket === bkt).reduce((s,t) => s + t.amount, 0);
+        const lim = D.limits[bkt];
+        if (spent + amt < lim * 0.5) {
+          return `Nice — well within your ${BUCKETS[bkt]?.l || bkt} budget 👏`;
+        }
+      }
+
+      // Pattern 5: first spend today
+      const today = now.toLocaleDateString('en-IN', {day:'2-digit', month:'short'});
+      const todayTxns = txns.filter(t => t.date === today);
+      if (todayTxns.length === 0) {
+        return `First spend of the day logged ✓`;
+      }
+
+      // Pattern 6: round number
+      if (amt % 500 === 0 && amt >= 500) {
+        return `₹${amt.toLocaleString('en-IN')} — a satisfyingly round number 😄`;
+      }
+
+      // Default
+      return `₹${amt.toLocaleString('en-IN')} saved to ${BUCKETS[bkt]?.l || bkt} ✓`;
+    }
+
+    // ── AI INSIGHT (weekly, home screen) ─────────────────────────────
+    function aiGenerateInsight() {
+      const txns = D.transactions || [];
+      if (txns.length < 5) return null;
+
+      const currentMonth = offsetMonthStr(0);
+      const prevMonth = offsetMonthStr(-1);
+      const monthTxns = txns.filter(t => t.month === currentMonth);
+      const prevTxns = txns.filter(t => t.month === prevMonth);
+
+      const insights = [];
+
+      // Weekend vs weekday spending
+      const weekendTxns = monthTxns.filter(t => { const d = new Date(t.timestamp); return d.getDay() === 0 || d.getDay() === 6; });
+      const weekdayTxns = monthTxns.filter(t => { const d = new Date(t.timestamp); return d.getDay() > 0 && d.getDay() < 6; });
+      if (weekendTxns.length > 2 && weekdayTxns.length > 2) {
+        const wkndAvg = weekendTxns.reduce((s,t)=>s+t.amount,0) / weekendTxns.length;
+        const wkdayAvg = weekdayTxns.reduce((s,t)=>s+t.amount,0) / weekdayTxns.length;
+        if (wkndAvg > wkdayAvg * 1.3) {
+          insights.push(`You spend ${Math.round((wkndAvg/wkdayAvg-1)*100)}% more on weekends — ₹${Math.round(wkndAvg).toLocaleString('en-IN')} avg vs ₹${Math.round(wkdayAvg).toLocaleString('en-IN')} weekdays`);
+        }
+      }
+
+      // Fastest growing bucket vs last month
+      if (prevTxns.length > 0) {
+        let biggestGrowth = null, biggestPct = 0;
+        for (const bk of Object.keys(BUCKETS)) {
+          const cur = monthTxns.filter(t=>t.bucket===bk).reduce((s,t)=>s+t.amount,0);
+          const prev = prevTxns.filter(t=>t.bucket===bk).reduce((s,t)=>s+t.amount,0);
+          if (prev > 0 && cur > prev) {
+            const pct = ((cur - prev) / prev) * 100;
+            if (pct > biggestPct) { biggestPct = pct; biggestGrowth = bk; }
+          }
+        }
+        if (biggestGrowth && biggestPct > 20) {
+          insights.push(`${BUCKETS[biggestGrowth].l} is your fastest growing spend — up ${Math.round(biggestPct)}% from last month`);
+        }
+      }
+
+      // Logging streak
+      const daySet = new Set(monthTxns.map(t => t.date));
+      const today = new Date().getDate();
+      if (daySet.size >= today * 0.7 && daySet.size >= 5) {
+        insights.push(`${daySet.size} days logged this month — you're building a solid habit 🔥`);
+      }
+
+      // Best month ever
+      const monthTotals = {};
+      txns.forEach(t => { if (t.month) monthTotals[t.month] = (monthTotals[t.month]||0) + t.amount; });
+      const sortedMonths = Object.entries(monthTotals).sort((a,b)=>a[1]-b[1]);
+      if (sortedMonths.length >= 3) {
+        const [bestMonth, bestAmt] = sortedMonths[0];
+        if (bestMonth !== currentMonth) {
+          insights.push(`Your most disciplined month was ${bestMonth} — ₹${Math.round(bestAmt).toLocaleString('en-IN')} total. Can you beat it?`);
+        }
+      }
+
+      // Most frequent merchant
+      const merchantCount = {};
+      monthTxns.forEach(t => { if (t.merchant && t.merchant !== 'Manual Entry') merchantCount[t.merchant] = (merchantCount[t.merchant]||0)+1; });
+      const topMerchant = Object.entries(merchantCount).sort((a,b)=>b[1]-a[1])[0];
+      if (topMerchant && topMerchant[1] >= 3) {
+        insights.push(`${topMerchant[0]} appears ${topMerchant[1]} times this month — your most frequent spend`);
+      }
+
+      if (insights.length === 0) return null;
+      // Pick one insight — rotate by week number
+      const weekNum = Math.floor(Date.now() / (7*86400000));
+      return insights[weekNum % insights.length];
+    }
+
+    // ── SPEND FORECAST ───────────────────────────────────────────────
+    function aiGenerateForecast() {
+      const txns = D.transactions || [];
+      const currentMonth = offsetMonthStr(0);
+      const now = new Date();
+      const dayOfMonth = now.getDate();
+      const daysInMonth = new Date(now.getFullYear(), now.getMonth()+1, 0).getDate();
+      if (dayOfMonth < 5) return null; // not enough data
+
+      const monthTxns = txns.filter(t => t.month === currentMonth);
+      if (monthTxns.length < 3) return null;
+
+      const spent = monthTxns.reduce((s,t)=>s+t.amount,0);
+      const projected = Math.round((spent / dayOfMonth) * daysInMonth);
+
+      // Comfortable range from last 3 months
+      const ranges = [];
+      for (let i = 1; i <= 3; i++) {
+        const m = offsetMonthStr(-i);
+        const mTotal = txns.filter(t=>t.month===m).reduce((s,t)=>s+t.amount,0);
+        if (mTotal > 0) ranges.push(mTotal);
+      }
+      const avgRange = ranges.length > 0 ? ranges.reduce((s,v)=>s+v,0)/ranges.length : 0;
+      const breathing = avgRange > 0 ? Math.round(avgRange * 1.1 - projected) : null;
+
+      let text = `₹${spent.toLocaleString('en-IN')} in ${dayOfMonth} days → projected ₹${projected.toLocaleString('en-IN')} by month end.`;
+      if (breathing !== null) {
+        if (breathing > 0) text += ` ~₹${breathing.toLocaleString('en-IN')} breathing room.`;
+        else text += ` ₹${Math.abs(breathing).toLocaleString('en-IN')} over your usual pace.`;
+      }
+
+      const pct = avgRange > 0 ? Math.min((projected / avgRange) * 100, 100) : Math.min((spent / (projected||1)) * 100, 100);
+      return { text, pct: Math.round(pct) };
+    }
+
+    // ── MONTHLY STORY ────────────────────────────────────────────────
+    function aiGenerateStory(monthStr) {
+      const txns = (D.transactions || []).filter(t => t.month === monthStr);
+      if (txns.length < 3) return null;
+
+      const total = txns.reduce((s,t)=>s+t.amount,0);
+      const prevMonth = (() => { const d = new Date(); d.setDate(1); d.setMonth(d.getMonth()-1); return d.toLocaleDateString('en-IN',{month:'short',year:'numeric'}); })();
+      const prevTxns = (D.transactions||[]).filter(t=>t.month===prevMonth);
+      const prevTotal = prevTxns.reduce((s,t)=>s+t.amount,0);
+
+      // Top bucket
+      let topBkt = null, topAmt = 0;
+      for (const bk of Object.keys(BUCKETS)) {
+        const a = txns.filter(t=>t.bucket===bk).reduce((s,t)=>s+t.amount,0);
+        if (a > topAmt) { topAmt = a; topBkt = bk; }
+      }
+
+      // Biggest single spend
+      const biggestTxn = txns.reduce((best,t) => t.amount > (best ? best.amount : 0) ? t : best, null);
+
+      // Weekend concentration
+      const weekendAmt = txns.filter(t=>{const d=new Date(t.timestamp);return d.getDay()===0||d.getDay()===6;}).reduce((s,t)=>s+t.amount,0);
+      const weekendPct = total > 0 ? Math.round((weekendAmt/total)*100) : 0;
+
+      // Budget check
+      const overBuckets = Object.keys(BUCKETS).filter(bk => {
+        const spent = txns.filter(t=>t.bucket===bk).reduce((s,t)=>s+t.amount,0);
+        return D.limits && D.limits[bk] > 0 && spent <= D.limits[bk];
+      });
+
+      // Build story sentences
+      const sentences = [];
+      const vsLast = prevTotal > 0 ? Math.round(((total-prevTotal)/prevTotal)*100) : null;
+      if (vsLast !== null) {
+        sentences.push(vsLast > 10 ? `${monthStr} was a heavier month — up ${vsLast}% from last month.` :
+                       vsLast < -10 ? `${monthStr} was a lean month — down ${Math.abs(vsLast)}% from last month.` :
+                       `${monthStr} was steady — spending stayed close to last month.`);
+      } else {
+        sentences.push(`${monthStr} had ${txns.length} recorded spends totalling ${fmtF(total)}.`);
+      }
+
+      if (topBkt) {
+        const topPct = Math.round((topAmt/total)*100);
+        sentences.push(`${BUCKETS[topBkt].l} was your biggest category at ${topPct}% of total spend.`);
+      }
+
+      if (biggestTxn && biggestTxn.amount > total * 0.15) {
+        sentences.push(`Biggest single spend: ${fmtF(biggestTxn.amount)} on ${biggestTxn.merchant}.`);
+      }
+
+      if (weekendPct > 40) {
+        sentences.push(`${weekendPct}% of spending happened on weekends.`);
+      }
+
+      if (overBuckets.length === 4) {
+        sentences.push(`You stayed within budget in all buckets — that's a win.`);
+      } else if (overBuckets.length >= 2) {
+        sentences.push(`You stayed within budget in ${overBuckets.length} out of 4 buckets.`);
+      }
+
+      return sentences.join(' ');
+    }
+
+    // ── HONEST MIRROR ────────────────────────────────────────────────
+    function aiCheckMirror() {
+      const txns = D.transactions || [];
+      const limits = D.limits || {};
+      // Check last 3 months for consecutive overruns
+      for (const bk of Object.keys(BUCKETS)) {
+        if (!limits[bk] || limits[bk] <= 0) continue;
+        let streak = 0;
+        for (let i = 1; i <= 4; i++) {
+          const m = offsetMonthStr(-i);
+          const spent = txns.filter(t=>t.month===m&&t.bucket===bk).reduce((s,t)=>s+t.amount,0);
+          if (spent > limits[bk]) streak++; else break;
+        }
+        if (streak >= 2) {
+          // Check we haven't shown this recently
+          const shown = (() => { try { return JSON.parse(localStorage.getItem('sn_mirror_shown')||'{}'); } catch(e) { return {}; } })();
+          const thisMonth = offsetMonthStr(0);
+          if (shown[bk] === thisMonth) continue;
+          const newLimit = Math.round(limits[bk] * 1.3 / 100) * 100; // round to nearest 100
+          AI.mirrorBucket = bk;
+          AI.mirrorNewLimit = newLimit;
+          return {
+            bk,
+            text: `You've set a ${fmtF(limits[bk])} limit for ${BUCKETS[bk].l} but crossed it ${streak} months in a row. Want to set it to ${fmtF(newLimit)} and actually feel in control?`,
+            newLimit
+          };
+        }
+      }
+      return null;
+    }
+
+    // Inject all AI methods into APP object
+    // (called once after APP is defined — extends APP in-place)
+    function _installAIMethods() {
+
+      // ── aiAddParse — fires on every keystroke ──
+      APP.aiAddParse = function(val) {
+        const status = document.getElementById('aiStatus');
+        if (!val || val.trim().length < 3) { aiClear(); return; }
+        const parsed = aiParseText(val);
+        if (parsed) {
+          if (status) status.textContent = '';
+          aiShowConfirm(parsed);
+        } else {
+          if (status) status.textContent = 'Type amount + what it was for…';
+          aiClear();
+        }
+      };
+
+      // ── aiAddConfirm — Enter key shortcut ──
+      APP.aiAddConfirm = function() {
+        if (AI.parsed) this.aiSaveConfirmed();
+      };
+
+      // ── aiSaveConfirmed — save from AI card ──
+      APP.aiSaveConfirmed = function() {
+        const p = AI.parsed;
+        if (!p) { toast('Nothing to save yet'); return; }
+        if (!p.amt || p.amt <= 0) { toast('Please enter an amount'); return; }
+        const now = new Date();
+        const txn = {
+          id: `t_${Date.now()}_${Math.random().toString(36).slice(2,6)}`,
+          timestamp: now.toISOString(),
+          date: now.toLocaleDateString('en-IN',{day:'2-digit',month:'short'}),
+          time: now.toLocaleTimeString('en-IN',{hour:'2-digit',minute:'2-digit'}),
+          month: now.toLocaleDateString('en-IN',{month:'short',year:'numeric'}),
+          merchant: p.desc || 'Spend',
+          amount: p.amt,
+          bucket: p.bkt,
+          source: p.src,
+          tags: [..._addTags]
+        };
+        D.transactions = [txn, ...(D.transactions||[])];
+        // Remember last used source
+        D.lastSrc = p.src;
+        DB.save(D); this.markUnsaved();
+        _addTags = [];
+        if (navigator.vibrate) navigator.vibrate(50);
+        // AI reaction toast
+        const reaction = aiReaction(p.amt, p.desc, p.bkt, D.transactions.slice(1));
+        toast(reaction, 3000);
+        // Reset smart add
+        const inp = document.getElementById('aiAddInput');
+        if (inp) inp.value = '';
+        aiClear();
+        this.go('home');
+      };
+
+      // ── aiEditField — tap Edit on confirmation card ──
+      APP.aiEditField = function(field) {
+        // Hide card, show manual form, focus relevant field
+        this.aiToggleManual(true);
+        setTimeout(() => {
+          if (field === 'amt') { const el = document.getElementById('addAmt'); if (el) { el.focus(); el.select(); } }
+          if (field === 'desc') { const el = document.getElementById('addDesc'); if (el) { el.focus(); el.select(); } }
+          if (field === 'bkt') { document.getElementById('bktGrid')?.scrollIntoView({behavior:'smooth'}); }
+          if (field === 'src') { document.getElementById('srcGrid')?.scrollIntoView({behavior:'smooth'}); }
+        }, 100);
+      };
+
+      // ── aiToggleManual — show/hide manual form ──
+      APP.aiToggleManual = function(forceShow) {
+        const form = document.getElementById('aiManualForm');
+        const toggle = document.getElementById('aiManualToggle');
+        if (!form) return;
+        const show = forceShow !== undefined ? forceShow : form.style.display === 'none';
+        form.style.display = show ? 'block' : 'none';
+        if (toggle) toggle.innerHTML = show ? 'or <span>hide manual form ↑</span>' : 'or <span>add manually ↓</span>';
+      };
+
+      // ── aiVoiceToggle — start/stop voice ──
+      APP.aiVoiceToggle = function() {
+        const btn = document.getElementById('aiVoiceBtn');
+        if (AI.voiceActive) {
+          if (AI.voiceRec) AI.voiceRec.stop();
+          AI.voiceActive = false;
+          if (btn) { btn.classList.remove('recording'); btn.textContent = '🎤'; }
+          return;
+        }
+        // Check API availability
+        const SpeechRec = window.SpeechRecognition || window.webkitSpeechRecognition;
+        if (!SpeechRec) {
+          toast('Voice not supported on this browser');
+          if (btn) btn.style.display = 'none';
+          return;
+        }
+        const rec = new SpeechRec();
+        rec.lang = 'en-IN';
+        rec.interimResults = true;
+        rec.maxAlternatives = 1;
+        AI.voiceRec = rec;
+        AI.voiceActive = true;
+        if (btn) { btn.classList.add('recording'); btn.textContent = '⏹'; }
+        const status = document.getElementById('aiStatus');
+        if (status) status.textContent = '🎤 Listening…';
+        const inp = document.getElementById('aiAddInput');
+        rec.onresult = (e) => {
+          const transcript = Array.from(e.results).map(r=>r[0].transcript).join('');
+          if (inp) inp.value = transcript;
+          if (status) status.textContent = transcript ? '' : '🎤 Listening…';
+          APP.aiAddParse(transcript);
+        };
+        rec.onerror = (e) => {
+          AI.voiceActive = false;
+          if (btn) { btn.classList.remove('recording'); btn.textContent = '🎤'; }
+          if (status) status.textContent = '';
+          if (e.error === 'not-allowed') toast('Microphone permission denied');
+        };
+        rec.onend = () => {
+          AI.voiceActive = false;
+          if (btn) { btn.classList.remove('recording'); btn.textContent = '🎤'; }
+          if (status) status.textContent = '';
+        };
+        try { rec.start(); } catch(e) { AI.voiceActive = false; if (btn) { btn.classList.remove('recording'); btn.textContent = '🎤'; } }
+      };
+
+      // ── aiPhotoTrigger — open camera ──
+      APP.aiPhotoTrigger = function() {
+        const inp = document.getElementById('aiPhotoInput');
+        if (inp) inp.click();
+      };
+
+      // ── aiPhotoProcess — OCR the selected image ──
+      APP.aiPhotoProcess = async function(inputEl) {
+        const file = inputEl && inputEl.files && inputEl.files[0];
+        if (!file) return;
+        const progress = document.getElementById('aiOcrProgress');
+        const status = document.getElementById('aiStatus');
+        if (progress) progress.style.display = 'block';
+        if (status) status.textContent = '📷 Reading receipt…';
+        try {
+          // Dynamically load Tesseract.js
+          if (!window.Tesseract) {
+            await new Promise((res, rej) => {
+              const s = document.createElement('script');
+              s.src = 'https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js';
+              s.onload = res; s.onerror = rej;
+              document.head.appendChild(s);
+            });
+          }
+          const { data: { text } } = await Tesseract.recognize(file, 'eng', {
+            logger: m => { if (status && m.status === 'recognizing text') status.textContent = `📷 Reading… ${Math.round(m.progress*100)}%`; }
+          });
+          if (progress) progress.style.display = 'none';
+          if (status) status.textContent = '';
+          // Parse the OCR text
+          const parsed = aiParseOCR(text);
+          if (parsed) {
+            const inp = document.getElementById('aiAddInput');
+            if (inp) inp.value = `${parsed.amt} ${parsed.desc}`;
+            aiShowConfirm(parsed);
+            toast('Receipt read ✓');
+          } else {
+            toast('Could not read amount — try typing it');
+          }
+        } catch(e) {
+          if (progress) progress.style.display = 'none';
+          if (status) status.textContent = '';
+          toast('Receipt scan failed — please type manually');
+        }
+        // Reset file input so same file can be re-selected
+        if (inputEl) inputEl.value = '';
+      };
+
+      // ── aiParseOCR — parse raw OCR text from receipts ──
+      APP.aiParseOCR = function(text) { return aiParseOCR(text); };
+
+      // ── aiRenderInsight — render on home screen ──
+      APP.aiRenderInsight = function() {
+        const card = document.getElementById('aiInsightCard');
+        const textEl = document.getElementById('aiInsightText');
+        if (!card || !textEl) return;
+        // Check dismissed state
+        try {
+          const d = JSON.parse(localStorage.getItem('sn_ai_insight') || '{}');
+          if (d.dismissed && d.week === _aiWeekKey()) { card.style.display = 'none'; return; }
+          // Use cached if fresh (same week)
+          if (d.text && d.week === _aiWeekKey()) {
+            textEl.textContent = d.text;
+            card.style.display = 'block';
+            return;
+          }
+        } catch(e) {}
+        const insight = aiGenerateInsight();
+        if (!insight) { card.style.display = 'none'; return; }
+        textEl.textContent = insight;
+        card.style.display = 'block';
+        try { localStorage.setItem('sn_ai_insight', JSON.stringify({text: insight, week: _aiWeekKey()})); } catch(e) {}
+      };
+
+      // ── aiDismissInsight ──
+      APP.aiDismissInsight = function() {
+        const card = document.getElementById('aiInsightCard');
+        if (card) card.style.display = 'none';
+        try { const d = JSON.parse(localStorage.getItem('sn_ai_insight')||'{}'); d.dismissed = true; d.week = _aiWeekKey(); localStorage.setItem('sn_ai_insight', JSON.stringify(d)); } catch(e) {}
+      };
+
+      // ── aiRenderForecast — render on home screen ──
+      APP.aiRenderForecast = function() {
+        const card = document.getElementById('aiForecastCard');
+        const textEl = document.getElementById('aiForecastText');
+        const fill = document.getElementById('aiForecastFill');
+        if (!card || !textEl) return;
+        const f = aiGenerateForecast();
+        if (!f) { card.style.display = 'none'; return; }
+        textEl.textContent = f.text;
+        if (fill) fill.style.width = f.pct + '%';
+        // Color the fill bar based on percentage
+        if (fill) fill.style.background = f.pct > 90 ? '#ef4444' : f.pct > 70 ? '#f59e0b' : 'var(--teal)';
+        card.style.display = 'block';
+      };
+
+      // ── aiRenderStory — render on month screen ──
+      APP.aiRenderStory = function(monthStr) {
+        const card = document.getElementById('aiStoryCard');
+        const textEl = document.getElementById('aiStoryText');
+        if (!card || !textEl) return;
+        const story = aiGenerateStory(monthStr || offsetMonthStr(0));
+        if (!story) { card.style.display = 'none'; return; }
+        textEl.textContent = story;
+        card.style.display = 'block';
+      };
+
+      // ── aiRenderMirror — render on month screen ──
+      APP.aiRenderMirror = function() {
+        const card = document.getElementById('aiMirrorCard');
+        const textEl = document.getElementById('aiMirrorText');
+        const btn = document.getElementById('aiMirrorBtn');
+        if (!card || !textEl) return;
+        const mirror = aiCheckMirror();
+        if (!mirror) { card.style.display = 'none'; return; }
+        textEl.textContent = mirror.text;
+        if (btn) btn.textContent = `Set ${BUCKETS[mirror.bk]?.l} limit to ${fmtF(mirror.newLimit)}`;
+        card.style.display = 'block';
+      };
+
+      // ── aiMirrorAction — user taps update limit ──
+      APP.aiMirrorAction = function() {
+        if (!AI.mirrorBucket || !AI.mirrorNewLimit) return;
+        if (!D.limits) D.limits = {};
+        D.limits[AI.mirrorBucket] = AI.mirrorNewLimit;
+        DB.save(D); this.markUnsaved();
+        // Mark as shown this month
+        try {
+          const shown = JSON.parse(localStorage.getItem('sn_mirror_shown')||'{}');
+          shown[AI.mirrorBucket] = offsetMonthStr(0);
+          localStorage.setItem('sn_mirror_shown', JSON.stringify(shown));
+        } catch(e) {}
+        const card = document.getElementById('aiMirrorCard');
+        if (card) card.style.display = 'none';
+        toast(`${BUCKETS[AI.mirrorBucket]?.l} limit updated to ${fmtF(AI.mirrorNewLimit)} ✓`);
+        AI.mirrorBucket = null;
+      };
+    }
+
+    // ── OCR TEXT PARSER ─────────────────────────────────────────────
+    function aiParseOCR(text) {
+      if (!text) return null;
+      const lines = text.split('\n').map(l=>l.trim()).filter(Boolean);
+
+      // Extract amount — look for largest currency amount in receipt
+      let amt = null;
+      const amtCandidates = [];
+      const amtRe = /(?:total|amount|grand total|net amount|bill amount|rs\.?|₹|inr)[\s:]*([0-9,]+(?:\.[0-9]{1,2})?)/gi;
+      const anyNumRe = /([0-9,]{2,}(?:\.[0-9]{1,2})?)/g;
+      let m;
+      // Prefer labeled amounts
+      while ((m = amtRe.exec(text)) !== null) {
+        const v = parseFloat(m[1].replace(/,/g,''));
+        if (v > 0 && v < 9999999) amtCandidates.push(v);
+      }
+      // Fall back to any number
+      if (amtCandidates.length === 0) {
+        while ((m = anyNumRe.exec(text)) !== null) {
+          const v = parseFloat(m[1].replace(/,/g,''));
+          if (v >= 10 && v < 9999999) amtCandidates.push(v);
+        }
+      }
+      if (amtCandidates.length > 0) {
+        // Use the largest candidate (usually total)
+        amt = Math.max(...amtCandidates);
+      }
+      if (!amt) return null;
+
+      // Extract merchant — first non-numeric, non-header line
+      let desc = '';
+      const skipWords = /^(gst|gstin|invoice|receipt|bill|date|time|table|order|tax|total|amount|cash|change|upi|phone|mobile|address|thank|www|http)/i;
+      for (const line of lines) {
+        if (line.length > 2 && line.length < 60 && !skipWords.test(line) && !/^[0-9₹%*-]+$/.test(line)) {
+          desc = line; break;
+        }
+      }
+      if (!desc) desc = 'Receipt';
+
+      // Auto-detect bucket from desc + full text
+      const combined = (desc + ' ' + text).toLowerCase();
+      let bkt = null;
+      for (const [merchant, b] of Object.entries(AI_MERCHANT_MAP)) {
+        if (combined.includes(merchant)) { bkt = b; break; }
+      }
+      if (!bkt) {
+        const scores = {necessary:0, committed:0, comfortable:0, luxury:0};
+        for (const [b, kws] of Object.entries(AI_BKT_KEYWORDS)) {
+          for (const kw of kws) { if (combined.includes(kw)) scores[b] += 1; }
+        }
+        const best = Object.entries(scores).sort((a,b2)=>b2[1]-a[1])[0];
+        if (best[1] > 0) bkt = best[0];
+      }
+      if (!bkt) bkt = 'necessary';
+
+      const src = (S && S.addSrc) || 'upi';
+      return { amt, desc: desc.charAt(0).toUpperCase() + desc.slice(1), bkt, src };
+    }
+
+    // ── Week key helper ─────────────────────────────────────────────
+    function _aiWeekKey() {
+      return 'w' + Math.floor(Date.now() / (7*86400000));
+    }
+
+    // ── INSTALL AI METHODS + HOOK r_home / r_add / r_month ──────────
+    _installAIMethods();
+
+    // Hook r_home to also render AI cards
+    const _origRHome = APP.r_home.bind(APP);
+    APP.r_home = function() {
+      _origRHome();
+      APP.aiRenderInsight();
+      APP.aiRenderForecast();
+    };
+
+    // Hook r_add to reset AI smart add input
+    const _origRAdd = APP.r_add.bind(APP);
+    APP.r_add = function() {
+      _origRAdd();
+      const inp = document.getElementById('aiAddInput');
+      if (inp) inp.value = '';
+      aiClear();
+      // Show manual form by default if coming back from edit
+      const form = document.getElementById('aiManualForm');
+      if (form) form.style.display = 'none';
+    };
+
+    // Hook r_month to render AI story + mirror
+    const _origRMonth = APP.r_month ? APP.r_month.bind(APP) : null;
+    if (_origRMonth) {
+      APP.r_month = function(...args) {
+        _origRMonth(...args);
+        const monthStr = (S && S.monthOffset !== undefined) ? offsetMonthStr(S.monthOffset) : offsetMonthStr(0);
+        APP.aiRenderStory(monthStr);
+        APP.aiRenderMirror();
+      };
+    }
+
+    // Hook saveManual to also show AI reaction
+    const _origSaveManual = APP.saveManual.bind(APP);
+    APP.saveManual = function() {
+      const amtEl = document.getElementById('addAmt');
+      const amt = parseFloat((amtEl && amtEl.value) || '0');
+      const desc = (document.getElementById('addDesc') && document.getElementById('addDesc').value || '').trim();
+      const bkt = S.addBkt;
+      // Call original save
+      _origSaveManual();
+      // Show AI reaction after a brief delay
+      if (amt > 0 && bkt) {
+        setTimeout(() => {
+          const reaction = aiReaction(amt, desc, bkt, D.transactions || []);
+          toast(reaction, 3000);
+        }, 300);
+      }
+    };
+
     APP.boot();
 
     // BUG-021: Swipe right to go back on sub-screens
