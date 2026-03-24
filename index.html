@@ -1,6 +1,6 @@
 <!--
 ╔══════════════════════════════════════════════════════════════════════╗
-║        SPEND-NA v4  ·  index.html  ·  MASTER SECTION INDEX          ║
+║        SPEND-NA v5.1  ·  index.html  ·  MASTER SECTION INDEX          ║
 ║     Single-file PWA — HTML + CSS + JS in one file by design         ║
 ║     Author: Sandeep Hakki  ·  hakki.in  ·  © 2026                   ║
 ╠══════════════════════════════════════════════════════════════════════╣
@@ -15,6 +15,41 @@
 ║          right-edge clipping, momentum scroll, tap states,           ║
 ║          GPU acceleration, touch-action, htxn-right min-width)      ║
 ║  v4.5 — Bugs + UX + Settings overhaul + 8 new AI features           ║
+║          Pinch snap-back · 3-level focus mode (Aa badge cycle)       ║
+║          Settings: 5 sections — Profile(+pw) · Notifications ·      ║
+║          My Data · Accessibility · AI & Intelligence                 ║
+║          AI Configs: all 15 AI features with per-screen toggles      ║
+║          My Month: peek pattern scroll reveal                        ║
+║          Banner: close button + tooltip + session restore            ║
+║          History: swipe-left actions · bucket colour borders ·       ║
+║          smart group headers with daily totals                       ║
+║          FIX-7: description field editable in History inline panel   ║
+║          FIX-8: voice redo button + aiRedoVoice()                    ║
+║          NEW AI: Spend Streak 🔥 · Why Buy This ✨ · Budget Suggest  ║
+║          NEW AI: Mood Tagging 😊 · Duplicate Detector ⚠️            ║
+║          NEW AI: Spend Twin 👫 · Smart Search 🔎 · Weekly Digest 📅  ║
+║                                                                      ║
+║  v5.0a — Revolutionary UI overhaul (Gen-Z design system)            ║
+║          Floating FAB · dominant hero bucket · topbar expansion      ║
+║          Typography-led history · Insights personality hero          ║
+║          Native bottom sheet modal · premium toast pill              ║
+║          5 advanced AI features: 3am Warning · Category Creep       ║
+║          Salary Day Intelligence · Honest Comparison · Annual Wrap  ║
+║                                                                      ║
+║  v5.0b — Data architecture + rollout infrastructure                  ║
+║          FIX: Payment method icon highlights on selection (CSS)      ║
+║          FIX: Bucket name text no longer truncated (CSS+JS)          ║
+║          NEW: SCHEMA_VERSION = 2 + migrateData() v1→v2              ║
+║          NEW: FLAGS system — feature flags in sn_flags               ║
+║          NEW: manifest block stamped into every exported JSON         ║
+║          NEW: Beta opt-in banner in smart banner rotation            ║
+║          NEW: SW version detection — cache bumped to sn-v5           ║
+║          NEW: SHARD module — data sharding + lazy loading            ║
+║          NEW: exportZipFolder / importZipFolder (JSZip, lazy CDN)    ║
+║          NEW: exportCurrentMonthShard — single month JSON            ║
+║          NEW: Settings My Data — Folder Backup section               ║
+║                                                                      ║
+║  v5.1 — MASTER MERGE: v5.0a UI Revolution + v5.0b Data Architecture ║
 ║          Pinch snap-back · 3-level focus mode (Aa badge cycle)       ║
 ║          Settings: 5 sections — Profile(+pw) · Notifications ·      ║
 ║          My Data · Accessibility · AI & Intelligence                 ║
@@ -397,6 +432,12 @@
 ║        Budget,Mood,Duplicate,Twin,Search,Digest)+AI Configs+swipe  ║
 ║         right-edge clipping fixed, GPU acceleration,               ║
 ║         touch-action, momentum scroll, tap state polish            ║
+║  v5.0  Revolutionary UI overhaul — Gen-Z design system             ║
+║         Floating FAB · dominant hero bucket · topbar expansion     ║
+║         Typography-led history · Insights personality hero         ║
+║         Native bottom sheet modal · premium toast pill             ║
+║         5 AI features: 3am Warning · Category Creep               ║
+║         Salary Day Intelligence · Honest Comparison · Annual Wrap  ║
 ║                                                                      ║
 ╠══════════════════════════════════════════════════════════════════════╣
 ║  PIB-7 · KNOWN OPEN ITEMS & FUTURE NOTES                           ║
@@ -1664,53 +1705,63 @@
     /* ── TOP BAR ── */
     .topbar {
       background: var(--ink);
-      padding: calc(var(--safe-t) + 10px) max(16px, var(--safe-r)) 14px max(16px, var(--safe-l));
+      padding: calc(var(--safe-t) + 16px) max(20px,var(--safe-r)) 20px max(20px,var(--safe-l));
       flex-shrink: 0;
-      /* Prevent topbar from growing too tall on large safe areas */
-      min-height: calc(var(--safe-t) + 80px);
     }
 
     .tb-row1 {
       display: flex;
       align-items: flex-start;
       justify-content: space-between;
-      margin-bottom: 12px;
+      margin-bottom: 16px;
+      gap: 12px;
     }
+
+    .tb-left { flex: 1; min-width: 0; }
 
     .tb-greet {
       font-size: 11px;
+      font-weight: 500;
       color: var(--mist);
-      margin-bottom: 2px;
+      letter-spacing: .04em;
+      text-transform: uppercase;
+      margin-bottom: 4px;
     }
 
     .tb-name {
-      font-size: 24px;
-      font-weight: 800;
+      font-size: 30px;
+      font-weight: 900;
       color: #fff;
-      letter-spacing: -.5px;
-      line-height: 1.15;
+      letter-spacing: -1px;
+      line-height: 1;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
     }
 
     .tb-role {
       font-size: 11px;
-      color: var(--tealM);
-      font-weight: 600;
-      margin-top: 3px;
+      color: var(--teal);
+      font-weight: 700;
+      margin-top: 4px;
     }
 
     .tb-av {
       width: 44px;
       height: 44px;
-      border-radius: 13px;
-      border: 2px solid var(--tealD);
+      border-radius: 22px;
+      flex-shrink: 0;
+      cursor: pointer;
+      border: 2px solid rgba(255,255,255,.15);
       overflow: hidden;
       background: var(--tealD);
       display: flex;
       align-items: center;
       justify-content: center;
-      cursor: pointer;
-      flex-shrink: 0;
+      transition: border-color .15s;
     }
+
+    .tb-av:active { border-color: var(--teal); }
 
     .tb-av img {
       width: 100%;
@@ -1725,10 +1776,10 @@
     }
 
     .qt-box {
-      background: rgba(255, 255, 255, .06);
-      border-radius: var(--r);
-      padding: 11px 14px;
-      border: 1px solid rgba(255, 255, 255, .08);
+      background: rgba(255, 255, 255, .05);
+      border-radius: 10px;
+      padding: 10px 14px;
+      border-left: 2px solid var(--teal);
     }
 
     .qt-bar {
@@ -1741,10 +1792,14 @@
 
     .qt-text {
       font-size: 12px;
-      color: var(--ghost);
+      color: rgba(255,255,255,.55);
       font-style: italic;
-      line-height: 1.6;
+      line-height: 1.4;
     }
+
+    /* Alias for new tb-quote-bar class */
+    .tb-quote-bar { background: rgba(255,255,255,.05); border-radius: 10px; padding: 10px 14px; border-left: 2px solid var(--teal); }
+    #tbQuote { font-size: 12px; color: rgba(255,255,255,.55); font-style: italic; line-height: 1.4; }
 
     /* ── SAVE BAR ── */
     #saveBar {
@@ -1852,12 +1907,14 @@
 
     /* ── TAB BAR ── */
     #tabBar {
-      background: var(--card);
-      border-top: 1.5px solid var(--fog);
+      background: rgba(255,255,255,.95);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border-top: 1px solid rgba(0,0,0,.06);
       display: flex;
-      padding: 10px max(8px, var(--safe-r)) calc(var(--safe-b) + 8px) max(8px, var(--safe-l));
+      padding: 10px max(8px,var(--safe-r)) calc(var(--safe-b) + 8px) max(8px,var(--safe-l));
       flex-shrink: 0;
-      box-shadow: 0 -4px 20px rgba(0, 0, 0, .06);
+      box-shadow: 0 -1px 0 rgba(0,0,0,.05);
     }
 
     .tab {
@@ -1869,29 +1926,33 @@
       background: none;
       border: none;
       cursor: pointer;
-      padding: 0;
+      padding: 4px 0;
+      transition: transform .1s;
     }
 
+    .tab:active { transform: scale(.88); }
+
     .tab-gl {
-      font-size: 20px;
-      position: relative;
-      opacity: .45;
-      transition: opacity .15s;
+      font-size: 22px;
+      opacity: .4;
+      transition: opacity .15s, transform .15s;
     }
 
     .tab.on .tab-gl {
       opacity: 1;
+      transform: scale(1.05);
     }
 
     .tab-lbl {
       font-size: 10px;
-      color: var(--slate);
+      color: var(--mist);
       font-weight: 500;
+      transition: color .15s, font-weight .15s;
     }
 
     .tab.on .tab-lbl {
       color: var(--teal);
-      font-weight: 700;
+      font-weight: 800;
     }
 
     .tbadge {
@@ -1935,36 +1996,39 @@
 ═══════════════════════════════════════════════════ */
     .h-hero {
       background: var(--ink);
-      padding: 0 max(16px, var(--safe-r)) 22px max(16px, var(--safe-l));
+      padding: 0 max(20px,var(--safe-r)) 28px max(20px,var(--safe-l));
     }
 
     .h-total {
-      background: rgba(255, 255, 255, .07);
-      border-radius: var(--r);
-      padding: 11px 15px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-top: 14px;
-      border: 1px solid rgba(255, 255, 255, .1);
+      background: rgba(255, 255, 255, .06);
+      border-radius: 18px;
+      padding: 18px 20px;
+      border: 1px solid rgba(255, 255, 255, .09);
+      margin-top: 12px;
     }
 
     .h-tl {
-      font-size: 12px;
+      font-size: 9px;
+      font-weight: 800;
       color: var(--mist);
+      text-transform: uppercase;
+      letter-spacing: .12em;
+      margin-bottom: 6px;
     }
 
     .h-tv {
-      font-size: 22px;
-      font-weight: 800;
+      font-size: 40px;
+      font-weight: 900;
       color: var(--teal);
+      letter-spacing: -2px;
+      line-height: 1;
     }
 
     .h-body {
       background: var(--paper);
       border-radius: 24px 24px 0 0;
-      margin-top: -14px;
-      padding: 22px max(16px, var(--safe-r)) 16px max(16px, var(--safe-l));
+      margin-top: -18px;
+      padding: 24px max(20px,var(--safe-r)) 20px max(20px,var(--safe-l));
     }
 
     .pend-btn {
@@ -2027,34 +2091,113 @@
 
     .sec-row {
       display: flex;
-      justify-content: space-between;
       align-items: center;
-      margin-bottom: 12px;
+      justify-content: space-between;
+      margin-bottom: 14px;
     }
 
     .sec-lbl {
-      font-size: 10px;
-      font-weight: 700;
+      font-size: 9px;
+      font-weight: 900;
       color: var(--mist);
-      letter-spacing: 2.5px;
+      text-transform: uppercase;
+      letter-spacing: .14em;
     }
 
     .sec-lnk {
-      font-size: 12px;
+      font-size: 11px;
       font-weight: 700;
       color: var(--teal);
-      background: none;
+      background: rgba(14,165,233,.08);
       border: none;
       cursor: pointer;
+      padding: 4px 8px;
+      border-radius: 6px;
     }
 
+    /* REDESIGN: Home bucket layout */
     .bgrid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
+      display: flex;
+      flex-direction: column;
       gap: 10px;
       margin-bottom: 20px;
     }
+    .bc-hero {
+      background: var(--card);
+      border-radius: var(--rXL);
+      overflow: hidden;
+      border: 1.5px solid var(--fog);
+      box-shadow: 0 4px 24px rgba(0,0,0,.07);
+      cursor: pointer;
+      transition: transform .1s;
+      min-height: 130px;
+    }
+    .bc-hero:active { transform: scale(.985); }
+    .bc-hero .bc-top { height: 5px; }
+    .bc-hero .bc-body {
+      padding: 16px 18px 18px;
+      display: flex;
+      flex-direction: column;
+    }
+    .bc-hero .bc-ic {
+      width: 36px; height: 36px;
+      border-radius: 10px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 14px; font-weight: 900;
+      border: 1.5px solid; margin-bottom: 12px;
+    }
+    .bc-hero .bc-amt {
+      font-size: 34px;
+      font-weight: 900;
+      letter-spacing: -1.5px;
+      line-height: 1;
+      margin-bottom: 4px;
+    }
+    .bc-hero .bc-nm {
+      font-size: 9px;
+      font-weight: 800;
+      color: var(--mist);
+      text-transform: uppercase;
+      letter-spacing: .12em;
+      margin-bottom: 12px;
+    }
+    .bc-hero .bc-pb { height: 4px; border-radius: 2px; margin-top: auto; }
+    .bc-hero .bc-pf { height: 4px; border-radius: 2px; }
 
+    /* Compact row for the other 3 buckets */
+    .bc-compact-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 8px;
+    }
+    .bc-compact {
+      background: var(--card);
+      border-radius: var(--rL);
+      overflow: hidden;
+      border: 1.5px solid var(--fog);
+      box-shadow: var(--sh);
+      cursor: pointer;
+      transition: transform .1s;
+      padding: 10px;
+    }
+    .bc-compact:active { transform: scale(.94); }
+    .bc-compact .bc-top { height: 3px; margin: -10px -10px 8px; }
+    .bc-compact .bc-ic {
+      width: 24px; height: 24px; border-radius: 7px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 10px; font-weight: 900; border: 1.5px solid;
+      margin-bottom: 6px;
+    }
+    .bc-compact .bc-amt {
+      font-size: 14px; font-weight: 800; margin-bottom: 2px;
+    }
+    .bc-compact .bc-nm {
+      font-size: 8px; font-weight: 600;
+      color: var(--mist); text-transform: uppercase; letter-spacing: .08em;
+    }
+    .bc-compact.over { border-color: var(--err); }
+
+    /* Keep legacy .bc for any other usage */
     .bc {
       background: var(--card);
       border-radius: var(--rL);
@@ -2301,6 +2444,7 @@
       color: var(--tealD);
       font-weight: 800;
     }
+    .src.on .src-ic { color: var(--tealD); }
 
     .bkts {
       display: grid;
@@ -2350,6 +2494,9 @@
       font-size: 12px;
       font-weight: 700;
       color: var(--slate);
+      text-align: center;
+      white-space: normal;
+      word-break: break-word;
     }
 
     .bkt.on .bkt-nm {
@@ -2939,30 +3086,34 @@
 
     .htxn {
       background: var(--card);
-      border-radius: var(--r);
-      padding: 12px;
-      margin-bottom: 8px;
+      border-radius: 14px;
+      padding: 14px 16px;
+      margin-bottom: 6px;
       border: 1px solid var(--fog);
-      box-shadow: var(--sh);
+      box-shadow: 0 1px 4px rgba(0,0,0,.04);
+      transition: transform .1s;
     }
+
+    .htxn:active { transform: scale(.99); }
 
     .htxn-row {
       display: flex;
-      align-items: center;
-      gap: 10px;
+      align-items: flex-start;
+      gap: 12px;
     }
 
     .htxn-ic {
-      width: 36px;
-      height: 36px;
-      border-radius: 10px;
+      width: 40px;
+      height: 40px;
+      border-radius: 12px;
       background: var(--paper);
       border: 1px solid var(--fog);
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 15px;
+      font-size: 17px;
       flex-shrink: 0;
+      margin-top: 2px;
     }
 
     .htxn-info {
@@ -2971,25 +3122,41 @@
     }
 
     .htxn-nm {
-      font-size: 13px;
+      font-size: 15px;
       font-weight: 700;
       color: var(--ink);
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
+      margin-bottom: 4px;
+    }
+
+    .htxn-meta {
+      display: flex;
+      align-items: center;
+      gap: 8px;
     }
 
     .htxn-dt {
       font-size: 10px;
       color: var(--mist);
-      margin-top: 1px;
     }
 
     .htxn-bkt {
       font-size: 9px;
       font-weight: 700;
-      margin-top: 2px;
+      padding: 2px 7px;
+      border-radius: 10px;
+      text-transform: uppercase;
+      letter-spacing: .06em;
     }
+
+    /* Bucket badge colours */
+    .htxn-bkt-necessary { background: #f0fdf4; color: #16a34a; }
+    .htxn-bkt-committed { background: #eef2ff; color: #6366f1; }
+    .htxn-bkt-comfortable { background: #fffbeb; color: #d97706; }
+    .htxn-bkt-luxury { background: #fff1f2; color: #e11d48; }
+    .htxn-bkt-unsorted { background: var(--paper); color: var(--mist); }
 
     .htxn-right {
       text-align: right;
@@ -2998,10 +3165,17 @@
     }
 
     .htxn-am {
-      font-size: 15px;
+      font-size: 17px;
       font-weight: 800;
       color: var(--ink);
       white-space: nowrap;
+      letter-spacing: -.5px;
+    }
+
+    .htxn-src {
+      font-size: 10px;
+      color: var(--mist);
+      margin-top: 3px;
     }
 
     .htxn-acts {
@@ -3496,11 +3670,14 @@
     #modal {
       position: fixed;
       inset: 0;
+      background: rgba(15,23,42,.65);
+      backdrop-filter: blur(4px);
+      -webkit-backdrop-filter: blur(4px);
       z-index: 900;
-      background: rgba(0, 0, 0, .55);
       display: none;
       align-items: flex-end;
       justify-content: center;
+      padding-bottom: var(--safe-b);
     }
 
     #modal.on {
@@ -3510,33 +3687,38 @@
     .m-box {
       background: var(--card);
       border-radius: 24px 24px 0 0;
-      padding: 22px 20px calc(var(--safe-b) + 22px);
+      padding: 8px 20px calc(20px + var(--safe-b));
       width: 100%;
       max-width: 480px;
-      animation: mup .25s ease;
+      max-height: 85vh;
+      overflow-y: auto;
+      animation: mup .25s cubic-bezier(.32,0,.67,0);
+    }
+
+    .m-handle {
+      width: 36px;
+      height: 4px;
+      background: var(--fog);
+      border-radius: 2px;
+      margin: 0 auto 16px;
     }
 
     @keyframes mup {
-      from {
-        transform: translateY(100%)
-      }
-
-      to {
-        transform: translateY(0)
-      }
+      from { transform: translateY(100%) }
+      to { transform: translateY(0) }
     }
 
     .m-title {
-      font-size: 19px;
+      font-size: 17px;
       font-weight: 800;
       color: var(--ink);
-      margin-bottom: 6px;
+      margin-bottom: 8px;
     }
 
     .m-body {
-      font-size: 13px;
+      font-size: 14px;
       color: var(--slate);
-      line-height: 1.65;
+      line-height: 1.5;
       margin-bottom: 20px;
     }
 
@@ -3547,19 +3729,18 @@
     }
 
     .mb {
+      width: 100%;
       padding: 14px;
-      border-radius: var(--r);
-      font-size: 14px;
-      font-weight: 700;
-      cursor: pointer;
+      border-radius: 14px;
       border: none;
+      font-size: 15px;
+      font-weight: 700;
       font-family: var(--ff);
-      transition: transform .1s;
+      cursor: pointer;
+      transition: transform .1s, opacity .1s;
     }
 
-    .mb:active {
-      transform: scale(.97);
-    }
+    .mb:active { transform: scale(.97); opacity: .9; }
 
     .mb-ok {
       background: var(--teal);
@@ -3579,32 +3760,36 @@
     }
 
     .mb-nil {
-      background: transparent;
+      background: var(--paper);
       color: var(--slate);
     }
+    .mb-del { background: #fee2e2; color: #dc2626; }
 
     /* ═══════════════════════════════════════════════════
    TOAST
 ═══════════════════════════════════════════════════ */
     #toast {
       position: fixed;
-      bottom: calc(var(--safe-b) + 88px);
+      bottom: calc(var(--safe-b) + 90px);
       left: 50%;
-      transform: translateX(-50%) translateY(10px);
-      background: var(--ink);
+      transform: translateX(-50%) translateY(20px);
+      background: rgba(15,23,42,.92);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
       color: #fff;
-      padding: 10px 20px;
-      border-radius: 40px;
       font-size: 13px;
       font-weight: 600;
-      z-index: 9999;
-      opacity: 0;
-      transition: all .3s;
-      pointer-events: none;
+      padding: 10px 20px;
+      border-radius: 40px;
       white-space: nowrap;
-      border: 1px solid var(--ink3);
-      max-width: calc(100vw - 40px);
-      text-align: center;
+      max-width: 85%;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      z-index: 800;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity .2s, transform .2s;
+      border: 1px solid rgba(255,255,255,.12);
     }
 
     #toast.on {
@@ -5061,6 +5246,146 @@
     font-family: var(--ff);
   }
 
+  /* ── REDESIGN v5.0: FLOATING ADD BUTTON (FAB) ── */
+  #fabAdd {
+    position: fixed;
+    bottom: calc(var(--safe-b) + 68px);
+    right: max(20px, var(--safe-r));
+    width: 58px; height: 58px;
+    border-radius: 50%;
+    background: var(--teal);
+    color: #fff;
+    font-size: 28px;
+    display: flex; align-items: center; justify-content: center;
+    box-shadow: 0 4px 20px rgba(14,165,233,.5), 0 0 0 0 rgba(14,165,233,.4);
+    border: none; cursor: pointer;
+    z-index: 200;
+    transition: transform .15s, box-shadow .15s;
+    animation: fabPulse 3s ease infinite;
+    line-height: 1;
+  }
+  #fabAdd:active {
+    transform: scale(.9);
+    box-shadow: 0 2px 10px rgba(14,165,233,.4);
+  }
+  @keyframes fabPulse {
+    0%, 100% { box-shadow: 0 4px 20px rgba(14,165,233,.5), 0 0 0 0 rgba(14,165,233,.3); }
+    50% { box-shadow: 0 4px 20px rgba(14,165,233,.5), 0 0 0 10px rgba(14,165,233,.0); }
+  }
+  body.on-add-screen #fabAdd { display: none; }
+  #tabBar .tab-add-slot { display: none; }
+
+  /* ── REDESIGN v5.0: PERSONALITY BADGE ── */
+  .personality-badge {
+    background: linear-gradient(135deg, var(--ink) 0%, #1e293b 100%);
+    border-radius: var(--rXL);
+    padding: 24px 22px;
+    margin-bottom: 14px;
+    border: 1px solid rgba(255,255,255,.08);
+    position: relative; overflow: hidden;
+  }
+  .personality-badge::before {
+    content: '';
+    position: absolute; top: -40px; right: -40px;
+    width: 120px; height: 120px;
+    background: radial-gradient(circle, rgba(14,165,233,.15) 0%, transparent 70%);
+    border-radius: 50%;
+  }
+  .personality-label {
+    font-size: 9px; font-weight: 800; color: var(--teal);
+    text-transform: uppercase; letter-spacing: .14em; margin-bottom: 8px;
+  }
+  .personality-title {
+    font-size: 26px; font-weight: 900; color: #fff;
+    letter-spacing: -.8px; line-height: 1.1; margin-bottom: 8px;
+  }
+  .personality-desc {
+    font-size: 13px; color: rgba(255,255,255,.55); line-height: 1.5;
+  }
+
+  /* ── REDESIGN v5.0: MY MONTH HERO ── */
+  .mm-hero {
+    background: var(--ink);
+    padding: 20px max(20px,var(--safe-r)) 28px max(20px,var(--safe-l));
+  }
+  .mm-month-label {
+    font-size: 10px; font-weight: 800;
+    color: var(--mist); text-transform: uppercase;
+    letter-spacing: .12em; margin-bottom: 8px;
+    display: flex; align-items: center; gap: 8px;
+  }
+  .mm-total {
+    font-size: 44px; font-weight: 900;
+    color: var(--teal); letter-spacing: -2.5px;
+    line-height: 1; margin-bottom: 16px;
+  }
+
+  /* ── REDESIGN v5.0: ANNUAL WRAP ── */
+  #pgAnnualWrap {
+    background: var(--ink);
+    z-index: 500;
+  }
+  .aw-header {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: calc(var(--safe-t) + 12px) 20px 12px;
+    border-bottom: 1px solid rgba(255,255,255,.08);
+  }
+  .aw-title {
+    font-size: 15px; font-weight: 800; color: #fff;
+  }
+  .aw-close, .aw-share {
+    font-size: 14px; font-weight: 700;
+    color: var(--teal); background: none; border: none; cursor: pointer;
+    padding: 6px 10px;
+  }
+  .aw-body {
+    padding: 24px 20px; overflow-y: auto;
+    display: flex; flex-direction: column; gap: 14px;
+    -webkit-overflow-scrolling: touch;
+  }
+  .aw-card {
+    background: rgba(255,255,255,.05);
+    border: 1px solid rgba(255,255,255,.08);
+    border-radius: 18px; padding: 20px;
+    animation: fadeSlideUp .4s ease both;
+  }
+  .aw-card:nth-child(1) { animation-delay: .0s; }
+  .aw-card:nth-child(2) { animation-delay: .1s; }
+  .aw-card:nth-child(3) { animation-delay: .2s; }
+  .aw-card:nth-child(4) { animation-delay: .3s; }
+  .aw-card:nth-child(5) { animation-delay: .4s; }
+  .aw-card:nth-child(6) { animation-delay: .5s; }
+  @keyframes fadeSlideUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  .aw-label {
+    font-size: 9px; font-weight: 800; color: var(--teal);
+    text-transform: uppercase; letter-spacing: .12em; margin-bottom: 6px;
+  }
+  .aw-value {
+    font-size: 32px; font-weight: 900; color: #fff;
+    letter-spacing: -1.5px; line-height: 1;
+  }
+  .aw-sub {
+    font-size: 12px; color: rgba(255,255,255,.45); margin-top: 4px;
+  }
+
+  /* ── REDESIGN v5.0: CATEGORY CREEP CARD ── */
+  .creep-card {
+    background: #fff7ed; border: 1px solid #fdba74;
+    border-radius: 14px; padding: 14px 16px; margin-bottom: 10px;
+  }
+  .creep-title {
+    font-size: 13px; font-weight: 800; color: #c2410c; margin-bottom: 4px;
+  }
+  .creep-body {
+    font-size: 12px; color: #9a3412; line-height: 1.5;
+  }
+
+  /* ── REDESIGN v5.0: Tab bar .tab-add-slot hidden ── */
+  .tab[data-t="add"] { display: none; }
+
   </style>
 </head>
 
@@ -5610,8 +5935,21 @@
         </button>
       </div>
 
+      <!-- FLOATING ADD BUTTON (FAB) -->
+      <button id="fabAdd" onclick="APP.go('add')" aria-label="Add new spend">+</button>
+
     </div><!-- /pgApp -->
   </div><!-- /app -->
+
+  <!-- ══════════════ ANNUAL WRAP ══════════════ -->
+  <div class="pg" id="pgAnnualWrap">
+    <div class="aw-header">
+      <button class="aw-close" onclick="APP.show('pgApp')">×</button>
+      <div class="aw-title">Your Year in Rupees</div>
+      <button class="aw-share" onclick="APP.shareAnnualWrap()">Share ↑</button>
+    </div>
+    <div class="aw-body" id="awBody"></div>
+  </div>
 
   <!-- ══════════════ MIGRATION WIZARD ══════════════ -->
   <div class="pg" id="pgMigrate">
@@ -5623,6 +5961,7 @@
   <!-- MODAL -->
   <div id="modal" onclick="if(event.target===this)APP.cm()">
     <div class="m-box">
+      <div class="m-handle"></div>
       <div class="m-title" id="mT"></div>
       <div class="m-body" id="mB"></div>
       <div class="m-btns" id="mBs"></div>
@@ -5660,9 +5999,9 @@
 
   <script>
     // ════════════════════════════════════════════════════════════════
-    //  SPEND-NA v4  © 2026 Sandeep Hakki · hakki.in
-    //  Fixes: fixed viewport · desktop layout · forgot password
-    //         full JSON (all records) · overwrite same file · bright splash
+    //  SPEND-NA v5.1  © 2026 Sandeep Hakki · hakki.in
+    //  MASTER MERGE: v5.0a UI Revolution + v5.0b Data Architecture
+    //  Schema v2 · FLAGS · SHARD · SW sn-v5 · ZIP backup · Annual Wrap
     // ════════════════════════════════════════════════════════════════
 
     const BUCKETS = {
@@ -5770,6 +6109,88 @@
       return [a, b, c, d].map(h).join('');
     }
 
+    // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+    // ITEM 1 — SCHEMA VERSION
+    // v1 = prod baseline (no tags, no focusMode, no lastSrc)
+    // v2 = QA/prod master (tags[], focusMode, lastSrc, sources)
+    // Bump SCHEMA_VERSION whenever new required fields are added.
+    // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+    const SCHEMA_VERSION = 2;
+
+    // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+    // ITEM 2 — v1 → v2 MIGRATION FUNCTION
+    // Called on every load (localStorage + file import).
+    // Only operates in memory — user must Save to persist.
+    // Never renames keys. Never deletes data. Only adds defaults.
+    // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+    function migrateData(d) {
+      if (!d || typeof d !== 'object') return d;
+      const sv = d.schemaVersion || 1;
+      if (sv >= SCHEMA_VERSION) return d;
+
+      // settings backfill
+      if (!d.settings) d.settings = {};
+      if (typeof d.settings.notif     === 'undefined') d.settings.notif     = false;
+      if (typeof d.settings.focusMode === 'undefined') d.settings.focusMode = false;
+
+      // profile backfill
+      if (!d.profile) d.profile = {};
+      if (typeof d.profile.dob   === 'undefined') d.profile.dob   = '';
+      if (typeof d.profile.city  === 'undefined') d.profile.city  = '';
+      if (typeof d.profile.quote === 'undefined') d.profile.quote = '';
+      if (typeof d.profile.role  === 'undefined') d.profile.role  = 'working';
+
+      // top-level backfill
+      if (typeof d.lastSrc === 'undefined') d.lastSrc = null;
+
+      // limits backfill
+      if (!d.limits) d.limits = {};
+      if (typeof d.limits.necessary   === 'undefined') d.limits.necessary   = 15000;
+      if (typeof d.limits.committed   === 'undefined') d.limits.committed   = 30000;
+      if (typeof d.limits.comfortable === 'undefined') d.limits.comfortable = 10000;
+      if (typeof d.limits.luxury      === 'undefined') d.limits.luxury      = 5000;
+
+      // transaction-level backfill — tags is the most common v1 gap
+      if (Array.isArray(d.transactions)) {
+        d.transactions = d.transactions.map(t => ({
+          ...t,
+          tags:   Array.isArray(t.tags) ? t.tags : [],
+          source: t.source || null,
+          bucket: t.bucket || null,
+        }));
+      }
+
+      d.schemaVersion = SCHEMA_VERSION;
+      try { console.info('[Spend-na] Migrated schema v' + sv + ' → v' + SCHEMA_VERSION); } catch {}
+      return d;
+    }
+
+    // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+    // ITEM 3 — FEATURE FLAGS  (localStorage key: sn_flags)
+    // All flags default ON for new users, safe defaults for old.
+    // Use FLAGS.get('key') in any condition.
+    // Use FLAGS.set('key', bool) to toggle.
+    // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+    const FLAG_DEFAULTS = {
+      ai_features:    true,
+      sources_screen: true,
+      tags_system:    true,
+      beta_ui:        false,
+      data_sharding:  false,
+    };
+    const FLAGS = (() => {
+      const LF = 'sn_flags';
+      const _r = () => { try { return JSON.parse(localStorage.getItem(LF) || 'null') || {}; } catch { return {}; } };
+      const _w = o => { try { localStorage.setItem(LF, JSON.stringify(o)); } catch {} };
+      return {
+        get(k)      { const s = _r(); return typeof s[k] !== 'undefined' ? s[k] : (FLAG_DEFAULTS[k] ?? false); },
+        set(k, v)   { const s = _r(); s[k] = v; _w(s); },
+        all()       { const s = _r(); const m = {}; Object.keys(FLAG_DEFAULTS).forEach(k => m[k] = typeof s[k] !== 'undefined' ? s[k] : FLAG_DEFAULTS[k]); return m; },
+        initNew()   { _w({ ...FLAG_DEFAULTS, beta_ui: true }); },
+        initExist() { const s = _r(); _w({ ...FLAG_DEFAULTS, ...s }); },
+      };
+    })();
+
     // ── DATABASE ──────────────────────────────────────────────────
     // JSON file = complete database from day one (ALL records)
     // localStorage = working copy (same full data, just in browser)
@@ -5789,12 +6210,15 @@
           pushToken: null,
         };
       },
-      load() { try { const r = localStorage.getItem(LS); return r ? JSON.parse(r) : null; } catch { return null; } },
+      load() { try { const r = localStorage.getItem(LS); return r ? migrateData(JSON.parse(r)) : null; } catch { return null; } },
       // Saves FULL data — all transactions included, every time
       save(d) {
         try {
           d.lastSaved = new Date().toISOString();
+          d.schemaVersion = SCHEMA_VERSION; // always stamp current schema version on save
           localStorage.setItem(LS, JSON.stringify(d));
+          // Write current month shard if sharding flag is on
+          if (typeof SHARD !== 'undefined') SHARD.writeCurrentMonthShard();
           return true;
         } catch (e) {
           // Quota exceeded or private browsing — warn the user
@@ -5809,6 +6233,18 @@
         const payload = JSON.parse(JSON.stringify(d));
         payload.exportedAt = new Date().toISOString();
         payload.totalRecords = d.transactions.length;
+        payload.schemaVersion = SCHEMA_VERSION;
+        // Manifest metadata — lightweight index for future sharding
+        payload.manifest = {
+          schemaVersion: SCHEMA_VERSION,
+          exportedAt:    payload.exportedAt,
+          totalRecords:  payload.totalRecords,
+          months:        [...new Set((d.transactions || []).map(t => t.month).filter(Boolean))].sort(),
+          countsByMonth: (d.transactions || []).reduce((acc, t) => { if (t.month) acc[t.month] = (acc[t.month] || 0) + 1; return acc; }, {}),
+          totalsByMonth: (d.transactions || []).reduce((acc, t) => { if (t.month) acc[t.month] = (acc[t.month] || 0) + (t.amount || 0); return acc; }, {}),
+          buckets:       Object.keys(BUCKETS),
+          app:           'Spend-na',
+        };
         payload.note = 'Spend-na complete database. Import back anytime to restore everything from the beginning.';
         const json = JSON.stringify(payload, null, 2);
         const blob = new Blob([json], { type: 'application/json' });
@@ -5846,7 +6282,7 @@
           const inp = document.createElement('input'); inp.type = 'file'; inp.accept = '.json,application/json';
           inp.onchange = async e => {
             const f = e.target.files[0]; if (!f) { res(null); return; }
-            try { const t = await f.text(); const d = JSON.parse(t); if (!Array.isArray(d.transactions)) { res(null); return; } res(d); }
+            try { const t = await f.text(); const d = JSON.parse(t); if (!Array.isArray(d.transactions)) { res(null); return; } res(migrateData(d)); }
             catch { res(null); }
           };
           inp.click();
@@ -5871,6 +6307,83 @@
         try { localStorage.setItem('sn_sources', JSON.stringify(d)); return true; }
         catch { return false; }
       }
+    };
+
+    // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+    // ITEM 7 — DATA SHARDING + LAZY LOADING
+    //
+    // Architecture: D.transactions is the single source of truth.
+    // This SHARD module adds a logical layer on top — it lets the
+    // app query transactions by month without loading everything,
+    // and exports individual monthly shards as separate JSON files.
+    //
+    // Keys used (never overlap with sn_v4):
+    //   sn_shard_YYYY_Mon  → e.g. sn_shard_2026_Mar (future use)
+    //
+    // Phase 1 (NOW): logical sharding — queries filter in memory.
+    //   All transactions still live in D.transactions (unchanged).
+    //
+    // Phase 2 (FUTURE): physical sharding — past months moved to
+    //   separate localStorage keys, loaded on demand.
+    //   Guarded by FLAGS.get('data_sharding') === true.
+    // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+    const SHARD = {
+      _key(monthStr) {
+        const parts = (monthStr || '').split(' ');
+        return parts.length === 2 ? `sn_shard_${parts[1]}_${parts[0]}` : null;
+      },
+      forMonth(monthStr) {
+        if (!monthStr || !D) return [];
+        if (FLAGS.get('data_sharding')) {
+          const key = this._key(monthStr);
+          if (key) {
+            try { const raw = localStorage.getItem(key); if (raw) return JSON.parse(raw); } catch { /* fall through */ }
+          }
+        }
+        return (D.transactions || []).filter(t => t.month === monthStr);
+      },
+      months() {
+        return [...new Set((D?.transactions || []).map(t => t.month).filter(Boolean))];
+      },
+      manifest() {
+        const txns = D?.transactions || [];
+        const months = this.months();
+        return {
+          schemaVersion: SCHEMA_VERSION,
+          totalRecords:  txns.length,
+          months,
+          countsByMonth: months.reduce((acc, m) => { acc[m] = txns.filter(t => t.month === m).length; return acc; }, {}),
+          totalsByMonth: months.reduce((acc, m) => { acc[m] = txns.filter(t => t.month === m).reduce((s, t) => s + (t.amount || 0), 0); return acc; }, {}),
+        };
+      },
+      exportMonth(monthStr) {
+        const txns = this.forMonth(monthStr);
+        if (!txns.length) { toast('No transactions in ' + monthStr); return; }
+        const payload = {
+          app: 'Spend-na', type: 'monthly-shard',
+          schemaVersion: SCHEMA_VERSION, month: monthStr,
+          exportedAt: new Date().toISOString(),
+          totalRecords: txns.length,
+          total: txns.reduce((s, t) => s + (t.amount || 0), 0),
+          transactions: txns,
+        };
+        const blob = new Blob([JSON.stringify(payload, null, 2)], { type: 'application/json' });
+        const url  = URL.createObjectURL(blob);
+        const a    = document.createElement('a');
+        a.href = url;
+        a.download = `spend-na-${monthStr.replace(' ', '-')}.json`;
+        a.click();
+        URL.revokeObjectURL(url);
+        toast(`📦 ${monthStr} shard exported (${txns.length} records)`);
+      },
+      writeCurrentMonthShard() {
+        if (!FLAGS.get('data_sharding') || !D) return;
+        const monthStr = offsetMonthStr(0);
+        const key = this._key(monthStr);
+        if (!key) return;
+        const txns = (D.transactions || []).filter(t => t.month === monthStr);
+        try { localStorage.setItem(key, JSON.stringify(txns)); } catch { /* quota — skip */ }
+      },
     };
 
     // ── STATE ─────────────────────────────────────────────────────
@@ -6032,10 +6545,31 @@
         // (blob: URLs are blocked by Firefox per spec — BUG-005 fix)
         if ('serviceWorker' in navigator) {
           try {
-            const swCode = `const C='sn-v4';self.addEventListener('install',e=>{e.waitUntil(caches.open(C).then(c=>c.add('/').catch(()=>{})));self.skipWaiting();});self.addEventListener('activate',e=>{e.waitUntil(caches.keys().then(ks=>Promise.all(ks.filter(k=>k!==C).map(k=>caches.delete(k)))));self.clients.claim();});self.addEventListener('fetch',e=>{if(e.request.method!=='GET')return;e.respondWith(caches.match(e.request).then(r=>r||fetch(e.request).then(res=>{if(res&&res.status===200){const clone=res.clone();caches.open(C).then(c=>c.put(e.request,clone));}return res;}).catch(()=>r||new Response('Offline',{status:503}))));});self.addEventListener('push',e=>{const d=e.data?e.data.json():{title:'Spend-na',body:'Check your spends!'};e.waitUntil(self.registration.showNotification(d.title,{body:d.body,tag:'sn'}));});`;
+            // Cache name bumped to sn-v5 — old cache is auto-pruned on activate
+            // SW also responds to GET_VERSION via MessageChannel for stale detection
+            const SW_APP_VERSION = 'sn-v5';
+            const swCode = `const C='${SW_APP_VERSION}';const APP_VER='5.0';self.addEventListener('install',e=>{e.waitUntil(caches.open(C).then(c=>c.add('/').catch(()=>{})));self.skipWaiting();});self.addEventListener('activate',e=>{e.waitUntil(caches.keys().then(ks=>Promise.all(ks.filter(k=>k!==C).map(k=>caches.delete(k)))));self.clients.claim();});self.addEventListener('fetch',e=>{if(e.request.method!=='GET')return;e.respondWith(caches.match(e.request).then(r=>r||fetch(e.request).then(res=>{if(res&&res.status===200){const clone=res.clone();caches.open(C).then(c=>c.put(e.request,clone));}return res;}).catch(()=>r||new Response('Offline',{status:503}))));});self.addEventListener('message',e=>{if(e.data&&e.data.type==='GET_VERSION'){e.ports[0].postMessage({version:APP_VER,cache:C});}});self.addEventListener('push',e=>{const d=e.data?e.data.json():{title:'Spend-na',body:'Check your spends!'};e.waitUntil(self.registration.showNotification(d.title,{body:d.body,tag:'sn'}));});`;
             const swDataUri = 'data:application/javascript;charset=utf-8,' + encodeURIComponent(swCode);
             navigator.serviceWorker.register(swDataUri).then(reg => {
               console.log('SW registered:', reg.scope);
+              // Version check: ask the active SW what version it is
+              // If a stale SW is still serving (old cache), show a reload nudge
+              setTimeout(() => {
+                const sw = reg.active || reg.waiting || reg.installing;
+                if (!sw || !sw.postMessage) return;
+                try {
+                  const mc = new MessageChannel();
+                  mc.port1.onmessage = ev => {
+                    const swVer = ev.data && ev.data.version;
+                    if (swVer && swVer !== '5.0') {
+                      toast('🔄 App updated — tap to reload', 5000);
+                      document.getElementById('toast').style.cursor = 'pointer';
+                      document.getElementById('toast').onclick = () => window.location.reload();
+                    }
+                  };
+                  sw.postMessage({ type: 'GET_VERSION' }, [mc.port2]);
+                } catch (e) { /* MessageChannel not available — skip */ }
+              }, 3000);
             }).catch(err => {
               console.log('SW registration skipped:', err.message);
             });
@@ -6057,21 +6591,26 @@
 
           if (!trustSeen && !saved) {
             // Absolute first-timer — no trust flag, no data
+            FLAGS.initNew();
             this.show('pgTrust');
           } else if (!trustSeen && saved) {
             // Edge case: has data but trust not yet marked (upgraded user)
             localStorage.setItem('sn_trust_seen', '1');
+            FLAGS.initExist();
             D = saved;
             if (saved.passwordHash) { this.show('pgLock'); }
             else { this.launch(); }
           } else if (!saved) {
             // Seen trust but no data — go to onboarding
+            FLAGS.initNew();
             this.buildRoles(); this.show('pgOb'); setupDobInput('obDob');
           } else if (saved.passwordHash) {
             // Has data + password — show lock
+            FLAGS.initExist();
             D = saved; this.show('pgLock');
           } else {
             // Has data, no password — launch directly
+            FLAGS.initExist();
             D = saved; this.launch();
           }
         }, 1500);
@@ -6287,6 +6826,19 @@
         const daysLeft = new Date(now.getFullYear(), now.getMonth() + 1, 0).getDate() - now.getDate();
         const sm = summary();
         const currentMonth = offsetMonthStr(0);
+
+        // v5.0 AI: 3am Warning (highest priority if applicable)
+        try {
+          const lnWarn = getLateNightWarning();
+          if (lnWarn) msgs.push({ dot: '#8b5cf6', text: lnWarn, action: 'History ›', target: 'history' });
+        } catch(e) {}
+
+        // v5.0 AI: Salary Day Intelligence
+        try {
+          const salMsg = getSalaryDayIntelligence();
+          if (salMsg) msgs.push({ dot: '#10b981', text: salMsg, action: 'Sources ›', target: 'sources' });
+        } catch(e) {}
+
         msgs.push({ dot: '#f59e0b', text: '💡 Tag your spends to track events like birthdays, travel and festivals separately', action: 'Add ›', target: 'add' });
         msgs.push({ dot: '#0ea5e9', text: '💾 Save your data file regularly — it\'s your backup AND your password recovery key', action: 'Settings ›', target: 'settings' });
         msgs.push({ dot: '#8b5cf6', text: '📊 Check your Insights to discover your spending personality and patterns', action: 'Insights ›', target: 'insights' });
@@ -6305,13 +6857,29 @@
         if (pendingCount > 0) msgs.push({ dot: '#f43f5e', text: `🗂 You have ${pendingCount} unsorted spend${pendingCount !== 1 ? 's' : ''} waiting — sort them into buckets`, action: 'Add ›', target: 'add' });
         msgs.push({ dot: '#64748b', text: '🔒 Your data never leaves this device. No server, no cloud, no tracking. Ever.', action: '', target: '' });
         msgs.push({ dot: '#0ea5e9', text: '📈 Use the Month view to see week-by-week spending patterns', action: 'Month ›', target: 'month' });
+        // Beta opt-in — shown once per session if beta_ui flag is OFF
+        if (!FLAGS.get('beta_ui') && !sessionStorage.getItem('sn_beta_prompted')) {
+          msgs.unshift({ dot: '#7c3aed', text: '✦ New features are available — try the updated experience', action: 'Try it ›', target: '_beta_optin' });
+        }
         return msgs;
       },
 
       sbnTap() {
         const msgs = this._buildBannerMessages();
         const target = msgs[this._sbnIdx]?.target;
-        if (target) this.go(target);
+        if (target === '_beta_optin') {
+          sessionStorage.setItem('sn_beta_prompted', '1');
+          modal(
+            '✦ New experience',
+            'You\'re on the latest version of Spend-na with all new features — AI insights, income sources, tags, and more. Everything is already active for you.',
+            [
+              { l: 'Great, thanks!', c: 'mb-ok', a: () => { FLAGS.set('beta_ui', true); this.cm(); } },
+              { l: 'Revert to classic look', c: 'mb-sec', a: () => { FLAGS.set('beta_ui', false); this.cm(); toast('Classic mode kept — you can change this in Settings'); } },
+            ]
+          );
+        } else if (target) {
+          this.go(target);
+        }
       },
 
       startBanner() {
@@ -6403,6 +6971,150 @@
         DB.exportFile(D);
         S.unsaved = false;
         setTimeout(() => this._showExportGuidance(), 400);
+      },
+
+      // ── Export current month as a standalone shard file ──
+      exportCurrentMonthShard() {
+        SHARD.exportMonth(offsetMonthStr(0));
+      },
+
+      // ── FOLDER BACKUP — ZIP EXPORT ──────────────────────────────
+      // Builds a Spend-na/ folder structure using JSZip, triggers .zip download.
+      // ZIP: Spend-na/manifest.json, profile.json, limits.json,
+      //      transactions/txn_YYYY_Mon.json, sources/sources_YYYY_Mon.json
+      async exportZipFolder() {
+        toast('📦 Building folder backup…');
+        let JSZip;
+        try {
+          if (!window.JSZip) {
+            await new Promise((res, rej) => {
+              const s = document.createElement('script');
+              s.src = 'https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js';
+              s.onload = res; s.onerror = rej;
+              document.head.appendChild(s);
+            });
+          }
+          JSZip = window.JSZip;
+        } catch (e) {
+          toast('No internet — using single file backup instead');
+          DB.exportFile(D); return;
+        }
+        try {
+          const zip = new JSZip();
+          const root = zip.folder('Spend-na');
+          const now = new Date().toISOString();
+          const months = SHARD.months();
+          // manifest.json
+          const mf = SHARD.manifest();
+          mf.exportedAt = now; mf.app = 'Spend-na'; mf.backupType = 'folder'; mf.totalMonths = months.length;
+          root.file('manifest.json', JSON.stringify(mf, null, 2));
+          // profile.json
+          root.file('profile.json', JSON.stringify({ app: 'Spend-na', schemaVersion: SCHEMA_VERSION, exportedAt: now, profile: D.profile || {}, settings: D.settings || {}, passwordHash: D.passwordHash || '', pushToken: D.pushToken || null, created: D.created || now }, null, 2));
+          // limits.json
+          root.file('limits.json', JSON.stringify({ app: 'Spend-na', schemaVersion: SCHEMA_VERSION, exportedAt: now, limits: D.limits || {} }, null, 2));
+          // transactions/ — one file per month
+          const txnFolder = root.folder('transactions');
+          months.forEach(monthStr => {
+            const txns = SHARD.forMonth(monthStr);
+            const safe = monthStr.replace(' ', '_');
+            txnFolder.file(`txn_${safe}.json`, JSON.stringify({ app: 'Spend-na', schemaVersion: SCHEMA_VERSION, type: 'monthly-shard', month: monthStr, exportedAt: now, totalRecords: txns.length, total: txns.reduce((s, t) => s + (t.amount || 0), 0), transactions: txns }, null, 2));
+          });
+          // sources/ — monthly source entries
+          const sd = SRC_DB.load();
+          if (sd.sources && sd.sources.length > 0) {
+            const srcFolder = root.folder('sources');
+            const byMonth = sd.sources.reduce((acc, s) => { const m = s.month || 'unknown'; if (!acc[m]) acc[m] = []; acc[m].push(s); return acc; }, {});
+            Object.entries(byMonth).forEach(([monthStr, entries]) => {
+              srcFolder.file(`sources_${monthStr.replace(' ', '_')}.json`, JSON.stringify({ app: 'Spend-na', type: 'sources-shard', month: monthStr, exportedAt: now, sources: entries }, null, 2));
+            });
+          }
+          const blob = await zip.generateAsync({ type: 'blob', compression: 'DEFLATE', compressionOptions: { level: 6 } });
+          const url = URL.createObjectURL(blob);
+          const a = document.createElement('a');
+          const dateStr = new Date().toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' }).replace(/ /g, '-');
+          a.href = url; a.download = `Spend-na-backup-${dateStr}.zip`; a.click();
+          URL.revokeObjectURL(url);
+          localStorage.setItem('sn_last_exported', now);
+          S.unsaved = false;
+          toast(`✅ Folder backup saved — ${(D.transactions || []).length} records, ${months.length} months`);
+        } catch (e) {
+          console.error('ZIP export error:', e);
+          toast('Export failed — trying single file backup');
+          DB.exportFile(D);
+        }
+      },
+
+      // ── FOLDER BACKUP — ZIP IMPORT ──────────────────────────────
+      async importZipFolder() {
+        let JSZip;
+        try {
+          if (!window.JSZip) {
+            toast('Loading import library…');
+            await new Promise((res, rej) => {
+              const s = document.createElement('script');
+              s.src = 'https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js';
+              s.onload = res; s.onerror = rej;
+              document.head.appendChild(s);
+            });
+          }
+          JSZip = window.JSZip;
+        } catch (e) { toast('Could not load import library — are you online?'); return; }
+
+        const file = await new Promise(res => {
+          const inp = document.createElement('input');
+          inp.type = 'file'; inp.accept = '.zip,application/zip,application/x-zip-compressed';
+          inp.onchange = e => res(e.target.files[0] || null); inp.click();
+        });
+        if (!file) return;
+
+        toast('📂 Reading folder backup…');
+        try {
+          const zip = await JSZip.loadAsync(file);
+          const manifestFile = zip.file('Spend-na/manifest.json');
+          if (!manifestFile) { toast('Not a valid Spend-na folder backup'); return; }
+          const manifest = JSON.parse(await manifestFile.async('string'));
+          if (manifest.app !== 'Spend-na') { toast('Not a Spend-na backup file'); return; }
+          // Read profile + limits
+          let profileData = {}, limitsData = {};
+          const pf = zip.file('Spend-na/profile.json'); if (pf) { try { profileData = JSON.parse(await pf.async('string')); } catch {} }
+          const lf = zip.file('Spend-na/limits.json');  if (lf) { try { limitsData = JSON.parse(await lf.async('string')); } catch {} }
+          // Read all transaction shards
+          const allTxns = [];
+          const txnFiles = Object.keys(zip.files).filter(n => n.startsWith('Spend-na/transactions/txn_') && n.endsWith('.json'));
+          for (const fname of txnFiles) {
+            try { const shard = JSON.parse(await zip.files[fname].async('string')); if (Array.isArray(shard.transactions)) allTxns.push(...shard.transactions); } catch {}
+          }
+          // Read sources shards
+          const allSources = [];
+          const srcFiles = Object.keys(zip.files).filter(n => n.startsWith('Spend-na/sources/') && n.endsWith('.json'));
+          for (const fname of srcFiles) {
+            try { const shard = JSON.parse(await zip.files[fname].async('string')); if (Array.isArray(shard.sources)) allSources.push(...shard.sources); } catch {}
+          }
+          if (allTxns.length === 0 && txnFiles.length > 0) { toast('Backup appears empty or corrupted'); return; }
+          const reconstructed = migrateData({ app: 'Spend-na', version: 4, schemaVersion: SCHEMA_VERSION, created: profileData.created || new Date().toISOString(), passwordHash: profileData.passwordHash || D?.passwordHash || '', profile: profileData.profile || {}, settings: profileData.settings || {}, limits: limitsData.limits || {}, transactions: allTxns, pushToken: profileData.pushToken || null });
+          const monthCount = [...new Set(allTxns.map(t => t.month).filter(Boolean))].length;
+          modal(
+            '📂 Restore folder backup?',
+            `Found ${allTxns.length} transactions across ${monthCount} month${monthCount !== 1 ? 's' : ''}${allSources.length ? ` + ${allSources.length} income sources` : ''}. What would you like to do?`,
+            [
+              { l: 'Cancel', c: 'mb-nil', a: () => this.cm() },
+              { l: 'Replace all data', c: 'mb-ok', a: () => {
+                const hash = D.passwordHash; D = reconstructed; D.passwordHash = hash; DB.save(D);
+                if (allSources.length) { const existing = SRC_DB.load().sources || []; const map = new Map(); [...existing, ...allSources].forEach(s => { if (s.id) map.set(s.id, s); }); SRC_DB.save({ sources: Array.from(map.values()) }); }
+                this.cm(); this.r_home(); toast(`✅ ${allTxns.length} records restored from folder backup`);
+              }},
+              { l: 'Merge (keep both)', c: 'mb-sec', a: () => {
+                const map = new Map(); [...(D.transactions || []), ...allTxns].forEach(t => { if (!map.has(t.id)) map.set(t.id, t); });
+                D.transactions = Array.from(map.values()).sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
+                if (allSources.length) { const sd = SRC_DB.load(); const srcMap = new Map(); [...(sd.sources || []), ...allSources].forEach(s => { if (s.id) srcMap.set(s.id, s); }); SRC_DB.save({ sources: Array.from(srcMap.values()) }); }
+                DB.save(D); this.cm(); this.r_home(); toast(`✅ Merged — ${D.transactions.length} total records`);
+              }},
+            ]
+          );
+        } catch (e) {
+          console.error('ZIP import error:', e);
+          toast('Could not read backup file — may be corrupted');
+        }
       },
 
       _showExportGuidance() {
@@ -6508,6 +7220,10 @@
       },
       _goNow(tab) {
         S.tab = tab;
+        // Track current screen on body for FAB visibility
+        document.body.className = document.body.className
+          .replace(/\bon-\w+-screen\b/g, '').trim();
+        document.body.classList.add(`on-${tab}-screen`);
         const topbar = document.getElementById('topbar'), tabbar = document.getElementById('tabBar');
         topbar.style.display = tab === 'home' ? 'block' : 'none';
         tabbar.style.display = ['home', 'insights', 'month', 'history', 'sources', 'add'].includes(tab) ? 'flex' : 'none';
@@ -6553,21 +7269,45 @@
       ${pend > 0 ? `<button class="pend-btn" onclick="APP.go('add')"><div class="p-dot"></div><div class="p-info"><div class="p-t">${pend} spend${pend > 1 ? 's' : ''} waiting to sort</div><div class="p-s">Tap to classify into buckets</div></div><div class="p-arr">›</div></button>` : ''}
       <div class="sec-row"><span class="sec-lbl">THIS MONTH</span><button class="sec-lnk" onclick="APP.go('limits')">Limits ›</button></div>
       <div class="bgrid">
-        ${Object.entries(BUCKETS).map(([k, cfg]) => {
-          const amt = sm[k] || 0, limit = lim[k] || 0, isOver = limit > 0 && amt > limit, isNear = limit > 0 && amt >= limit * .8 && !isOver;
-          const pct = limit > 0 ? Math.min((amt / limit) * 100, 100) : 0, col = isOver ? '#ef4444' : isNear ? '#f59e0b' : cfg.c;
-          return `<div class="bc${isOver ? ' over' : ''}" onclick="APP.go('month')">
-            <div class="bc-top" style="background:${col}"></div>
-            <div class="bc-body">
+        ${(() => {
+          const bktEntries = Object.entries(BUCKETS);
+          const topBkt = bktEntries.reduce((best,[k]) => {
+            return (sm[k]||0) > (sm[best]||0) ? k : best;
+          }, bktEntries[0][0]);
+
+          const renderHero = ([k, cfg]) => {
+            const amt = sm[k]||0, limit = lim[k]||0;
+            const isOver = limit>0 && amt>limit;
+            const isNear = limit>0 && amt>=limit*.8 && !isOver;
+            const pct = limit>0 ? Math.min((amt/limit)*100,100) : 0;
+            const col = isOver ? '#ef4444' : isNear ? '#f59e0b' : cfg.c;
+            return `<div class="bc-hero${isOver?' over':''}" onclick="APP.go('month')">
+              <div class="bc-top" style="background:${col}"></div>
+              <div class="bc-body">
+                <div class="bc-ic" style="background:${cfg.cl};color:${cfg.c};border-color:${cfg.cm}">${cfg.g}</div>
+                <div class="bc-amt" style="color:${col}">${fmtF(amt)}</div>
+                <div class="bc-nm">${cfg.l} ${isOver?'<span style="color:#ef4444;font-size:8px">● OVER LIMIT</span>':''}</div>
+                ${limit>0?`<div class="bc-pb" style="background:${cfg.cl}"><div class="bc-pf" style="background:${col};width:${pct}%"></div></div>`:''}
+              </div>
+            </div>`;
+          };
+
+          const renderCompact = ([k, cfg]) => {
+            const amt = sm[k]||0, limit = lim[k]||0;
+            const isOver = limit>0 && amt>limit;
+            const col = isOver ? '#ef4444' : cfg.c;
+            return `<div class="bc-compact${isOver?' over':''}" onclick="APP.go('month')">
+              <div class="bc-top" style="background:${col}"></div>
               <div class="bc-ic" style="background:${cfg.cl};color:${cfg.c};border-color:${cfg.cm}">${cfg.g}</div>
               <div class="bc-amt" style="color:${col}">${fmt(amt)}</div>
               <div class="bc-nm">${cfg.l}</div>
-              ${isOver ? `<div class="bc-st" style="color:#ef4444">Over limit</div>` : ''}
-              ${isNear ? `<div class="bc-st" style="color:#f59e0b">Near limit</div>` : ''}
-              ${limit > 0 ? `<div class="bc-pb" style="background:${cfg.cl}"><div class="bc-pf" style="background:${col};width:${pct}%"></div></div>` : ''}
-            </div>
-          </div>`;
-        }).join('')}
+            </div>`;
+          };
+
+          const heroHTML = renderHero([topBkt, BUCKETS[topBkt]]);
+          const compactHTML = bktEntries.filter(([k]) => k !== topBkt).map(renderCompact).join('');
+          return heroHTML + `<div class="bc-compact-row">${compactHTML}</div>`;
+        })()}
       </div>
       <div class="sec-row" style="margin-top:4px"><span class="sec-lbl">MY DATA</span><button class="sec-lnk" onclick="APP.go('history')">All history ›</button></div>
       ${srcIndicatorHTML}
@@ -6865,16 +7605,11 @@
         const tagEntries = Object.entries(tagTotals).sort((a, b) => b[1] - a[1]);
 
         body.innerHTML = `
-      <!-- PERSONALITY -->
-      <div class="ins-card">
-        <div class="ins-card-title">YOUR SPENDING PERSONALITY</div>
-        <div class="personality-wrap">
-          <div class="personality-badge" style="background:${pColor}20;border:2px solid ${pColor}40">${pIcon}</div>
-          <div>
-            <div class="personality-name">${personality}</div>
-            <div class="personality-desc">${pDesc}</div>
-          </div>
-        </div>
+      <!-- PERSONALITY (v5.0 redesign) -->
+      <div class="personality-badge">
+        <div class="personality-label">YOUR SPENDING PERSONALITY</div>
+        <div class="personality-title">${pIcon} ${personality}</div>
+        <div class="personality-desc">${pDesc}</div>
       </div>
 
       <!-- SHARP INSIGHT -->
@@ -6964,6 +7699,22 @@
           </div>`).join('')}
       </div>` : ''}
 
+      <!-- CATEGORY CREEP (v5.0) -->
+      ${(() => {
+        try {
+          const creepResults = detectCategoryCreep();
+          if (!creepResults || creepResults.length === 0) return '';
+          return creepResults.map(({k, pct, latest}) => {
+            const cfg = BUCKETS[k];
+            const projected = Math.round(latest * 1.08);
+            return `<div class="creep-card">
+              <div class="creep-title">📈 Category Creep: ${cfg.l}</div>
+              <div class="creep-body">${cfg.l} spending has grown ${pct}% over 3 months. At this rate it crosses ${fmtF(projected)} by next month.</div>
+            </div>`;
+          }).join('');
+        } catch(e) { return ''; }
+      })()}
+
       <!-- FOOTER NOTE -->
       <div style="text-align:center;padding:12px 0 4px">
         <div style="font-size:11px;color:var(--mist);line-height:1.8">Insights are based on your sorted transactions.<br>Sort more spends for sharper patterns.</div>
@@ -6987,6 +7738,50 @@
           const u = URL.createObjectURL(blob), a = document.createElement('a'); a.href = u; a.download = fname; document.body.appendChild(a); a.click(); document.body.removeChild(a); URL.revokeObjectURL(u);
           toast('Month report saved!');
         }
+      },
+
+      // ── ANNUAL WRAP ──
+      showAnnualWrap() {
+        const txns = D.transactions || [];
+        if (txns.length < 5) { toast('Not enough data for Annual Wrap yet'); return; }
+        const total = txns.reduce((s,t)=>s+t.amount,0);
+        const biggest = txns.reduce((best,t) => t.amount>(best.amount||0)?t:best, {});
+        const merchants = {};
+        txns.forEach(t => { if(t.merchant) merchants[t.merchant]=(merchants[t.merchant]||0)+1; });
+        const topMerchant = Object.entries(merchants).sort((a,b)=>b[1]-a[1])[0];
+        const monthTotals = {};
+        txns.forEach(t => { monthTotals[t.month]=(monthTotals[t.month]||0)+t.amount; });
+        const bestMonth = Object.entries(monthTotals).sort((a,b)=>a[1]-b[1])[0];
+        const worstMonth = Object.entries(monthTotals).sort((a,b)=>b[1]-a[1])[0];
+        document.getElementById('awBody').innerHTML = `
+          <div class="aw-card"><div class="aw-label">Total Tracked</div>
+            <div class="aw-value">${fmtF(total)}</div>
+            <div class="aw-sub">${txns.length} transactions</div></div>
+          <div class="aw-card"><div class="aw-label">Biggest Spend</div>
+            <div class="aw-value">${fmtF(biggest.amount||0)}</div>
+            <div class="aw-sub">${esc(biggest.merchant||'Unknown')}</div></div>
+          <div class="aw-card"><div class="aw-label">Most Frequent</div>
+            <div class="aw-value">${esc(topMerchant?.[0]||'–')}</div>
+            <div class="aw-sub">${topMerchant?.[1]||0} times</div></div>
+          <div class="aw-card"><div class="aw-label">Best Month</div>
+            <div class="aw-value">${fmtF(bestMonth?.[1]||0)}</div>
+            <div class="aw-sub">${esc(bestMonth?.[0]||'–')}</div></div>
+          <div class="aw-card"><div class="aw-label">Heaviest Month</div>
+            <div class="aw-value">${fmtF(worstMonth?.[1]||0)}</div>
+            <div class="aw-sub">${esc(worstMonth?.[0]||'–')}</div></div>
+          <div class="aw-card"><div class="aw-label">Daily Average</div>
+            <div class="aw-value">${fmtF(Math.round(total/Math.max(1,txns.length)))}</div>
+            <div class="aw-sub">per transaction</div></div>
+        `;
+        this.show('pgAnnualWrap');
+      },
+
+      shareAnnualWrap() {
+        const txns = D.transactions || [];
+        const total = txns.reduce((s,t)=>s+t.amount,0);
+        const text = `🎉 My Year in Rupees — Spend-na\nTotal: ${fmtF(total)}\n${txns.length} transactions tracked\nTracked with Spend-na · hakki.in`;
+        if (navigator.share) { navigator.share({ title: 'My Year in Rupees', text }).catch(()=>{}); }
+        else { navigator.clipboard.writeText(text).then(()=>toast('Copied!')).catch(()=>toast('Share not available')); }
       },
 
       // ── HISTORY ──
@@ -7042,12 +7837,15 @@
                   <div class="htxn-ic">${ico(t.merchant)}</div>
                   <div class="htxn-info">
                     <div class="htxn-nm">${esc(t.merchant)}</div>
-                    <div class="htxn-dt">${t.date} \u00b7 ${t.time}</div>
-                    ${cfg ? `<div class="htxn-bkt" style="color:${cfg.c}">${cfg.g} ${cfg.l}</div>` : `<div class="htxn-bkt" style="color:var(--mist)">Unsorted</div>`}
+                    <div class="htxn-meta">
+                      <span class="htxn-dt">${t.date} · ${t.time}</span>
+                      ${cfg ? `<span class="htxn-bkt htxn-bkt-${t.bucket||'unsorted'}">${cfg.l}</span>` : `<span class="htxn-bkt htxn-bkt-unsorted">Unsorted</span>`}
+                    </div>
                     ${tTags.length>0 ? `<div style="display:flex;flex-wrap:wrap;gap:4px;margin-top:5px">${tTags.map(tag=>`<span class="tag-pill">#${esc(tag)}</span>`).join('')}</div>` : ''}
                   </div>
                   <div class="htxn-right">
                     <div class="htxn-am">${fmtF(t.amount)}</div>
+                    <div class="htxn-src">${esc(t.source||'')}</div>
                     <div class="htxn-acts">
                       <button class="h-edit" onclick="APP.tgEdit('${t.id}')">Edit</button>
                       <span style="color:var(--fog)">|</span>
@@ -7303,8 +8101,19 @@
       <div class="acc" id="acc-d">
         <div class="acc-hdr" onclick="APP.tgAcc('acc-d')"><div class="acc-title">💾 My Data</div><div class="acc-tog">+</div></div>
         <div class="acc-body">
-          <div class="act" onclick="APP.saveFile()" style="cursor:pointer"><div class="act-ic">💾</div><div class="act-inf"><div class="act-t">Export data file</div><div class="act-s">Save a backup · <span id="dataMgmtSaveInfo">Loading…</span></div></div><div class="act-ar">›</div></div>
-          <div class="act" onclick="APP.loadFile()" style="cursor:pointer"><div class="act-ic">📂</div><div class="act-inf"><div class="act-t">Import / restore</div><div class="act-s">Load from a saved backup file</div></div><div class="act-ar">›</div></div>
+          <div style="background:var(--tealL);border:1.5px solid var(--tealM);border-radius:var(--r);padding:12px;margin-bottom:14px">
+            <div style="font-size:11px;font-weight:700;color:var(--tealD);letter-spacing:1.5px;margin-bottom:4px">YOUR DATA IS SAFE WHEN YOU SAVE</div>
+            <div style="font-size:11px;color:var(--tealD);line-height:1.7"><span id="dataMgmtSaveInfo">Loading…</span></div>
+          </div>
+          <div style="font-size:10px;font-weight:700;color:var(--mist);letter-spacing:2px;margin-bottom:8px">FOLDER BACKUP (RECOMMENDED)</div>
+          <div class="act" onclick="APP.exportZipFolder()" style="cursor:pointer"><div class="act-ic">🗂️</div><div class="act-inf"><div class="act-t">Export folder backup</div><div class="act-s">ZIP with manifest + monthly files — safest option</div></div><div class="act-ar">›</div></div>
+          <div class="act" onclick="APP.importZipFolder()" style="cursor:pointer"><div class="act-ic">📥</div><div class="act-inf"><div class="act-t">Restore from folder backup</div><div class="act-s">Load a Spend-na ZIP backup file</div></div><div class="act-ar">›</div></div>
+          <div style="font-size:10px;font-weight:700;color:var(--mist);letter-spacing:2px;margin:14px 0 8px">SINGLE FILE (CLASSIC)</div>
+          <div class="act" onclick="APP.saveFile()" style="cursor:pointer"><div class="act-ic">💾</div><div class="act-inf"><div class="act-t">Export single JSON file</div><div class="act-s">One file — all records combined</div></div><div class="act-ar">›</div></div>
+          <div class="act" onclick="APP.loadFile()" style="cursor:pointer"><div class="act-ic">📂</div><div class="act-inf"><div class="act-t">Import / restore JSON</div><div class="act-s">Load from a saved single-file backup</div></div><div class="act-ar">›</div></div>
+          <div style="font-size:10px;font-weight:700;color:var(--mist);letter-spacing:2px;margin:14px 0 8px">OTHER</div>
+          <div class="act" onclick="APP.exportCurrentMonthShard()" style="cursor:pointer"><div class="act-ic">📦</div><div class="act-inf"><div class="act-t">Export this month only</div><div class="act-s">Save current month as a separate file</div></div><div class="act-ar">›</div></div>
+          <div class="act" onclick="APP.showAnnualWrap()" style="cursor:pointer"><div class="act-ic">🎉</div><div class="act-inf"><div class="act-t">See Annual Wrap 🎉</div><div class="act-s">Your year in rupees — beautiful summary</div></div><div class="act-ar">›</div></div>
           <div class="act" onclick="APP.openMigrationWizard('settings')" style="cursor:pointer"><div class="act-ic">📱</div><div class="act-inf"><div class="act-t">Transfer to new device</div><div class="act-s">Move your data to another phone</div></div><div class="act-ar">›</div></div>
           <div class="act" onclick="APP.shareBlank()" style="cursor:pointer"><div class="act-ic">🎁</div><div class="act-inf"><div class="act-t">Share app with a friend</div><div class="act-s">Send a blank copy — no personal data</div></div><div class="act-ar">›</div></div>
           <div style="border-top:1px solid var(--fog);margin:12px 0 8px"></div>
@@ -8388,6 +9197,12 @@
         sentences.push(`You stayed within budget in ${overBuckets.length} out of 4 buckets.`);
       }
 
+      // v5.0: Honest Comparison paragraph
+      try {
+        const comparison = generateHonestComparison(monthStr);
+        if (comparison) sentences.push(comparison);
+      } catch(e) {}
+
       return sentences.join(' ');
     }
 
@@ -8971,6 +9786,93 @@
 
       const src = (S && S.addSrc) || 'upi';
       return { amt, desc: desc.charAt(0).toUpperCase() + desc.slice(1), bkt, src };
+    }
+
+    // ── v5.0 AI FEATURES ─────────────────────────────────────────────
+
+    // Feature 1: 3am Warning
+    function getLateNightWarning() {
+      const hour = new Date().getHours();
+      if (hour < 6 || hour > 10) return null;
+      const yesterday = new Date(Date.now()-86400000).toISOString().slice(0,10);
+      const lateNight = (D.transactions||[]).filter(t => {
+        if (!t.date || t.date !== yesterday) return false;
+        const h = t.time ? parseInt(t.time.split(':')[0]) : 12;
+        return h >= 22 || h <= 4;
+      });
+      if (lateNight.length === 0) return null;
+      const total = lateNight.reduce((s,t) => s+t.amount,0);
+      const merchants = [...new Set(lateNight.map(t=>t.merchant))].slice(0,2).join(', ');
+      return `🌙 Last night: ${fmtF(total)} spent after 10pm — ${merchants}`;
+    }
+
+    // Feature 2: Category Creep Detector
+    function detectCategoryCreep() {
+      const txns = D.transactions || [];
+      const results = [];
+      Object.keys(BUCKETS).forEach(k => {
+        const months = [-3,-2,-1,0].map(o => ({
+          month: offsetMonthStr(o),
+          total: txns.filter(t=>t.month===offsetMonthStr(o)&&t.bucket===k)
+                     .reduce((s,t)=>s+t.amount,0)
+        }));
+        const totals = months.map(m=>m.total).filter(v=>v>0);
+        if (totals.length < 3) return;
+        const growing = totals.every((v,i) => i===0 || v >= totals[i-1] * 1.08);
+        if (growing) {
+          const pct = Math.round(((totals[totals.length-1]/totals[0])-1)*100);
+          results.push({k, pct, latest: totals[totals.length-1]});
+        }
+      });
+      return results;
+    }
+
+    // Feature 3: Salary Day Intelligence
+    function getSalaryDayIntelligence() {
+      const src = SRC_DB.load();
+      const salaryEntries = (src.sources||[]).filter(s =>
+        (s.name||'').toLowerCase().includes('salary') ||
+        (s.name||'').toLowerCase().includes('income')
+      );
+      if (salaryEntries.length === 0) return null;
+      const days = salaryEntries.map(s => new Date(s.timestamp||s.date).getDate());
+      const salaryDay = days.sort((a,b) =>
+        days.filter(d=>d===b).length - days.filter(d=>d===a).length
+      )[0];
+      if (!salaryDay) return null;
+      const today = new Date().getDate();
+      const daysUntil = salaryDay > today ? salaryDay - today :
+        (new Date(new Date().getFullYear(), new Date().getMonth()+1, salaryDay).getDate()
+         + (30 - today));
+      if (daysUntil > 3 || daysUntil <= 0) return null;
+      const currentSpend = (D.transactions||[])
+        .filter(t => t.month === offsetMonthStr(0))
+        .reduce((s,t) => s+t.amount,0);
+      const lastSalary = salaryEntries
+        .filter(s => s.month === offsetMonthStr(-1))
+        .reduce((s,e) => s+(e.amount||0), 0) ||
+        salaryEntries.reduce((s,e) => s+(e.amount||0), 0) / salaryEntries.length;
+      const remaining = lastSalary - currentSpend;
+      const dayWord = daysUntil === 1 ? 'tomorrow' : `in ${daysUntil} days`;
+      return `💰 Salary expected ${dayWord}. You have ${fmtF(Math.max(0,remaining))} left this month.`;
+    }
+
+    // Feature 4: Honest Comparison
+    function generateHonestComparison(monthStr) {
+      const txns = D.transactions || [];
+      const current = txns.filter(t=>t.month===monthStr).reduce((s,t)=>s+t.amount,0);
+      const pastMonths = [...new Set(txns.map(t=>t.month))].filter(m => m !== monthStr);
+      if (pastMonths.length < 2) return null;
+      const avg = pastMonths.reduce((s,m) => {
+        return s + txns.filter(t=>t.month===m).reduce((sum,t)=>sum+t.amount,0);
+      }, 0) / pastMonths.length;
+      if (avg === 0) return null;
+      const diff = current - avg;
+      const pct = Math.round(Math.abs(diff/avg)*100);
+      if (pct < 5) return `This month's total is almost identical to your personal average of ${fmtF(Math.round(avg))}.`;
+      return diff > 0
+        ? `Compared to your own average, this month you spent ${pct}% more than usual — ${fmtF(Math.abs(diff))} above your typical ${fmtF(Math.round(avg))}.`
+        : `Compared to your own average, this month you spent ${pct}% less than usual — ${fmtF(Math.abs(diff))} below your typical ${fmtF(Math.round(avg))}. Strong month.`;
     }
 
     // ── Week key helper ─────────────────────────────────────────────
