@@ -1,902 +1,288 @@
 <!--
-╔══════════════════════════════════════════════════════════════════════╗
-║        SPEND-NA v5.1  ·  index.html  ·  MASTER SECTION INDEX          ║
-║     Single-file PWA — HTML + CSS + JS in one file by design         ║
-║     Author: Sandeep Hakki  ·  hakki.in  ·  © 2026                   ║
-╠══════════════════════════════════════════════════════════════════════╣
-║                                                                      ║
-║  CHANGELOG                                                           ║
-║  v4.1 — QA→Prod migration + AI features (Smart Add, Voice, OCR,     ║
-║         Insights, Forecast, Story, Mirror)                           ║
-║  v4.2 — Bug fixes (22 bugs from static analysis)                    ║
-║  v4.3 — Deferred architectural bug fixes (BUG-005/018/024/025,      ║
-║          INFO-003)                                                   ║
-║  v4.4 — Native PWA UI fixes (safe-area-inset on all surfaces,       ║
-║          right-edge clipping, momentum scroll, tap states,           ║
-║          GPU acceleration, touch-action, htxn-right min-width)      ║
-║  v4.5 — Bugs + UX + Settings overhaul + 8 new AI features           ║
-║          Pinch snap-back · 3-level focus mode (Aa badge cycle)       ║
-║          Settings: 5 sections — Profile(+pw) · Notifications ·      ║
-║          My Data · Accessibility · AI & Intelligence                 ║
-║          AI Configs: all 15 AI features with per-screen toggles      ║
-║          My Month: peek pattern scroll reveal                        ║
-║          Banner: close button + tooltip + session restore            ║
-║          History: swipe-left actions · bucket colour borders ·       ║
-║          smart group headers with daily totals                       ║
-║          FIX-7: description field editable in History inline panel   ║
-║          FIX-8: voice redo button + aiRedoVoice()                    ║
-║          NEW AI: Spend Streak 🔥 · Why Buy This ✨ · Budget Suggest  ║
-║          NEW AI: Mood Tagging 😊 · Duplicate Detector ⚠️            ║
-║          NEW AI: Spend Twin 👫 · Smart Search 🔎 · Weekly Digest 📅  ║
-║                                                                      ║
-║  v5.0a — Revolutionary UI overhaul (Gen-Z design system)            ║
-║          Floating FAB · dominant hero bucket · topbar expansion      ║
-║          Typography-led history · Insights personality hero          ║
-║          Native bottom sheet modal · premium toast pill              ║
-║          5 advanced AI features: 3am Warning · Category Creep       ║
-║          Salary Day Intelligence · Honest Comparison · Annual Wrap  ║
-║                                                                      ║
-║  v5.0b — Data architecture + rollout infrastructure                  ║
-║          FIX: Payment method icon highlights on selection (CSS)      ║
-║          FIX: Bucket name text no longer truncated (CSS+JS)          ║
-║          NEW: SCHEMA_VERSION = 2 + migrateData() v1→v2              ║
-║          NEW: FLAGS system — feature flags in sn_flags               ║
-║          NEW: manifest block stamped into every exported JSON         ║
-║          NEW: Beta opt-in banner in smart banner rotation            ║
-║          NEW: SW version detection — cache bumped to sn-v5           ║
-║          NEW: SHARD module — data sharding + lazy loading            ║
-║          NEW: exportZipFolder / importZipFolder (JSZip, lazy CDN)    ║
-║          NEW: exportCurrentMonthShard — single month JSON            ║
-║          NEW: Settings My Data — Folder Backup section               ║
-║                                                                      ║
-║  v5.1 — MASTER MERGE: v5.0a UI Revolution + v5.0b Data Architecture ║
-║          Pinch snap-back · 3-level focus mode (Aa badge cycle)       ║
-║          Settings: 5 sections — Profile(+pw) · Notifications ·      ║
-║          My Data · Accessibility · AI & Intelligence                 ║
-║          AI Configs: all 15 AI features with per-screen toggles      ║
-║          My Month: peek pattern scroll reveal                        ║
-║          Banner: close button + tooltip + session restore            ║
-║          History: swipe-left actions · bucket colour borders ·       ║
-║          smart group headers with daily totals                       ║
-║          FIX-7: description field editable in History inline panel   ║
-║          FIX-8: voice redo button + aiRedoVoice()                    ║
-║          NEW AI: Spend Streak 🔥 · Why Buy This ✨ · Budget Suggest  ║
-║          NEW AI: Mood Tagging 😊 · Duplicate Detector ⚠️            ║
-║          NEW AI: Spend Twin 👫 · Smart Search 🔎 · Weekly Digest 📅  ║
-║                                                                      ║
-║  BUG FIXES (v4.2) ─────────────────────────────────────────────    ║
-║  BUG-001  🔴 Password trim mismatch → silent lockout                ║
-║  BUG-002  🔴 XSS via imported t.month in r_history                  ║
-║  BUG-003  🔴 modal() exportedAt XSS sink escaped                    ║
-║  BUG-004  🟠 Password inputs → type="password" + proper togglePw    ║
-║  BUG-006  🟠 saveBusy guard prevents duplicate transactions          ║
-║  BUG-007  🟠 setupDobInput() called in settings (was missing)       ║
-║  BUG-008  🟠 Month nav: <span disabled> → <button disabled>         ║
-║  BUG-009  🟠 Content-Security-Policy meta tag added                 ║
-║  BUG-010  🟠 WCAG: removed user-scalable=no from viewport           ║
-║  BUG-011  🔵 theme-color #fff → #0f172a (dark, matches app UI)      ║
-║  BUG-012  🔵 prefers-reduced-motion CSS added                       ║
-║  BUG-013  🔵 Error divs: role="alert" aria-live="assertive"         ║
-║  BUG-014  🔵 Voice/photo buttons: aria-label + aria-pressed         ║
-║  BUG-015  🔵 History search debounced (180ms, prevents DOM thrash)  ║
-║  BUG-016  🔵 Negative budget limits blocked in saveLimits()         ║
-║  BUG-017  🔵 Global window.onerror + unhandledrejection handlers    ║
-║  BUG-019  🔵 Filter pills: inline onclick → data-attr + delegation  ║
-║  BUG-020  🟢 Escape key closes modal                                ║
-║  BUG-021  🟢 --mist color: #94a3b8 → #64748b (WCAG AA 5.1:1)       ║
-║  BUG-022  🟢 button:focus-visible outline for keyboard nav          ║
-║  BUG-023  🟢 Settings: <span> labels → proper <label for="...">     ║
-║  BUG-026  🟢 avHTML: validates data:image/ prefix before render     ║
-║                                                                      ║
-║  BUG FIXES (v4.3 — Deferred architectural) ───────────────────     ║
-║  BUG-005  🟠 SW: blob: URL → data: URI (Firefox-compatible)         ║
-║              + GET guard + proper cache-then-network strategy        ║
-║  BUG-018  🔵 AI render fns: uniform top-level try-catch on all 4   ║
-║              (aiRenderInsight/Forecast/Story/Mirror)                 ║
-║  BUG-024  🟢 Tesseract.js: pinned @5.1.1, crossOrigin=anonymous    ║
-║              SRI hash: add when deploying (see inline comment)       ║
-║  BUG-025  🟢 Limits: go() + _goNow() + limitsAreDirty() guard      ║
-║              unsaved limit changes prompt before navigation          ║
-║  INFO-003 ⚪ Lockout: sessionStorage persistence survives reload    ║
-║              r_lock() restores state; cleared on successful login    ║
-╠══════════════════════════════════════════════════════════════════════╣
-║                                                                      ║
-║  ████████████████████████████████████████████████████████████████  ║
-║  ██                                                              ██  ║
-║  ██   PRODUCT INTELLIGENCE BLOCK (PIB)                          ██  ║
-║  ██   Read this before touching a single line of code.          ██  ║
-║  ██   Valid for: humans, AI assistants, future contributors.    ██  ║
-║  ██                                                              ██  ║
-║  ████████████████████████████████████████████████████████████████  ║
-║                                                                      ║
-╠══════════════════════════════════════════════════════════════════════╣
-║  PIB-1 · PRODUCT IDENTITY                                           ║
-╠══════════════════════════════════════════════════════════════════════╣
-║                                                                      ║
-║  Spend-na is a privacy-first personal spend tracker for Indian      ║
-║  users — built as a single-file PWA that runs entirely in the       ║
-║  browser with zero servers, zero accounts, and zero data leaving    ║
-║  the device. Every rupee tracked, every byte local.                 ║
-║                                                                      ║
-║  TARGET USER: General Indian public, mobile-first, non-technical.   ║
-║  They have zero patience for setup. If it takes more than 3 taps    ║
-║  to do something, it is too complex. The app must feel native.      ║
-║                                                                      ║
-║  THE CORE PROMISE (never break these):                              ║
-║  • All data stays on the device — localStorage only, no sync       ║
-║  • No account, no sign-up, no email, no cloud                      ║
-║  • Works offline after first load                                   ║
-║  • Single HTML file — one URL = entire app                         ║
-║  • No API keys, no external calls (AI features are on-device)      ║
-║  • Indian context — ₹, Indian merchant names, Indian spending      ║
-║                                                                      ║
-╠══════════════════════════════════════════════════════════════════════╣
-║  PIB-2 · ARCHITECTURE — CONSTRAINTS THAT CANNOT BE VIOLATED        ║
-╠══════════════════════════════════════════════════════════════════════╣
-║                                                                      ║
-║  SINGLE FILE RULE                                                    ║
-║  This is one .html file. No splitting into .js or .css files.       ║
-║  No bundler. No build step. No npm. No CI/CD.                       ║
-║  Hosted on GitHub Pages — one URL, one file, done.                 ║
-║                                                                      ║
-║  STORAGE CONTRACT (never rename these keys):                        ║
-║  • sn_v4         → main data (transactions, profile, limits,       ║
-║                    settings, passwordHash)                          ║
-║  • sn_sources    → income sources (separate key)                   ║
-║  • sn_ai_insight → weekly AI insight cache + dismissed flag        ║
-║  • sn_mirror_shown → per-bucket honest mirror shown-this-month     ║
-║  • sn_backup_warned → session flag, backup reminder shown          ║
-║  • sn_browser_warned → session flag, browser warning shown         ║
-║  • sn_last_exported → timestamp of last data export                ║
-║  • sn_mw_done    → migration wizard completed flag                 ║
-║  • sn_lock_until → (sessionStorage) lockout expiry timestamp       ║
-║                                                                      ║
-║  SCHEMA BACKWARD COMPATIBILITY                                      ║
-║  A user with 500 transactions from v1 must open v4.4 without       ║
-║  data loss or errors. New fields must have safe defaults.           ║
-║  Never rename existing transaction object keys:                     ║
-║  id, timestamp, date, time, month, merchant, amount,               ║
-║  bucket, source, tags                                               ║
-║                                                                      ║
-║  PLATFORM SUPPORT (all features must work on all of these):        ║
-║  • iOS Safari (primary — most Indian iPhone users)                 ║
-║  • iOS Chrome (WKWebView, same engine as Safari)                   ║
-║  • Android Chrome (primary Android target)                         ║
-║  • Desktop Chrome / Edge                                           ║
-║  • Firefox (SW now fixed via data: URI — BUG-005)                 ║
-║                                                                      ║
-║  PWA CONSTRAINTS                                                    ║
-║  • viewport-fit=cover is set — safe-area-inset-* are real          ║
-║  • Apply env(safe-area-inset-*) to ALL edge-touching elements      ║
-║  • Service worker registered inline via data: URI (no sw.js file)  ║
-║  • Install banner: Android Chrome only (beforeinstallprompt)       ║
-║                                                                      ║
-║  AI FEATURE CONSTRAINT                                              ║
-║  No external AI API calls. No API keys. All AI is:                 ║
-║  • Rule-based (insights, reactions, story, mirror, forecast)       ║
-║  • Transformers.js via CDN — lazy loaded, on-device inference      ║
-║  • Tesseract.js via CDN — lazy loaded, on-device OCR               ║
-║  • Web Speech API — built into browser, no library                 ║
-║                                                                      ║
-╠══════════════════════════════════════════════════════════════════════╣
-║  PIB-3 · COMPLETE FEATURE INVENTORY                                 ║
-╠══════════════════════════════════════════════════════════════════════╣
-║                                                                      ║
-║  ── AUTHENTICATION & ONBOARDING ───────────────────────────────    ║
-║  [IMPLEMENTED] Password protection — MD5 hash stored in sn_v4     ║
-║  [IMPLEMENTED] 5-attempt lockout — 30s cooldown, sessionStorage   ║
-║                persists across reload (r_lock restores state)      ║
-║  [IMPLEMENTED] Forgot password — import data file to recover       ║
-║  [IMPLEMENTED] Onboarding flow — name, DOB, city, role, photo,    ║
-║                quote, password setup on first launch               ║
-║  [IMPLEMENTED] 5 user roles — student / home manager / working /  ║
-║                business / retired, each with preset limits         ║
-║  [IMPLEMENTED] Profile photo — camera capture, stored as base64   ║
-║  [IMPLEMENTED] Trust screen — privacy promise shown on first open  ║
-║  [IMPLEMENTED] Password toggle (show/hide) — type attribute swap   ║
-║                                                                      ║
-║  ── CORE SPEND TRACKING ───────────────────────────────────────    ║
-║  [IMPLEMENTED] Add Spend — amount, description, payment method,    ║
-║                bucket, optional tags                               ║
-║  [IMPLEMENTED] 4 Buckets — Necessary / Committed /                ║
-║                Comfortable / Luxury (fixed, not customisable)      ║
-║  [IMPLEMENTED] 4 Payment sources — Cash / UPI / Others UPI /      ║
-║                Hand Loan (fixed)                                   ║
-║  [IMPLEMENTED] Auto-icon — merchant name → emoji via keyword map   ║
-║  [IMPLEMENTED] Sort screen — classify unsorted transactions into   ║
-║                buckets with Yes/No cards                           ║
-║  [IMPLEMENTED] Edit / Delete transactions — from History screen    ║
-║  [IMPLEMENTED] Tags — preset (Birthday, Marriage, Travel,          ║
-║                Medical, Education, Festival, Vehicle, Gift) +      ║
-║                custom tags per transaction                         ║
-║                                                                      ║
-║  ── AI SMART ADD (Add Spend screen) ───────────────────────────    ║
-║  [IMPLEMENTED] Natural language text — "200 chai" → fills all     ║
-║                fields via regex + keyword scoring (no ML model)    ║
-║  [IMPLEMENTED] Voice input — Web Speech API, lang: en-IN,         ║
-║                real-time transcript, auto-parses on silence        ║
-║  [IMPLEMENTED] Photo / OCR — Tesseract.js @5.1.1 lazy loaded,     ║
-║                reads UPI screens, receipts, bills; extracts        ║
-║                amount + merchant → auto-categorises                ║
-║  [IMPLEMENTED] AI confirmation card — shows parsed fields,         ║
-║                each field editable before save                     ║
-║  [IMPLEMENTED] Manual form fallback — full form still accessible   ║
-║                via "add manually ↓" toggle                        ║
-║                                                                      ║
-║  ── HOME SCREEN ───────────────────────────────────────────────    ║
-║  [IMPLEMENTED] Personalised greeting — time-aware, first name      ║
-║  [IMPLEMENTED] 4 bucket cards with spend, limit bar, over-limit    ║
-║                warning                                             ║
-║  [IMPLEMENTED] Sources indicator — income vs spend this month,     ║
-║                shown only when sources exist for current month     ║
-║  [IMPLEMENTED] AI Insight card — weekly, data-driven, dismissable  ║
-║  [IMPLEMENTED] Spend Forecast card — day-5+ projection,            ║
-║                compares to last 3-month average                    ║
-║  [IMPLEMENTED] Smart Banner — rotating tips, limit alerts,         ║
-║                streak nudges, source prompts (auto-cycles)         ║
-║  [IMPLEMENTED] Pending spends button — red CTA when unsorted       ║
-║                                                                      ║
-║  ── MY MONTH ──────────────────────────────────────────────────    ║
-║  [IMPLEMENTED] Total spend + stacked bar breakdown                 ║
-║  [IMPLEMENTED] Week-by-week bar chart (W1–W4 stacked bars)        ║
-║  [IMPLEMENTED] Month navigation — prev/next with disabled guard    ║
-║  [IMPLEMENTED] Per-bucket rows with drill-down (sSlice screen)    ║
-║  [IMPLEMENTED] AI Monthly Story — 3-4 sentence narrative          ║
-║  [IMPLEMENTED] Honest Mirror — budget overrun 2+ months →         ║
-║                gentle suggestion to update limit (once/month)      ║
-║  [IMPLEMENTED] Share month — generates standalone HTML report      ║
-║                                                                      ║
-║  ── HISTORY ───────────────────────────────────────────────────    ║
-║  [IMPLEMENTED] Full transaction list — newest first, grouped       ║
-║                by date with month group headers                    ║
-║  [IMPLEMENTED] Search — debounced 180ms, merchant name or amount   ║
-║  [IMPLEMENTED] Filter pills — by bucket, by tag, unsorted only    ║
-║  [IMPLEMENTED] Inline reclassify — change bucket from list         ║
-║  [IMPLEMENTED] Inline tag editing — add/remove tags per txn        ║
-║  [IMPLEMENTED] Export HTML — full history as downloadable report   ║
-║                                                                      ║
-║  ── INSIGHTS ──────────────────────────────────────────────────    ║
-║  [IMPLEMENTED] Spending personality badge — 6 archetypes           ║
-║                (Mindful Spender, Comfort Seeker, Luxury Lover…)   ║
-║  [IMPLEMENTED] This month's sharp insight — single bold sentence   ║
-║  [IMPLEMENTED] Where your money went — 4-bucket percentage bars   ║
-║  [IMPLEMENTED] Top bucket + Heaviest week cards                    ║
-║  [IMPLEMENTED] Days recorded streak counter                        ║
-║  [IMPLEMENTED] Monthly history comparison — last 4 months          ║
-║  [IMPLEMENTED] Limits check — over-budget warnings per bucket      ║
-║  [IMPLEMENTED] Tag summary — lifetime spend per tag, all months    ║
-║                                                                      ║
-║  ── SOURCES (Income Tracking) ─────────────────────────────────    ║
-║  [IMPLEMENTED] Add income sources — salary, freelance, gifts etc   ║
-║  [IMPLEMENTED] Monthly passbook — all sources newest first         ║
-║  [IMPLEMENTED] Balance pill — income vs spend vs carry forward     ║
-║  [IMPLEMENTED] Carry forward — previous month surplus shown        ║
-║  [IMPLEMENTED] Edit / Delete source entries                        ║
-║  [IMPLEMENTED] Separate storage key (sn_sources)                  ║
-║                                                                      ║
-║  ── BUDGET LIMITS ─────────────────────────────────────────────    ║
-║  [IMPLEMENTED] Per-bucket monthly limits with quick-set presets    ║
-║  [IMPLEMENTED] Over-limit / near-limit visual indicators           ║
-║  [IMPLEMENTED] Unsaved changes warning before navigation           ║
-║  [IMPLEMENTED] Negative value guard (floor at 0)                  ║
-║                                                                      ║
-║  ── SETTINGS ──────────────────────────────────────────────────    ║
-║  [IMPLEMENTED] Profile edit — name, DOB, city, role, quote        ║
-║  [IMPLEMENTED] Password change                                     ║
-║  [IMPLEMENTED] Focus Mode — larger text + bigger tap targets       ║
-║  [IMPLEMENTED] Data export — JSON file download                    ║
-║  [IMPLEMENTED] Data import / load — JSON file, merge or replace    ║
-║  [IMPLEMENTED] Clear all data — fresh start                        ║
-║  [IMPLEMENTED] Migration wizard — guided move between devices      ║
-║                                                                      ║
-║  ── INFRASTRUCTURE ────────────────────────────────────────────    ║
-║  [IMPLEMENTED] Service worker — data: URI approach (Firefox-safe), ║
-║                cache-then-network, offline support                  ║
-║  [IMPLEMENTED] PWA manifest — installable, standalone mode         ║
-║  [IMPLEMENTED] Auto-save — 800ms debounce after every change       ║
-║  [IMPLEMENTED] Content Security Policy meta tag                    ║
-║  [IMPLEMENTED] Safe area insets — all surfaces use                 ║
-║                env(safe-area-inset-*) for notch/Dynamic Island     ║
-║  [IMPLEMENTED] Accessibility — role=alert, aria-label, aria-live,  ║
-║                focus-visible, prefers-reduced-motion, WCAG AA      ║
-║                contrast, proper <label> elements                   ║
-║  [IMPLEMENTED] Global error handlers — window.onerror +            ║
-║                unhandledrejection                                   ║
-║  [IMPLEMENTED] Swipe-right to go back (left-edge gesture)         ║
-║  [IMPLEMENTED] Escape key closes modal                             ║
-║  [IMPLEMENTED] Touch-action: manipulation (no double-tap zoom)     ║
-║  [IMPLEMENTED] Pinch-to-zoom snap-back (allow + reset to fit)      ║
-║  [IMPLEMENTED] Spend Streak 🔥 — consecutive under-budget days     ║
-║  [IMPLEMENTED] Why Did I Buy This ✨ — transaction pattern insight ║
-║  [IMPLEMENTED] Smart Budget Suggestion — AI limits from history    ║
-║  [IMPLEMENTED] Mood Tagging 😊😐😬 — emotional tag after save     ║
-║  [IMPLEMENTED] Smart Duplicate Detector ⚠️ — 15-min window       ║
-║  [IMPLEMENTED] Spend Twin 👫 — similar past month comparison      ║
-║  [IMPLEMENTED] Smart Search 🔎 — food finds Swiggy/chai/lunch     ║
-║  [IMPLEMENTED] Weekly Digest 📅 — Monday morning summary          ║
-║  [IMPLEMENTED] History swipe-left: Move + Delete actions           ║
-║  [IMPLEMENTED] History bucket colour borders (left edge)           ║
-║  [IMPLEMENTED] History group headers with daily totals             ║
-║  [IMPLEMENTED] History: description editable in edit panel         ║
-║  [IMPLEMENTED] Voice: redo button + aiRedoVoice()                  ║
-║  [IMPLEMENTED] Settings: 5 clean sections incl AI & Intelligence   ║
-║  [IMPLEMENTED] AI Configs: 15 feature toggles per screen           ║
-║  [IMPLEMENTED] Text size: 3-level cycle with Aa badge              ║
-║  [IMPLEMENTED] My Month: peek-pattern scroll hint                  ║
-║                                                                      ║
-╠══════════════════════════════════════════════════════════════════════╣
-║  PIB-4 · WHAT DOES NOT EXIST — DO NOT ASSUME IT IS BUILT           ║
-╠══════════════════════════════════════════════════════════════════════╣
-║                                                                      ║
-║  [NOT BUILT] Cloud sync / backup to server                         ║
-║  [NOT BUILT] Multi-user or family mode                             ║
-║  [NOT BUILT] Recurring / scheduled transactions                    ║
-║  [NOT BUILT] Bank account linking / UPI auto-import                ║
-║  [NOT BUILT] Push notifications (Web Push infra exists in SW       ║
-║              but no backend to send them — not wired up)           ║
-║  [NOT BUILT] Custom categories beyond the 4 fixed buckets          ║
-║  NOTE: Focus Mode (binary) replaced by 3-level text size cycle.    ║
-║  NOTE: AI features now individually configurable via AI Configs.   ║
-║  [NOT BUILT] Custom payment methods beyond the 4 fixed sources     ║
-║  [NOT BUILT] Dark mode toggle (CSS vars exist but no toggle)       ║
-║  [NOT BUILT] Multi-currency (INR only, ₹ hardcoded)               ║
-║  [NOT BUILT] Shared/split expenses                                 ║
-║  [NOT BUILT] Receipt email parsing                                 ║
-║  [NOT BUILT] Budget rollover between months                        ║
-║  [NOT BUILT] Transaction search by date range                      ║
-║  [NOT BUILT] Export to CSV / Excel                                 ║
-║  [NOT BUILT] Undo delete                                           ║
-║  [NOT BUILT] window.ai / Gemini Nano (Chrome built-in AI)          ║
-║              — waiting for iOS support before implementing         ║
-║  [NOT BUILT] Transformers.js ML model for NLP parsing              ║
-║              — current NLP is rule-based regex + keyword scoring   ║
-║  [NOT BUILT] Tesseract.js SRI hash pinned                          ║
-║              — hash not yet computed, see inline comment in        ║
-║                aiPhotoProcess() for the generation command         ║
-║                                                                      ║
-╠══════════════════════════════════════════════════════════════════════╣
-║  PIB-5 · THINKING PROTOCOL — MANDATORY BEFORE ANY CODE CHANGE      ║
-╠══════════════════════════════════════════════════════════════════════╣
-║                                                                      ║
-║  Run through this checklist before writing a single line of code.  ║
-║  Every item is a gate. A "no" on any gate means stop and rethink.  ║
-║                                                                      ║
-║  1. ALREADY EXISTS?                                                 ║
-║     Check PIB-3. If similar feature is [IMPLEMENTED], extend it.   ║
-║     Never build a parallel system. Ask: what is the delta?         ║
-║                                                                      ║
-║  2. SINGLE FILE RESPECTED?                                          ║
-║     Does the change require an external file, build step, or       ║
-║     package? If yes → reject. Find an inline solution.             ║
-║                                                                      ║
-║  3. localStorage SAFE?                                              ║
-║     Any new field on the transaction schema? Add a safe default.   ║
-║     Any new localStorage key? Add it to PIB-2 storage contract.    ║
-║     Never rename an existing key or field.                         ║
-║                                                                      ║
-║  4. OFFLINE FIRST?                                                  ║
-║     Does the feature work with no internet after first load?       ║
-║     AI libraries load from CDN — lazy load, fail gracefully.       ║
-║     Core app must never depend on network.                         ║
-║                                                                      ║
-║  5. CROSS-PLATFORM MENTAL TEST?                                     ║
-║     iOS Safari — does it work? (strictest environment)             ║
-║     Android Chrome — does it work?                                 ║
-║     Firefox — does it work? (SW must use data: URI, not blob:)     ║
-║     If any platform breaks → fix the approach, not the platform.  ║
-║                                                                      ║
-║  6. SAFE AREA RESPECTED?                                            ║
-║     Any new edge-touching element? Apply                           ║
-║     env(safe-area-inset-*) or max(Npx, var(--safe-*)).            ║
-║     Test mentally on iPhone 16 Pro with Dynamic Island.            ║
-║                                                                      ║
-║  7. BACKWARD COMPATIBLE?                                            ║
-║     Imagine a user with 2 years of transactions opens the new      ║
-║     version. Does everything load? Do old records display?         ║
-║     Does the app start without errors on empty/missing fields?     ║
-║                                                                      ║
-║  8. MINIMAL CHANGE?                                                 ║
-║     No full section rewrites. Surgical additions only.             ║
-║     CSS goes at the end of <style>. HTML inside the correct .scr.  ║
-║     JS extends existing APP object or appends helper functions.    ║
-║     Order: CSS first, then HTML, then JS.                          ║
-║                                                                      ║
-║  9. AI FEATURE CONSTRAINT MET?                                      ║
-║     No external API calls. No user-visible API key input.          ║
-║     If library needed → lazy load from CDN, fail gracefully,       ║
-║     show fallback UI, never block core app boot.                   ║
-║                                                                      ║
-║  10. TONE AND UX STANDARD?                                          ║
-║      Any user-facing AI text must be: warm, brief (≤60 chars       ║
-║      for reactions), non-judgmental, Indian-context-aware,         ║
-║      specific to the user's real numbers. Never preachy.           ║
-║                                                                      ║
-╠══════════════════════════════════════════════════════════════════════╣
-║  PIB-6 · VERSION HISTORY                                            ║
-╠══════════════════════════════════════════════════════════════════════╣
-║                                                                      ║
-║  v1.0  Production baseline — core spend tracking                   ║
-║  v4.0  QA→Prod migration baseline (QA had Tags, Sources,           ║
-║         Migration Wizard, Smart Banner, Focus Mode, Platform        ║
-║         Detection — all merged into prod)                          ║
-║  v4.1  AI features — Smart Add (text/voice/photo), Home Insight,   ║
-║         Spend Forecast, Monthly Story, Honest Mirror,               ║
-║         AI Reactions after save                                     ║
-║  v4.2  22 bug fixes — 3 critical XSS/auth, 7 high security/UX,    ║
-║         9 medium accessibility/perf, 7 low polish                  ║
-║  v4.3  5 deferred architectural fixes — SW Firefox (blob→data:),   ║
-║         AI try-catch coverage, Tesseract version pin,               ║
-║         Limits unsaved warning, lockout sessionStorage             ║
-║  v4.4  Native PWA UI — safe-area-inset on all surfaces,            ║
-║  v4.5  Bugs+UX+Settings overhaul+8 new AI features (Streak,Why,  ║
-║        Budget,Mood,Duplicate,Twin,Search,Digest)+AI Configs+swipe  ║
-║         right-edge clipping fixed, GPU acceleration,               ║
-║         touch-action, momentum scroll, tap state polish            ║
-║  v5.0  Revolutionary UI overhaul — Gen-Z design system             ║
-║         Floating FAB · dominant hero bucket · topbar expansion     ║
-║         Typography-led history · Insights personality hero         ║
-║         Native bottom sheet modal · premium toast pill             ║
-║         5 AI features: 3am Warning · Category Creep               ║
-║         Salary Day Intelligence · Honest Comparison · Annual Wrap  ║
-║                                                                      ║
-╠══════════════════════════════════════════════════════════════════════╣
-║  PIB-7 · KNOWN OPEN ITEMS & FUTURE NOTES                           ║
-╠══════════════════════════════════════════════════════════════════════╣
-║                                                                      ║
-║  • Tesseract SRI hash — compute with curl|openssl and add to       ║
-║    s.integrity in aiPhotoProcess() + update CSP meta tag           ║
-║    (see inline comment in the function for exact command)          ║
-║                                                                      ║
-║  • NLP parsing is rule-based — if adding ML model, use             ║
-║    Transformers.js (already a declared intent), lazy load,         ║
-║    fall back to current rule-based if model fails to load          ║
-║                                                                      ║
-║  • window.ai / Gemini Nano — implement when iOS Safari ships it.   ║
-║    Use as primary AI, fall back to rule-based if unavailable.      ║
-║    Check: 'ai' in window before using.                             ║
-║                                                                      ║
-║  • Dark mode — CSS variables (--ink, --card, --paper, --fog) are   ║
-║    already semantically named. Adding dark mode = one              ║
-║    @media (prefers-color-scheme: dark) block + toggle in settings  ║
-║                                                                      ║
-║  • Push notifications — SW has push listener. Needs a backend      ║
-║    to send them (VAPID keys, push subscription). Not worth         ║
-║    building unless cloud sync is also added.                       ║
-║                                                                      ║
-║  • Multi-currency — if needed, add a profile.currency field        ║
-║    with safe default 'INR'. Replace hardcoded ₹ with a            ║
-║    currencySymbol() helper.                                        ║
-║                                                                      ║
-║  • AI reactions (aiReaction) uses rule-based pattern matching.     ║
-║    Patterns are in the aiReaction() function. To add new           ║
-║    patterns, add to the if-chain before the default.               ║
-║                                                                      ║
-╠══════════════════════════════════════════════════════════════════════╣
-╠══════════════════════════════════════════════════════════════════════╣
-║                                                                      ║
-║  WHY ONE FILE?                                                       ║
-║  PWA on GitHub Pages. One URL = entire app. No build step.          ║
-║  Service worker caches one file = perfect offline. Zero deps.       ║
-║  Separation would require a bundler, CI/CD, and fragile caching.    ║
-║                                                                      ║
-║  HOW TO NAVIGATE                                                     ║
-║  Use Ctrl+G / Cmd+G (Go to line) in your editor.                   ║
-║  All line numbers below are AFTER this index comment is inserted.   ║
-║                                                                      ║
-╠══════════════════════════════════════════════════════════════════════╣
-║  SECTION 1 — CSS  (lines 17–853, inside <style> tag)                ║
-╠══════════════════════════════════════════════════════════════════════╣
-║                                                                      ║
-║   17   CSS Variables & Root          :root { --teal, --ink... }     ║
-║   49   App Shell & Viewport          #app, display:flex             ║
-║   67   Tablet Layout                 @media (min-width: 600px)      ║
-║  115   Desktop Layout                @media (min-width: 1200px)     ║
-║  128   Page System                   .pg { display:none }           ║
-║                                      .pg.on { display:flex }        ║
-║  157   Splash Screen                 #pgSplash, .sp-logo-wrap       ║
-║  199   Forgot Password Screen        #pgForgot                      ║
-║  227   Onboarding Screen             #pgOb, .fg-grp, .role-card     ║
-║  282   Main App Shell                #pgApp                         ║
-║  289   Top Bar                       .topbar, .tb-name, .tb-av      ║
-║  307   Save Bar                      #saveBar                       ║
-║  312   Screen Container              .screens, .scr, .scr-body      ║
-║  319   Screen Header                 .shdr, .shdr-back              ║
-║  325   Tab Bar                       #tabBar, .tab, .tab-fab        ║
-║  336   Home Screen                   .h-hero, .h-total, .bgrid      ║
-║                                      .bc (bucket card), .dc (data)  ║
-║  376   Add Spend Screen              .amt-hero, .add-sec, .srcs     ║
-║                                      .src (payment), .bkts, .bkt   ║
-║  402   Sort / Pending Screen         .txc, .bkpick, .bkp            ║
-║  423   My Month Screen               .mm-hero, .mm-bar, .wk-card    ║
-║                                      .brow (bucket row)             ║
-║  456   History Screen                .hist-hdr, .htxn, .ie-box      ║
-║                                      .fp (filter pill), .mgrp-hdr   ║
-║  510   Limits Screen                 .lim-card, .lc-hdr, .lc-in    ║
-║  529   Settings Screen               .acc, .acc-hdr, .acc-body      ║
-║                                      .s-lbl, .s-in, .act, .pw-box  ║
-║  573   Modal                         #modal, .m-box, .mb buttons    ║
-║  590   Toast                         #toast                         ║
-║  596   Install Banner                #iBanner, .ib-txt              ║
-║  607   Trust Screen                  #pgTrust (first open only)     ║
-║  696   Insights Screen               .ins-card, .ins-bar-row        ║
-║                                      .personality-badge, .mcomp     ║
-║  734   Tags CSS                      .tag-chip, .tag-pill           ║
-║                                      .tag-chip.on, .tag-section     ║
-║                                      .tag-sum-card, .tag-sum-row    ║
-║  803   Sources CSS                   .src-balance-pill              ║
-║                                      .src-entry, .src-carry         ║
-║                                      .src-status-pill               ║
-║  853   </style>                                                      ║
-║                                                                      ║
-╠══════════════════════════════════════════════════════════════════════╣
-║  SECTION 2 — HTML  (lines 855–1268, inside <body> tag)              ║
-╠══════════════════════════════════════════════════════════════════════╣
-║                                                                      ║
-║  855   <body> opens                                                  ║
-║  856   #app wrapper                  outermost container             ║
-║                                                                      ║
-║  860   pgSplash      Animated splash (1.5s, shown on boot)          ║
-║  870   pgTrust       Trust/privacy screen (first open only)         ║
-║                      CTA: trustAccepted() / trustSkip()             ║
-║  953   pgLock        Password lock screen                           ║
-║                      Input: lkIn, Error: lkErr, CTA: unlock()       ║
-║  977   pgForgot      Forgot password — import file to recover       ║
-║ 1011   pgOb          Onboarding (new user setup)                    ║
-║                      Fields: obName, obDob, obCity, obQuote         ║
-║                      Roles: obRoles, Photo: obPhoto                 ║
-║                      Password: obPw1/2, CTA: startJourney()        ║
-║ 1064   pgApp         Main app shell (shown after login)             ║
-║ 1088   #topbar       Greeting + quote bar (home only)               ║
-║ 1089   #screens      All tab content screens:                       ║
-║ 1092     sHome       Home — bucket grid + data cards                ║
-║ 1100     sInsights   Insights — personality, stats, charts          ║
-║ 1112     sMonth      My Month — totals + week chart + bucket rows   ║
-║ 1124     sSlice      Bucket detail (drills down from Month)         ║
-║ 1134     sHist       History — search + filter + transaction list   ║
-║ 1154     sAdd        Add Spend — amount, desc, payment, bucket, tag ║
-║ 1193     sLimits     Budget Limits — per-bucket limit inputs        ║
-║ 1203     sSettings   Settings — accordions for profile/pw/data      ║
-║ 1213     sSources    Sources — balance pill + passbook list         ║
-║ 1227   #tabBar       Bottom navigation (6 tabs: Home→Add)           ║
-║ 1253   #modal        Shared bottom-sheet modal                      ║
-║ 1261   #toast        Floating toast notification                    ║
-║ 1263   #iBanner      PWA install banner (Android Chrome only)       ║
-║                                                                      ║
-╠══════════════════════════════════════════════════════════════════════╣
-║  SECTION 3 — JAVASCRIPT  (lines 1269–2962, inside <script> tag)     ║
-╠══════════════════════════════════════════════════════════════════════╣
-║                                                                      ║
-║  ── CONSTANTS ──────────────────────────────────────────────────    ║
-║  1276  BUCKETS       4 buckets: necessary/committed/comfortable/    ║
-║                      luxury — each has label, colour, icon, desc    ║
-║  1282  ROLES         5 roles: student/home_manager/working/         ║
-║                      business/retired — each has default limits     ║
-║  1289  SRCS          4 payment methods: cash/upi/others_upi/        ║
-║                      hand_loan                                      ║
-║  1295  ICONS         12 keyword→emoji rules for auto-icon on        ║
-║                      transaction description                        ║
-║  1311  PRESET_TAGS   8 tag suggestions: Birthday, Marriage,         ║
-║                      Travel, Medical, Education, Festival,          ║
-║                      Vehicle, Gift                                  ║
-║  1316  LS            'sn_v4' — main localStorage key               ║
-║                                                                      ║
-║  ── STORAGE GUARDS ─────────────────────────────────────────────    ║
-║  1319  isStorageAvailable()   Private/incognito mode guard          ║
-║  1325  md5(s)                 Password hashing (pure JS, no lib)    ║
-║                                                                      ║
-║  ── DATABASE ───────────────────────────────────────────────────    ║
-║  1368  DB object                                                     ║
-║  1369    .empty()       Returns fresh data schema (see schema below)║
-║  1381    .load()        Read + parse from localStorage sn_v4        ║
-║  1383    .save(d)       Stringify + write to localStorage sn_v4     ║
-║  1395    .exportFile(d) Create spend-na-data.json download          ║
-║  1416    .saveToSameFile(d)  File System Access API (Chrome/Android)║
-║  1434    .importFile()  File picker → parse JSON → return data obj  ║
-║                                                                      ║
-║  1448  SRC_DB object   Sources feature — separate key sn_sources    ║
-║  1449    .load()        Read sn_sources, default { sources: [] }    ║
-║  1458    .save(d)       Write to localStorage sn_sources            ║
-║                                                                      ║
-║  ── STATE ──────────────────────────────────────────────────────    ║
-║  1466  D              Live data object — loaded from sn_v4          ║
-║  1467  S              UI state object:                              ║
-║                         tab, sliceBk, histF, addSrc, addBkt,       ║
-║                         limVals, setRole, setToggles, unsaved,      ║
-║                         obRole, obPhoto, install, saveBusy,        ║
-║                         loginAttempts, loginLockUntil,              ║
-║                         monthOffset, _autoSaveTimer                 ║
-║  1471  _addTags        Session array — tags for current Add Spend   ║
-║                        Reset to [] every time r_add() is called     ║
-║                                                                      ║
-║  ── HELPER FUNCTIONS ───────────────────────────────────────────    ║
-║  1474  esc(s)          HTML-escape string (prevents XSS)            ║
-║  1475  fmt(n)          Compact rupee: ₹1.2k / ₹1.2L               ║
-║  1476  fmtF(n)         Full Indian locale: ₹1,23,456               ║
-║  1477  avHTML(p,sz)    Avatar HTML — photo or initials circle       ║
-║  1482  ico(m)          Merchant name → emoji icon via ICONS table   ║
-║  1483  summary(month)  Bucket totals for a month string             ║
-║                        Returns {total, necessary, committed,        ║
-║                        comfortable, luxury}                         ║
-║                        month = 'Apr 2026' format. null = all time  ║
-║  1484  offsetMonthStr  Returns 'Apr 2026' for offset 0/-1/-2...    ║
-║  1485  offsetMonthLong Returns 'April 2026' (long form)            ║
-║  1486  pending()       Count of transactions with no bucket set     ║
-║  1489  toast(msg,ms)   Bottom floating notification (auto-dismiss)  ║
-║  1490  modal(t,b,btns) Bottom-sheet modal with button array         ║
-║                        btns: [{l:label, c:css-class, a:onclick}]   ║
-║                                                                      ║
-║  ── APP OBJECT (1499–2927) ─────────────────────────────────────    ║
-║  1499  const APP = {                                                 ║
-║                                                                      ║
-║    ── Core / Page System ──────────────────────────────────────     ║
-║    1500  show(id)           Hide all .pg, show #id page             ║
-║    1507  cm()               Close bottom-sheet modal                ║
-║                                                                      ║
-║    ── Trust Screen ────────────────────────────────────────────     ║
-║    1510  [comment] ── TRUST SCREEN ──                               ║
-║    1511  trustAccepted()    "I understand" → check data → route     ║
-║    1525  trustSkip()        "Load my data file" → import → launch   ║
-║                                                                      ║
-║    ── Boot ────────────────────────────────────────────────────     ║
-║    1538  boot()             App entry point:                        ║
-║                             • storage guard check                   ║
-║                             • service worker registration           ║
-║                             • PWA install banner                    ║
-║                             • splash → trust/lock/onboard/launch    ║
-║                                                                      ║
-║    ── Auth / Lock ─────────────────────────────────────────────     ║
-║    1584  togglePw()         Show/hide password input (eye button)   ║
-║    1592  unlock()           Validate password on lock screen        ║
-║                             Rate-limits: 5 attempts → 30s lockout  ║
-║    1610  [comment] ── FORGOT PASSWORD ──                            ║
-║    1612  showTrustAgain()   Re-show trust screen from lock          ║
-║    1619  showForgot()       Navigate to pgForgot                    ║
-║    1621  forgotRecover()    Import data file → verify → offer reset ║
-║    1636  _setNewPasswordFrom(data)  Set new pw + restore all data   ║
-║    1671  clearAllFresh()    Nuclear wipe — clears localStorage      ║
-║                                                                      ║
-║    ── Onboarding ──────────────────────────────────────────────     ║
-║    1679  buildRoles()       Render role selection cards in pgOb     ║
-║    1685  obRole(k)          Select a role during onboarding         ║
-║    1690  obVal()            Validate ob form → enable/disable CTA   ║
-║    1700  startJourney()     Save new user → DB.save → launch        ║
-║                                                                      ║
-║    ── App Shell ───────────────────────────────────────────────     ║
-║    1721  [comment] ── LAUNCH ──                                     ║
-║    1722  launch()           show(pgApp) + go('home')                ║
-║    1727  [comment] ── SAVE ──                                       ║
-║    1728  markUnsaved()      Sets S.unsaved + auto-save after 800ms  ║
-║    1738  saveFile()         DB.exportFile(D) + toast                ║
-║    1745  [comment] ── PHOTO ──                                      ║
-║    1746  pickPhoto(ctx)     File picker → resize to 200px → store   ║
-║    1773  [comment] ── TOPBAR ──                                     ║
-║    1774  refreshTop()       Update greeting, name, role, quote, av  ║
-║    1786  [comment] ── NAVIGATION ──                                 ║
-║    1787  go(tab)            Navigate between tabs:                  ║
-║                             • hides/shows topbar (home only)        ║
-║                             • shows/hides tabBar                    ║
-║                             • maps tab name → screen element id     ║
-║                             • calls r_{tab}() if method exists      ║
-║                                                                      ║
-║    ── Home Screen ─────────────────────────────────────────────     ║
-║    1799  [comment] ── HOME ──                                       ║
-║    1800  r_home()           Render home: hHero + hBody              ║
-║                             • bucket grid (4 cards with limits)     ║
-║                             • data cards: save/load/share           ║
-║    1869  loadFile()         Import JSON + offer load/merge          ║
-║                                                                      ║
-║    ── Sort / Pending ──────────────────────────────────────────     ║
-║    1892  [comment] ── SORT ──                                       ║
-║    1893  r_sort()           Render unsorted transactions list       ║
-║    1922  classify(id,bkt)   Assign bucket → animate out card        ║
-║    1931  delTxn(id)         Delete transaction (with confirm modal) ║
-║                                                                      ║
-║    ── My Month ────────────────────────────────────────────────     ║
-║    1938  [comment] ── MY MONTH ──                                   ║
-║    1939  r_month()          Render month: hero + chart + buckets    ║
-║                             Uses S.monthOffset (0=current, -1=prev) ║
-║    1984  _mmNav(dir)        Step month offset + re-render           ║
-║    1991  showSlice(bk)      Set S.sliceBk + go('slice')             ║
-║    1992  r_slice()          Render bucket detail + transaction list ║
-║    2018  ynA(yes,msg)       "Was this a good month?" response card  ║
-║                                                                      ║
-║    ── Insights ────────────────────────────────────────────────     ║
-║    2021  [comment] ── INSIGHTS ──                                   ║
-║    2022  r_insights()       Render full insights screen:            ║
-║                             • spending personality detection        ║
-║                             • sharp insight text                    ║
-║                             • stats row (total entries, streak)     ║
-║                             • bucket breakdown bars                 ║
-║                             • top bucket + heaviest week            ║
-║                             • month-by-month comparison chart       ║
-║                             • spending by tag (if tags exist)       ║
-║                                                                      ║
-║    ── Share / Export ──────────────────────────────────────────     ║
-║    2238  shareMonth()  [1]  Share month summary via native share    ║
-║    2345  exportHTML()       Export full history as .html file       ║
-║    2362  shareMonth()  [2]  Share month as text (copy/native share) ║
-║                             NOTE: Two shareMonth() methods exist.   ║
-║                             [1] = HTML file version (line 2238)     ║
-║                             [2] = text/copy version (line 2362)     ║
-║                                                                      ║
-║    ── History ─────────────────────────────────────────────────     ║
-║    2256  [comment] ── HISTORY ──                                    ║
-║    2258  r_history()        Render history:                         ║
-║                             • search input                          ║
-║                             • filter pills (buckets + tags)         ║
-║                             • grouped by month                      ║
-║                             • inline edit (bucket + tag change)     ║
-║    2331  setHF(k)           Set history filter (bucket or tag:*)    ║
-║    2341  tgEdit(id)         Toggle inline edit box visibility       ║
-║    2342  hClassify(id,bkt)  Change bucket from history inline edit  ║
-║    2343  hDel(id)           Delete transaction from history         ║
-║    2622  hToggleTag(txnId, tag)   Toggle tag on existing txn        ║
-║    2636  hAddCustomTag(txnId)     Add custom tag from history       ║
-║                                                                      ║
-║    ── Add Spend ───────────────────────────────────────────────     ║
-║    2373  r_add()            Reset + render add spend form           ║
-║                             Resets: S.addSrc, S.addBkt, _addTags   ║
-║    2383  selSrc(k)          Select payment method chip              ║
-║    2384  selBkt(k)          Select bucket card                      ║
-║    2389  valAdd()           Validate → enable/disable Save button   ║
-║    2400  saveManual()       Create + prepend transaction to D       ║
-║                             Includes tags:[..._addTags]             ║
-║    2578  renderAddTagChips()  Render preset tag chips in add form   ║
-║    2590  toggleAddTag(tag)    Toggle preset tag in _addTags         ║
-║    2599  addCustomTag()       Sanitise + add custom tag             ║
-║    2612  _renderSelectedTags() Show active tags as removable pills  ║
-║                                                                      ║
-║    ── Limits ──────────────────────────────────────────────────     ║
-║    2424  [comment] ── LIMITS ──                                     ║
-║    2425  r_limits()         Render per-bucket limit input cards     ║
-║    2441  setLimQuick(k,v)   Quick-fill a limit value                ║
-║    2442  saveLimits()       D.limits = S.limVals → DB.save          ║
-║    2443  resetLimits()      Reset to role defaults (confirm modal)  ║
-║                                                                      ║
-║    ── Settings ────────────────────────────────────────────────     ║
-║    2445  [comment] ── SETTINGS ──                                   ║
-║    2446  r_settings()       Render settings accordions:             ║
-║                             • Profile (name, city, dob, role, quote)║
-║                             • Change Password                       ║
-║                             • Notifications                         ║
-║                             • Data Management (save/load/clear)     ║
-║                             • About                                 ║
-║    2520  tgAcc(id)          Toggle accordion open/closed            ║
-║    2521  sRole(k)           Select role in settings                 ║
-║    2522  tglSet(k,id)       Toggle a settings switch                ║
-║    2524  changePw()         Verify old pw → set new → save          ║
-║    2538  saveSettings()     Save profile + settings → go('home')    ║
-║    2550  shareBlank()       Copy/share app URL (zero data shared)   ║
-║    2568  clearAll()         Clear all localStorage (confirm modal)  ║
-║                                                                      ║
-║    ── Tags Feature ────────────────────────────────────────────     ║
-║    2576  [comment] ── TAGS ──                                       ║
-║    2578  renderAddTagChips()   [see Add Spend section above]        ║
-║    2590  toggleAddTag(tag)     [see Add Spend section above]        ║
-║    2599  addCustomTag()        [see Add Spend section above]        ║
-║    2612  _renderSelectedTags() [see Add Spend section above]        ║
-║    2622  hToggleTag(txnId,tag) [see History section above]          ║
-║    2636  hAddCustomTag(txnId)  [see History section above]          ║
-║                                                                      ║
-║    ── Sources Feature ─────────────────────────────────────────     ║
-║    2705  [comment] ── SOURCES ──                                    ║
-║    2707  r_sources()        Render sources screen:                  ║
-║                             • carry forward check + auto-insert     ║
-║                             • balance calculation (srcTotal-spent)  ║
-║                             • balance pill (green/amber/red)        ║
-║                             • passbook list (newest first)          ║
-║                             • empty state                           ║
-║    2830  openAddSource(prefill)  Add/Edit source modal              ║
-║                             Fields: name, amount, note, date        ║
-║                             prefill = existing entry for edit mode  ║
-║    2907  editSource(id)     Find entry → openAddSource(entry)       ║
-║    2914  deleteSource(id)   Confirm → remove from SRC_DB            ║
-║                                                                      ║
-║  2927  }; // end APP object                                          ║
-║                                                                      ║
-║  ── UTILITIES (after APP) ──────────────────────────────────────    ║
-║  2928  setupDobInput(id)    DD/MM/YYYY date formatter for inputs    ║
-║  2945  APP.boot()           Kick off the app on page load           ║
-║  2947  Swipe-back gesture   touchstart/touchend — swipe right       ║
-║                             to go back on sub-screens               ║
-║                             BACK_SCREENS: sort/slice/add/           ║
-║                             limits/settings → home/month/home       ║
-║  2962  </script>                                                     ║
-║                                                                      ║
-║  ── SERVICE WORKER ─────────────────────────────────────────────    ║
-║  2965  <script>             sw.js registration (external sw file)   ║
-║  2973  </script>                                                     ║
-║                                                                      ║
-╠══════════════════════════════════════════════════════════════════════╣
-║  DATA SCHEMA  (localStorage key: sn_v4)                             ║
-╠══════════════════════════════════════════════════════════════════════╣
-║                                                                      ║
-║  {                                                                   ║
-║    app:          'Spend-na',                                         ║
-║    version:      4,                                                  ║
-║    created:      ISO timestamp string,                               ║
-║    lastSaved:    ISO timestamp string,                               ║
-║    passwordHash: md5 string (empty = no password),                  ║
-║    profile: {                                                        ║
-║      name:  string,                                                  ║
-║      role:  'student'|'home_manager'|'working'|                     ║
-║             'business'|'retired',                                    ║
-║      photo: base64 string | null,                                    ║
-║      dob:   'DD/MM/YYYY' string,                                     ║
-║      city:  string,                                                  ║
-║      quote: string                                                   ║
-║    },                                                                ║
-║    limits: {                                                         ║
-║      necessary:   number,                                            ║
-║      committed:   number,                                            ║
-║      comfortable: number,                                            ║
-║      luxury:      number                                             ║
-║    },                                                                ║
-║    settings: { notif: boolean },                                     ║
-║    transactions: [                                                   ║
-║      {                                                               ║
-║        id:        't_{timestamp}_{random4}',                         ║
-║        timestamp: ISO string,                                        ║
-║        date:      'DD Mon'    e.g. '05 Apr',                        ║
-║        time:      'HH:MM'     e.g. '14:30',                        ║
-║        month:     'Mon YYYY'  e.g. 'Apr 2026'  ← GROUP KEY         ║
-║        merchant:  string  (description / merchant name),            ║
-║        amount:    number,                                            ║
-║        bucket:    'necessary'|'committed'|'comfortable'|            ║
-║                   'luxury' | undefined (= unsorted),                ║
-║        source:    'cash'|'upi'|'others_upi'|'hand_loan',           ║
-║        tags:      string[]  optional — may be absent on old records ║
-║                   ALWAYS read as: t.tags || []                      ║
-║      }                                                               ║
-║    ],                                                                ║
-║    pushToken: null                                                   ║
-║  }                                                                   ║
-║                                                                      ║
-╠══════════════════════════════════════════════════════════════════════╣
-║  ALL localStorage & sessionStorage KEYS                              ║
-╠══════════════════════════════════════════════════════════════════════╣
-║                                                                      ║
-║  localStorage (persist across sessions):                            ║
-║  sn_v4             Main data object (all transactions + profile)    ║
-║  sn_trust_seen     '1' = user has accepted trust screen             ║
-║  sn_sources        Sources feature data { sources: [...] }          ║
-║                                                                      ║
-║  sessionStorage (cleared when tab/browser closes):                  ║
-║  [none currently — reserved for future backup warning flags]        ║
-║                                                                      ║
-╠══════════════════════════════════════════════════════════════════════╣
-║  PENDING FEATURES (separate coding chat prompts)                    ║
-╠══════════════════════════════════════════════════════════════════════╣
-║                                                                      ║
-║  ✅ Sources (Money In)       DONE — in this file                    ║
-║  ✅ Tags                     DONE — in this file                    ║
-║  ⏳ Export & Backup          prompt: spend-na-export-backup.md      ║
-║  ⏳ Migration Wizard         prompt: spend-na-browser-migration.md  ║
-║  ⏳ UI Redesign              pending design discussion               ║
-║  ⏳ Recurring Expenses       pending design discussion               ║
-║  ⏳ Weekly/Monthly Report    pending design discussion               ║
-║                                                                      ║
-╠══════════════════════════════════════════════════════════════════════╣
-║  CODING RULES (for all future prompts)                              ║
-╠══════════════════════════════════════════════════════════════════════╣
-║                                                                      ║
-║  1. NEVER modify DB.empty() schema without full impact analysis     ║
-║  2. NEVER modify DB.save() or DB.load() — they only touch sn_v4    ║
-║  3. NEVER modify summary() — it only reads D.transactions           ║
-║  4. ALWAYS use t.tags || [] — tags field may be absent on old txns  ║
-║  5. ALWAYS use esc() before inserting user text into innerHTML      ║
-║  6. New features get their own localStorage key, NOT inside sn_v4   ║
-║  7. The app is PRODUCTION — zero breaking changes, ever             ║
-║  8. Update this index line numbers after every feature addition     ║
-║                                                                      ║
-╚══════════════════════════════════════════════════════════════════════╝
+# Spend-na — AI-Native PIB
+# This IS the PIB. Replaces all previous human PIB blocks.
+# There is no second version. One PIB. AI-native only.
+#
+# SELF-UPDATE RULE (for AI agent):
+# After every bug fix, feature add, or schema change —
+# update ONLY the lines that changed. Do not rewrite untouched sections.
+# If code changed → PIB must reflect it before session ends.
+
+════════════════════════════════════════════════════════════════
+
+1. IDENTITY
+  APP:            Spend-na
+  VERSION:        v5.1
+  FILE:           index.html — single-file PWA, no build step
+  HOST:           GitHub Pages — git push = deployed
+  SCHEMA_VERSION: 2
+  SW_CACHE:       sn-v5
+  LS_KEY:         sn_v4
+
+════════════════════════════════════════════════════════════════
+
+2. HARD CONSTRAINTS
+   Violation of any breaks real users. No exceptions.
+
+  SINGLE_FILE       No external .js .css — everything inline
+  OFFLINE_FIRST     Core app never requires network after first load
+  NO_API_KEYS       No external AI calls — rule-based or on-device only
+  NO_BUILD          No webpack / vite / npm / node
+  BACKWARD_COMPAT   v1 data must load without errors — migrateData() handles it
+  STORAGE_SAFE      Every new field needs || default — never assume present
+  IOS_SAFE          No showSaveFilePicker · No blob: SW · No FileSystemAccess
+  SAFE_AREA         env(safe-area-inset-*) on every edge-touching element
+  XSS               esc() every user string before innerHTML
+  FROZEN_KEYS       Never rename: id · timestamp · date · time · month
+                    merchant · amount · bucket · source · tags
+
+════════════════════════════════════════════════════════════════
+
+3. DATA SCHEMA
+
+  sn_v4 shape:
+    app             string
+    version         number
+    schemaVersion   number    2
+    created         ISO
+    lastSaved       ISO
+    passwordHash    string    MD5 hex
+    lastSrc         string|null
+    pushToken       null
+    profile:        { name, role, photo, dob, city, quote }
+    limits:         { necessary, committed, comfortable, luxury }
+    settings:       { notif, focusMode }
+    transactions:   Transaction[]
+
+  Transaction:
+    id              string    t_{ts}_{rand4}
+    timestamp       ISO
+    date            string    "21 Mar"
+    time            string    "09:19 PM"
+    month           string    "Mar 2026"
+    merchant        string
+    amount          number
+    bucket          string|null   necessary|committed|comfortable|luxury
+    source          string|null   cash|upi|others_upi|hand_loan
+    tags            string[]
+
+  SAFE READ PATTERNS:
+    t.tags          → t.tags || []
+    t.source        → t.source || null
+    t.bucket        → t.bucket || null
+    focusMode       → D?.settings?.focusMode
+    lastSrc         → D.lastSrc || 'upi'
+    settings        → D.settings || {}
+    limits          → D.limits || {}
+
+════════════════════════════════════════════════════════════════
+
+4. STORAGE KEYS
+
+  KEY                   DEFAULT              PURPOSE
+  sn_v4                 null                 Main data object
+  sn_sources            {sources:[]}         Income sources
+  sn_flags              {}                   Feature flags
+  sn_ai_config          {}                   Per-feature AI toggles
+  sn_ai_insight         {}                   Weekly AI insight cache + dismissed flag
+  sn_mirror_shown       {}                   Per-bucket honest mirror shown-this-month
+  sn_streak             {}                   Spend streak state
+  sn_trust_seen         null                 Trust screen shown flag
+  sn_last_exported      null                 Last backup ISO timestamp
+  sn_mw_done            null                 Migration wizard done flag
+  sn_browser_warned     null                 Browser nudge shown flag
+  sn_backup_warned      null (session)       Backup reminder (sessionStorage)
+  sn_focus_level        '0'                  Text size: 0=default 1=comfortable 2=large
+  sn_beta_prompted      null (session)       Beta banner shown (sessionStorage)
+  sn_lock_until         null (session)       Lockout expiry (sessionStorage)
+  sn_shard_YYYY_Mon     null                 Monthly tx shard — phase 2 only
+
+════════════════════════════════════════════════════════════════
+
+5. FEATURE FLAGS  (sn_flags)
+
+  FLAG              DEFAULT   PURPOSE
+  ai_features       true      AI Smart Add, Insights, Forecast, all AI screens
+  sources_screen    true      Income Sources tab visible
+  tags_system       true      Tags on transactions
+  beta_ui           false     Opt-in beta UI (set true on accept in banner)
+  data_sharding     false     Physical monthly sharding to separate LS keys (phase 2)
+
+  API:
+    FLAGS.get(key)        → boolean
+    FLAGS.set(key, bool)  → void
+    FLAGS.all()           → {all flags merged with defaults}
+    FLAGS.initNew()       → all ON — called for brand new users
+    FLAGS.initExist()     → fill gaps, keep saved — called for returning users
+
+════════════════════════════════════════════════════════════════
+
+6. SCREENS
+
+  BOOT: pgSplash → pgTrust (first time) → pgLock | pgForgot | pgOb → pgApp
+
+  pgApp screens:
+    ID           TAB        RENDER FN
+    sHome        home       r_home()
+    sInsights    insights   r_insights()
+    sMonth       month      r_month()
+    sHist        history    r_history()
+    sAdd         add        r_add()
+    sLimits      —          r_limits()
+    sSettings    —          r_settings()
+    sSlice       —          r_slice()
+    sSources     sources    r_sources()
+
+  NAVIGATE:  APP.go('home'|'insights'|'month'|'history'|'add'
+                    |'limits'|'settings'|'sources'|'slice')
+  MODAL:     modal(title, body, btns[])  ·  APP.cm() to close
+  TOAST:     toast(msg, ms)
+
+════════════════════════════════════════════════════════════════
+
+7. MODULE MAP
+
+  MODULE          LINE    PURPOSE
+  SCHEMA_VERSION  6178    Bump when schema changes
+  migrateData     6186    v1→v2 in-memory — wired into DB.load + importFile
+  FLAG_DEFAULTS   6234    Flag default values
+  FLAGS           6241    get · set · all · initNew · initExist
+  DB              6259    load · save · exportFile · importFile · saveToSameFile
+  SRC_DB          6355    load · save  (key: sn_sources)
+  SHARD           6390    forMonth · months · manifest · exportMonth · writeCurrentMonthShard
+  APP             6505    all UI methods — see section 8
+
+════════════════════════════════════════════════════════════════
+
+8. APP METHOD INDEX
+
+  METHOD                    LINE    PURPOSE
+  boot()                    6598    Entry — storage check + SW + splash
+  clearAllFresh()           6786    Wipe all data with confirmation modal
+  launch()                  6856    show pgApp + go home + start banner
+  saveFile()                7048    Export single JSON download
+  exportCurrentMonthShard() 7056    Export current month as standalone JSON
+  exportZipFolder()         7064    Build + download ZIP folder backup (JSZip lazy CDN)
+  importZipFolder()         7127    Pick ZIP + unpack + Replace/Merge modal
+  r_home()                  7317    Render home screen
+  loadFile()                7397    Import single JSON — Replace/Merge modal
+  r_sort()                  7425    Render unsorted transaction cards
+  r_month()                 7471    Render my month screen
+  r_slice()                 7546    Render bucket drill-down
+  r_insights()              7576    Render insights screen
+  r_history()               7868    Render history with month groups + search
+  r_add()                   8075    Render add spend form — resets _addTags
+  selSrc(k)                 8099    Select payment chip — inline style NOT CSS class
+  selBkt(k)                 8100    Select bucket card
+  saveManual()              8125    Validate + write transaction to D.transactions
+  r_limits()                8151    Render budget limits screen
+  r_settings()              8172    Render settings accordions
+  changePw()                8275    Password change with old/new/confirm validation
+  openMigrationWizard(src)  8381    Device transfer wizard
+  r_sources()               8688    Render income sources screen
+
+════════════════════════════════════════════════════════════════
+
+9. CONSTANTS
+
+  BUCKETS:
+    necessary   l='Necessary'   c='#10b981'  cl='#ecfdf5'  g='⌂'
+    committed   l='Committed'   c='#6366f1'  cl='#eef2ff'  g='◈'
+    comfortable l='Comfortable' c='#f59e0b'  cl='#fffbeb'  g='◎'
+    luxury      l='Luxury'      c='#f43f5e'  cl='#fff1f2'  g='◆'
+
+  SRCS:
+    cash · upi · others_upi · hand_loan
+
+  ROLES:
+    student · home_manager · working · business · retired
+
+  PRESET_TAGS:
+    Food · Function · Travel · Medical · Education · Festival · Vehicle · Gift
+
+  AI_CONFIG_DEFAULT (all true):
+    insight · forecast · streak · voice · photo · reactions · mood
+    duplicate · whyBuyThis · smartSearch · story · mirror
+    spendTwin · weeklyDigest · budgetSuggest
+
+════════════════════════════════════════════════════════════════
+
+10. GOTCHAS
+    Every bug fixed adds one line. This list only grows. Never remove.
+
+  selSrc        inline styles not CSS class — changes must be in JS not CSS
+  tags          may be absent on v1 records — always t.tags || []
+  SW            must use data: URI not blob: — Firefox blocks blob: SW
+  bkt-nm        needs white-space:normal — text truncates on mobile without it
+  _streakHTML   must be defined before r_home() references it
+  migrateData   must be called in BOTH DB.load() and importFile()
+  focusMode     D?.settings?.focusMode — settings absent on v1 data
+  selSrc-icon   .src.on .src-ic color must be set — icon stays grey otherwise
+  importFile    must call migrateData() on parsed result before returning
+  toast-onclick reset toast.onclick after stale-SW tap handler or it sticks
+
+════════════════════════════════════════════════════════════════
+
+11. NOT BUILT
+    Never assume these exist. Check constraints before building.
+
+  Cloud sync / backup to server
+  Multi-user or family mode
+  Recurring / scheduled transactions
+  Bank account linking / UPI auto-import
+  Push notifications (SW listener exists, no backend)
+  Custom categories beyond 4 fixed buckets
+  Custom payment methods beyond 4 fixed sources
+  Dark mode toggle (CSS vars ready, no toggle yet)
+  Multi-currency (INR only, ₹ hardcoded)
+  Shared / split expenses
+  Receipt email parsing
+  Budget rollover between months
+  Transaction search by date range
+  Export to CSV / Excel
+  Undo delete
+  window.ai / Gemini Nano (waiting for iOS support)
+  Transformers.js ML model (NLP is rule-based regex today)
+  Tesseract.js SRI hash (not yet computed — see aiPhotoProcess())
+  Physical data sharding (SHARD module ready, gated by data_sharding flag)
+
+════════════════════════════════════════════════════════════════
+
+12. AI AGENT RULES
+
+  BEFORE TOUCHING CODE:
+    grep exact function name → read ±20 lines → check section 10 gotchas
+
+  MAKING A CHANGE:
+    Smallest possible edit · str_replace style · state line number
+    Never output full file unless explicitly asked
+
+  NEW TRANSACTION FIELD:
+    Add || default on every read site
+    Add backfill in migrateData()
+    Update section 3
+
+  NEW STORAGE KEY:
+    Add to section 4
+    Add to DB.empty() if it belongs in sn_v4
+
+  BUG FIXED:
+    Add one line to section 10 — never remove existing lines
+
+  NEW METHOD OR MODULE:
+    Add one line to section 7 or 8 with line number
+
+  AFTER EVERY SESSION:
+    Update only the values that changed — nothing else
+
+════════════════════════════════════════════════════════════════
 -->
 <!DOCTYPE html>
 <html lang="en">
 
 <head>
   <meta charset="UTF-8">
-  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' cdn.jsdelivr.net; img-src 'self' data: blob:; connect-src 'none'; style-src 'self' 'unsafe-inline';">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' cdn.jsdelivr.net cdnjs.cloudflare.com; img-src 'self' data: blob:; connect-src 'none'; style-src 'self' 'unsafe-inline';">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="default">
@@ -4607,7 +3993,11 @@
       background: none;
       border: none;
       cursor: pointer;
-      padding: 4px 0;
+      padding: 10px 16px;
+      min-height: 44px;
+      min-width: 80px;
+      -webkit-tap-highlight-color: rgba(0,0,0,.05);
+      touch-action: manipulation;
     }
 
     .mw-steps {
@@ -4956,22 +4346,52 @@
     }
 
     /* FIX-2: Focus mode 3 levels */
+    /* Focus mode — 3 levels with comprehensive coverage */
     body.focus-comfortable { font-size: 112%; }
     body.focus-large { font-size: 128%; }
-    body.focus-comfortable .bc-amt { font-size: calc(17px * 1.12); }
-    body.focus-comfortable .htxn-am { font-size: calc(15px * 1.12); }
-    body.focus-comfortable .tab-lbl { font-size: calc(10px * 1.12); }
-    body.focus-comfortable .tb-name { font-size: calc(24px * 1.12); }
-    body.focus-comfortable .mm-tv { font-size: calc(30px * 1.12); }
-    body.focus-large .bc-amt { font-size: calc(17px * 1.28); }
-    body.focus-large .htxn-am { font-size: calc(15px * 1.28); }
-    body.focus-large .tab-lbl { font-size: calc(10px * 1.28); }
-    body.focus-large .tb-name { font-size: calc(24px * 1.28); }
-    body.focus-large .mm-tv { font-size: calc(30px * 1.28); }
-    body.focus-comfortable .bc-nm, body.focus-large .bc-nm { font-size: 9px; }
-    body.focus-comfortable .htxn-nm, body.focus-large .htxn-nm {
-      font-size: 12px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
-    }
+    /* Bucket cards */
+    body.focus-comfortable .bc-amt { font-size: 19px !important; }
+    body.focus-comfortable .bc-nm  { font-size: 10px !important; }
+    body.focus-large .bc-amt { font-size: 22px !important; }
+    body.focus-large .bc-nm  { font-size: 11px !important; }
+    /* Transaction history */
+    body.focus-comfortable .htxn-am { font-size: 17px !important; }
+    body.focus-comfortable .htxn-nm { font-size: 14px !important; }
+    body.focus-comfortable .htxn-dt { font-size: 11px !important; }
+    body.focus-large .htxn-am { font-size: 20px !important; }
+    body.focus-large .htxn-nm { font-size: 16px !important; overflow:hidden;text-overflow:ellipsis;white-space:nowrap; }
+    body.focus-large .htxn-dt { font-size: 12px !important; }
+    /* Tab bar */
+    body.focus-comfortable .tab-lbl { font-size: 11px !important; }
+    body.focus-large .tab-lbl { font-size: 12px !important; }
+    body.focus-comfortable .tab-gl { font-size: 22px !important; }
+    body.focus-large .tab-gl { font-size: 25px !important; }
+    /* Top bar */
+    body.focus-comfortable .tb-name { font-size: 27px !important; }
+    body.focus-large .tb-name { font-size: 31px !important; }
+    body.focus-comfortable .tb-greet { font-size: 12px !important; }
+    body.focus-large .tb-greet { font-size: 13px !important; }
+    /* Month total */
+    body.focus-comfortable .mm-tv { font-size: 34px !important; }
+    body.focus-large .mm-tv { font-size: 38px !important; }
+    /* Settings & body text */
+    body.focus-comfortable .s-lbl { font-size: 11px !important; }
+    body.focus-large .s-lbl { font-size: 12px !important; }
+    body.focus-comfortable .act-t { font-size: 15px !important; }
+    body.focus-large .act-t { font-size: 17px !important; }
+    body.focus-comfortable .act-s { font-size: 12px !important; }
+    body.focus-large .act-s { font-size: 13px !important; }
+    /* Insight/story cards */
+    body.focus-comfortable .ai-insight-text,
+    body.focus-comfortable .ai-story-text { font-size: 14px !important; }
+    body.focus-large .ai-insight-text,
+    body.focus-large .ai-story-text { font-size: 16px !important; }
+    /* Buttons */
+    body.focus-comfortable .mb { font-size: 16px !important; padding: 15px !important; }
+    body.focus-large .mb { font-size: 18px !important; padding: 17px !important; }
+    /* Minimum tap targets in large mode */
+    body.focus-large .tab { min-height: 60px; }
+    body.focus-large button { min-height: 44px; }
     .focus-badge {
       display: inline-flex; align-items: center; justify-content: center;
       background: var(--paper); border: 1.5px solid var(--fog);
@@ -5386,6 +4806,19 @@
   /* ── REDESIGN v5.0: Tab bar .tab-add-slot hidden ── */
   .tab[data-t="add"] { display: none; }
 
+    /* BUG-9: Magnification effect on history cards — macOS dock style */
+    .htxn-wrap { transform-origin: center; transition: transform .18s cubic-bezier(.34,1.56,.64,1); }
+    .htxn-wrap:active { transform: scale(1.025); z-index: 2; }
+    /* On devices that support hover (desktop) */
+    @media (hover: hover) {
+      .htxn-wrap:hover { transform: scale(1.02); z-index: 2; box-shadow: 0 8px 32px rgba(0,0,0,.12); }
+      .htxn-wrap:hover .htxn { box-shadow: 0 4px 16px rgba(0,0,0,.08); }
+    }
+    /* Neighbour cards subtly shrink when one is active (dock illusion) */
+    .histList-container:has(.htxn-wrap:active) .htxn-wrap:not(:active) {
+      transform: scale(0.985);
+    }
+
   </style>
 </head>
 
@@ -5784,6 +5217,11 @@
               <button class="ai-voice-ring" id="aiVoiceBtn" onclick="APP.aiVoiceToggle()" title="Voice input" aria-label="Voice input" aria-pressed="false">🎤</button>
               <!-- Photo/scan button -->
               <button class="ai-photo-btn" onclick="APP.aiPhotoTrigger()" title="Scan receipt" aria-label="Scan receipt with camera">📷</button>
+            <!-- BUG-14: hidden file inputs for both camera and gallery -->
+            <input type="file" id="aiPhotoInput" accept="image/*" capture="environment"
+              style="display:none" onchange="APP.aiPhotoProcess(this)">
+            <input type="file" id="aiGalleryInput" accept="image/*"
+              style="display:none" onchange="APP.aiPhotoProcess(this)">
               <input type="file" id="aiPhotoInput" accept="image/*" capture="environment" style="display:none" onchange="APP.aiPhotoProcess(this)">
             </div>
             <div class="ai-status" id="aiStatus"></div>
@@ -5824,6 +5262,13 @@
               <span class="amt-sym">₹</span>
               <input class="amt-in" id="addAmt" type="number" inputmode="decimal" placeholder="0" min="1" max="9999999"
                 oninput="APP.valAdd()">
+            </div>
+            <div class="add-sec" style="margin-bottom:0">
+              <span class="add-lbl">DATE</span>
+              <input class="add-in" id="addDate" type="text" inputmode="text"
+                maxlength="20" placeholder="e.g. 23 Mar"
+                style="margin-bottom:0"
+                value="">
             </div>
             <div class="add-sec">
               <span class="add-lbl">WHAT WAS IT FOR?</span>
@@ -5891,6 +5336,7 @@
               <div style="font-size:11px;color:var(--slate);margin-top:1px" id="sourcesSub">Where your money comes from
               </div>
             </div>
+            <!-- BUG-13: multiple sources allowed - can tap Add multiple times -->
             <button onclick="APP.openAddSource()"
               style="background:var(--teal);border:none;border-radius:10px;padding:8px 14px;font-size:13px;font-weight:700;color:#fff;cursor:pointer">+
               Add</button>
@@ -6724,10 +6170,29 @@
       },
 
       clearAllFresh() {
-        modal('⚠️ Clear everything?', 'This permanently deletes all data. You will start fresh with a new account.', [
-          { l: 'Cancel', c: 'mb-nil', a: () => this.cm() },
-          { l: 'Yes, clear everything', c: 'mb-err', a: () => { localStorage.clear(); this.cm(); location.reload(); } },
-        ]);
+        const txnCount = (D.transactions || []).length;
+        modal('⚠️ Save before clearing?',
+          txnCount > 0
+            ? `You have ${txnCount} transactions. Your data file must be saved before clearing — it's your only recovery option.`
+            : 'Clear all data and start fresh?',
+          txnCount > 0 ? [
+            { l: 'Cancel', c: 'mb-nil', a: () => this.cm() },
+            { l: '💾 Save file first', c: 'mb-ok', a: () => {
+                this.cm();
+                DB.exportFile(D);
+                setTimeout(() => {
+                  modal('File saved. Clear now?', 'Your data file is downloading. Once saved, you can clear the app.', [
+                    { l: 'Cancel', c: 'mb-nil', a: () => this.cm() },
+                    { l: 'Yes, clear everything', c: 'mb-err', a: () => { localStorage.clear(); this.cm(); location.reload(); } },
+                  ]);
+                }, 600);
+              }
+            },
+          ] : [
+            { l: 'Cancel', c: 'mb-nil', a: () => this.cm() },
+            { l: 'Clear everything', c: 'mb-err', a: () => { localStorage.clear(); this.cm(); location.reload(); } },
+          ]
+        );
       },
 
       // ── ONBOARDING ──
@@ -7856,6 +7321,13 @@
                   </div>
                 </div>
                 <div class="ie-box" id="ie_${t.id}" style="display:none">
+                  <label class="ie-lbl" style="display:block;margin-bottom:4px">DATE</label>
+                  <div style="display:flex;gap:8px;margin-bottom:10px">
+                    <input class="s-in" style="font-size:13px;padding:8px 10px;flex:1" type="text"
+                      id="ie-date-${t.id}" value="${esc(t.date||'')}" maxlength="20"
+                      placeholder="e.g. 23 Mar" inputmode="text">
+                    <button onclick="APP.hSaveDate('${t.id}')" style="background:var(--teal);color:#fff;border:none;border-radius:var(--r);padding:8px 12px;font-size:12px;font-weight:700;cursor:pointer;white-space:nowrap;font-family:var(--ff)">Save Date</button>
+                  </div>
                   <label class="ie-lbl" style="display:block;margin-bottom:4px">DESCRIPTION</label>
                   <input class="s-in" style="font-size:13px;padding:8px 10px;margin-bottom:10px" type="text" id="ie-desc-${t.id}" value="${esc(t.merchant||'')}" maxlength="60" placeholder="e.g. Swiggy, Coffee">
                   <button onclick="APP.hSaveDesc('${t.id}')" style="margin-bottom:12px;width:100%;background:var(--teal);color:#fff;border:none;border-radius:var(--r);padding:9px;font-size:13px;font-weight:700;cursor:pointer;font-family:var(--ff)">Save Description \u2713</button>
@@ -7878,8 +7350,12 @@
               </div>
             </div>`;
           }).join('')}
-        </div>`;
+        </div></div>`;
         }).join('');
+        // BUG-7: re-attach filter pill click listeners after render
+        document.getElementById('fBar').querySelectorAll('.fp').forEach(function(btn) {
+          btn.addEventListener('click', function() { APP.setHF(btn.dataset.filterkey); });
+        });
         // FIX-6C: init swipe gestures after render
         (function initSwipeActions(container) {
           var startX=0,startY=0,activeWrap=null;
@@ -7894,14 +7370,25 @@
           container.addEventListener('touchstart',function(e){if(!e.target.closest('.htxn-wrap.swiped'))container.querySelectorAll('.htxn-wrap.swiped').forEach(function(w){w.classList.remove('swiped');});},{passive:true});
         })(listEl);
       },
+      toggleMonthGroup(mon) {
+        if (!S.collapsedMonths) S.collapsedMonths = new Set();
+        const key = mon;
+        if (S.collapsedMonths.has(key)) S.collapsedMonths.delete(key);
+        else S.collapsedMonths.add(key);
+        // Toggle visibility without full re-render
+        const safeKey = key.replace(/\s+/g, '-');
+        const body = document.getElementById('mgrp-body-' + safeKey);
+        const arrow = document.getElementById('mgrp-arrow-' + safeKey);
+        if (body) body.style.display = S.collapsedMonths.has(key) ? 'none' : '';
+        if (arrow) arrow.textContent = S.collapsedMonths.has(key) ? '▶' : '▼';
+      },
       setHF(k) {
         const resolved = (k === 'null' || !k) ? null : k;
-        // Toggle off if tapping the already-active filter (UI-035)
         S.histF = (resolved !== null && resolved === S.histF) ? null : resolved;
         // Show hint when any filter is active (BUG-06)
         const noteEl = document.getElementById('filterNote');
         if (noteEl) noteEl.style.display = S.histF ? 'block' : 'none';
-        document.getElementById('fBar').innerHTML = '';
+        document.getElementById('fBar').innerHTML = ''; // cleared; r_history re-renders + re-attaches
         this.r_history();
       },
       tgEdit(id) { const el = document.getElementById('ie_' + id); if (el) el.style.display = el.style.display === 'none' ? 'block' : 'none'; },
@@ -7951,12 +7438,13 @@
         const html = `<!DOCTYPE html><html><head><meta charset="utf-8"><title>Spend-na History — ${month}</title><style>body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:#f8fafc;margin:0;padding:20px;-webkit-font-smoothing:antialiased}table{width:100%;border-collapse:collapse}td{padding:10px 12px;border-bottom:1px solid #f1f5f9;font-size:13px;color:#334155}.w{max-width:700px;margin:0 auto}</style></head><body><div class="w"><div style="background:linear-gradient(135deg,#0f172a,#1e293b);border-radius:20px;padding:28px;margin-bottom:20px"><div style="font-size:11px;color:#0ea5e9;font-weight:700;letter-spacing:2px;margin-bottom:6px">SPEND-NA · HISTORY</div><div style="font-size:28px;font-weight:900;color:#fff;letter-spacing:-0.5px">${month}</div><div style="font-size:40px;font-weight:800;color:#0ea5e9;margin-top:12px">₹${total.toLocaleString('en-IN')}</div><div style="font-size:13px;color:#94a3b8;margin-top:4px">${txns.length} total records</div></div><div style="display:flex;flex-wrap:wrap;gap:10px;margin-bottom:20px">${bCards}</div><div style="background:white;border-radius:16px;overflow:hidden;margin-bottom:16px"><div style="padding:16px 20px;border-bottom:1px solid #f1f5f9"><strong>All Transactions (${txns.length} total records)</strong></div><table><tbody>${rows}</tbody></table></div><div style="text-align:center;padding:20px;color:#94a3b8;font-size:11px">Generated by Spend-na · 🔒 All data stays on your device · © Sandeep Hakki · hakki.in · 2026</div></div></body></html>`;
         const fname = `spend-na-history-${month.replace(/\s+/g, '-')}.html`;
         const blob = new Blob([html], { type: 'text/html' });
-        if (navigator.share && navigator.canShare && navigator.canShare({ files: [new File([html], fname, { type: 'text/html' })] })) {
-          navigator.share({ files: [new File([html], fname, { type: 'text/html' })], title: `Spend-na History — ${month}`, text: `All ${txns.length} transactions — ₹${total.toLocaleString('en-IN')}` }).catch(() => { });
-        } else {
-          const u = URL.createObjectURL(blob), a = document.createElement('a'); a.href = u; a.download = fname; document.body.appendChild(a); a.click(); document.body.removeChild(a); URL.revokeObjectURL(u);
-          toast('History exported!');
-        }
+        // BUG-8: use direct download only — navigator.share causes two files on iOS
+        const u = URL.createObjectURL(blob), a = document.createElement('a');
+        a.href = u; a.download = fname;
+        document.body.appendChild(a); a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(u);
+        toast('History exported — beautiful HTML file saved ✓');
       },
 
       shareMonth() {
@@ -7975,6 +7463,9 @@
         _addTags = []; // reset tag session on every Add Spend open (U-007, U-008)
         const ai = document.getElementById('addAmt'); if (ai) ai.value = '';
         const di = document.getElementById('addDesc'); if (di) di.value = '';
+        // BUG-15: pre-fill today's date, user can edit
+        const dateEl = document.getElementById('addDate');
+        if (dateEl) dateEl.value = new Date().toLocaleDateString('en-IN', { day: '2-digit', month: 'short' });
         document.getElementById('srcGrid').innerHTML = SRCS.map(s =>
           `<div class="src" data-s="${s.k}" onclick="APP.selSrc('${s.k}')" style="flex:1;padding:10px 6px;border-radius:12px;border-width:1.5px;border-style:solid;border-color:var(--fog);background:var(--card);cursor:pointer;text-align:center;transition:all .12s">
         <div style="font-size:14px;font-weight:700;color:var(--slate)">${s.i}</div>
@@ -8031,7 +7522,7 @@
         S.saveBusy = true;
         try {
           const now = new Date();
-          D.transactions = [{ id: `t_${Date.now()}_${Math.random().toString(36).slice(2, 6)}`, timestamp: now.toISOString(), date: now.toLocaleDateString('en-IN', { day: '2-digit', month: 'short' }), time: now.toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit' }), month: now.toLocaleDateString('en-IN', { month: 'short', year: 'numeric' }), merchant: desc || 'Manual Entry', amount: amt, bucket: S.addBkt, source: S.addSrc, tags: [..._addTags] }, ...(D.transactions || [])];
+          D.transactions = [{ id: `t_${Date.now()}_${Math.random().toString(36).slice(2, 6)}`, timestamp: now.toISOString(), date: now.toLocaleDateString('en-IN', { day: '2-digit', month: 'short' }), time: now.toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit' }), month: (function(){var d=(document.getElementById('addDate')?.value||'').trim().split(' ');var mn=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];return(d.length>=3&&mn.includes(d[1])&&d[2]&&d[2].length===4)?d[1]+' '+d[2]:now.toLocaleDateString('en-IN',{month:'short',year:'numeric'});})() /* BUG-15 */, merchant: desc || 'Manual Entry', amount: amt, bucket: S.addBkt, source: S.addSrc, tags: [..._addTags] }, ...(D.transactions || [])];
           DB.save(D); this.markUnsaved();
           _addTags = []; // clear after save — no stale tags on next open
           if (navigator.vibrate) navigator.vibrate(50);
@@ -8638,7 +8129,7 @@
           bodyEl.innerHTML = `
         <div class="src-empty">
           <div style="font-size:52px;margin-bottom:16px">💰</div>
-          <div style="font-size:20px;font-weight:800;color:var(--ink);margin-bottom:8px">Track where your money comes from</div>
+          <div style="font-size:20px;font-weight:800;color:var(--ink);margin-bottom:8px">Track all your income sources</div>
           <div style="font-size:14px;color:var(--slate);line-height:1.6;margin-bottom:24px">Add your salary, freelance income,<br>or any money you received this month.</div>
           <button onclick="APP.openAddSource()" style="background:var(--teal);border:none;border-radius:var(--r);padding:13px 28px;font-size:14px;font-weight:700;color:#fff;cursor:pointer">+ Add Source</button>
         </div>`;
@@ -9442,7 +8933,7 @@
         _addTags = [];
         if (navigator.vibrate) navigator.vibrate(50);
         // AI reaction toast
-        const reaction = aiReaction(p.amt, p.desc, p.bkt, D.transactions.slice(1));
+        const reaction = (typeof getAIConfig==='function'&&getAIConfig().reactions===false) ? null : aiReaction(p.amt, p.desc, p.bkt, D.transactions.slice(1));
         toast(reaction, 3000);
         // Reset smart add
         const inp = document.getElementById('aiAddInput');
@@ -9475,6 +8966,7 @@
 
       // ── aiVoiceToggle — start/stop voice ──
       APP.aiVoiceToggle = function() {
+        if (!getAIConfig().voice) { toast('Voice input is disabled in AI Settings'); return; }
         const btn = document.getElementById('aiVoiceBtn');
         if (AI.voiceActive) {
           if (AI.voiceRec) AI.voiceRec.stop();
@@ -9521,8 +9013,21 @@
 
       // ── aiPhotoTrigger — open camera ──
       APP.aiPhotoTrigger = function() {
-        const inp = document.getElementById('aiPhotoInput');
-        if (inp) inp.click();
+        if (!getAIConfig().photo) { toast('Photo scan is disabled in AI Settings'); return; }
+        // BUG-14: show choice between camera and gallery
+        modal('Scan a bill', 'Choose how to add your receipt image:', [
+          { l: '❌ Cancel', c: 'mb-nil', a: () => this.cm() },
+          { l: '🖼️ Gallery', c: 'mb-nil', a: () => {
+              this.cm();
+              const g = document.getElementById('aiGalleryInput');
+              if (g) { g.value=''; g.click(); }
+          }},
+          { l: '📷 Camera', c: 'mb-ok', a: () => {
+              this.cm();
+              const c = document.getElementById('aiPhotoInput');
+              if (c) { c.value=''; c.click(); }
+          }},
+        ]);
       };
 
       // ── aiPhotoProcess — OCR the selected image ──
@@ -9881,6 +9386,14 @@
     }
 
     // ── INSTALL AI METHODS + HOOK r_home / r_add / r_month ──────────
+    // BUG-7: rHist + rHistDebounced — called from HTML oninput but were never defined
+    function rHist() { if (APP && APP.r_history) APP.r_history(); }
+    var _rHistTimer;
+    function rHistDebounced() {
+      clearTimeout(_rHistTimer);
+      _rHistTimer = setTimeout(rHist, 200);
+    }
+
     _installAIMethods();
 
     // Hook r_home to also render AI cards
@@ -9938,13 +9451,37 @@
       // Show AI reaction after a brief delay
       if (amt > 0 && bkt) {
         setTimeout(() => {
-          const reaction = aiReaction(amt, desc, bkt, D.transactions || []);
+          const reaction = (typeof getAIConfig==='function'&&getAIConfig().reactions===false) ? null : aiReaction(amt, desc, bkt, D.transactions || []);
           toast(reaction, 3000);
         }, 300);
       }
     };
 
     // BUG-017: global error handlers
+    // BUG-6: Pinch zoom snap-back on iOS
+    (function(){
+      var _lte=0,_pin=false;
+      document.addEventListener('touchstart',function(e){
+        if(e.touches.length>=2)_pin=true;
+      },{passive:true});
+      document.addEventListener('touchend',function(e){
+        var now=Date.now();
+        if(e.touches.length===0&&now-_lte<=300&&!_pin)e.preventDefault();
+        if(e.touches.length===0)_lte=now;
+        if(_pin&&e.touches.length===0){
+          _pin=false;
+          setTimeout(function(){
+            var m=document.querySelector('meta[name=viewport]');
+            if(!m)return;
+            var o=m.getAttribute('content');
+            m.setAttribute('content',o+',maximum-scale=1.0,minimum-scale=1.0');
+            requestAnimationFrame(function(){
+              requestAnimationFrame(function(){m.setAttribute('content',o);});
+            });
+          },120);
+        }
+      },{passive:false});
+    })();
     window.onerror = (msg, src, line) => { console.error('Global error:', msg, src, line); };
     window.addEventListener('unhandledrejection', e => {
       console.error('Unhandled promise:', e.reason);
