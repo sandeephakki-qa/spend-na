@@ -220,6 +220,11 @@
   selSrc-icon   .src.on .src-ic color must be set — icon stays grey otherwise
   importFile    must call migrateData() on parsed result before returning
   toast-onclick reset toast.onclick after stale-SW tap handler or it sticks
+  Unsorted      filter pill removed from history — no unsorted filter exists
+  aiPhotoInput  was duplicated in HTML — duplicate caused onchange to not fire
+  Tesseract     must load from cdnjs.cloudflare.com not cdn.jsdelivr.net (CSP)
+  Tesseract     needs worker-src blob: in CSP — uses web workers internally
+  importZip     use const self=APP inside async method — avoids this loss in callbacks
 
 ════════════════════════════════════════════════════════════════
 
@@ -282,8 +287,7 @@
 
 <head>
   <meta charset="UTF-8">
-  <meta http-equiv="Content-Security-Policy"
-    content="default-src 'self'; script-src 'self' 'unsafe-inline' cdn.jsdelivr.net cdnjs.cloudflare.com; img-src 'self' data: blob:; connect-src 'none'; style-src 'self' 'unsafe-inline';">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' cdn.jsdelivr.net cdnjs.cloudflare.com; worker-src blob: cdnjs.cloudflare.com; img-src 'self' data: blob:; connect-src 'none'; style-src 'self' 'unsafe-inline';">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="default">
@@ -307,10 +311,8 @@
       --ink2: #1e293b;
       --ink3: #334155;
       --slate: #64748b;
-      --mist: #64748b;
-      /* BUG-021: WCAG AA contrast fix — was #94a3b8 (2.85:1), now 5.1:1 */
-      --ghost: #94a3b8;
-      /* BUG-021: ghost lightened slightly, still acceptable */
+      --mist: #64748b; /* BUG-021: WCAG AA contrast fix — was #94a3b8 (2.85:1), now 5.1:1 */
+      --ghost: #94a3b8; /* BUG-021: ghost lightened slightly, still acceptable */
       --fog: #e2e8f0;
       --paper: #f8fafc;
       --card: #ffffff;
@@ -1094,7 +1096,7 @@
     /* ── TOP BAR ── */
     .topbar {
       background: var(--ink);
-      padding: calc(var(--safe-t) + 16px) max(20px, var(--safe-r)) 20px max(20px, var(--safe-l));
+      padding: calc(var(--safe-t) + 16px) max(20px,var(--safe-r)) 20px max(20px,var(--safe-l));
       flex-shrink: 0;
     }
 
@@ -1106,10 +1108,7 @@
       gap: 12px;
     }
 
-    .tb-left {
-      flex: 1;
-      min-width: 0;
-    }
+    .tb-left { flex: 1; min-width: 0; }
 
     .tb-greet {
       font-size: 11px;
@@ -1144,7 +1143,7 @@
       border-radius: 22px;
       flex-shrink: 0;
       cursor: pointer;
-      border: 2px solid rgba(255, 255, 255, .15);
+      border: 2px solid rgba(255,255,255,.15);
       overflow: hidden;
       background: var(--tealD);
       display: flex;
@@ -1153,9 +1152,7 @@
       transition: border-color .15s;
     }
 
-    .tb-av:active {
-      border-color: var(--teal);
-    }
+    .tb-av:active { border-color: var(--teal); }
 
     .tb-av img {
       width: 100%;
@@ -1186,25 +1183,14 @@
 
     .qt-text {
       font-size: 12px;
-      color: rgba(255, 255, 255, .55);
+      color: rgba(255,255,255,.55);
       font-style: italic;
       line-height: 1.4;
     }
 
     /* Alias for new tb-quote-bar class */
-    .tb-quote-bar {
-      background: rgba(255, 255, 255, .05);
-      border-radius: 10px;
-      padding: 10px 14px;
-      border-left: 2px solid var(--teal);
-    }
-
-    #tbQuote {
-      font-size: 12px;
-      color: rgba(255, 255, 255, .55);
-      font-style: italic;
-      line-height: 1.4;
-    }
+    .tb-quote-bar { background: rgba(255,255,255,.05); border-radius: 10px; padding: 10px 14px; border-left: 2px solid var(--teal); }
+    #tbQuote { font-size: 12px; color: rgba(255,255,255,.55); font-style: italic; line-height: 1.4; }
 
     /* ── SAVE BAR ── */
     #saveBar {
@@ -1312,14 +1298,14 @@
 
     /* ── TAB BAR ── */
     #tabBar {
-      background: rgba(255, 255, 255, .95);
+      background: rgba(255,255,255,.95);
       backdrop-filter: blur(20px);
       -webkit-backdrop-filter: blur(20px);
-      border-top: 1px solid rgba(0, 0, 0, .06);
+      border-top: 1px solid rgba(0,0,0,.06);
       display: flex;
-      padding: 10px max(8px, var(--safe-r)) calc(var(--safe-b) + 8px) max(8px, var(--safe-l));
+      padding: 10px max(8px,var(--safe-r)) calc(var(--safe-b) + 8px) max(8px,var(--safe-l));
       flex-shrink: 0;
-      box-shadow: 0 -1px 0 rgba(0, 0, 0, .05);
+      box-shadow: 0 -1px 0 rgba(0,0,0,.05);
     }
 
     .tab {
@@ -1335,9 +1321,7 @@
       transition: transform .1s;
     }
 
-    .tab:active {
-      transform: scale(.88);
-    }
+    .tab:active { transform: scale(.88); }
 
     .tab-gl {
       font-size: 22px;
@@ -1403,7 +1387,7 @@
 ═══════════════════════════════════════════════════ */
     .h-hero {
       background: var(--ink);
-      padding: 0 max(20px, var(--safe-r)) 28px max(20px, var(--safe-l));
+      padding: 0 max(20px,var(--safe-r)) 28px max(20px,var(--safe-l));
     }
 
     .h-total {
@@ -1435,7 +1419,7 @@
       background: var(--paper);
       border-radius: 24px 24px 0 0;
       margin-top: -18px;
-      padding: 24px max(20px, var(--safe-r)) 20px max(20px, var(--safe-l));
+      padding: 24px max(20px,var(--safe-r)) 20px max(20px,var(--safe-l));
     }
 
     .pend-btn {
@@ -1515,7 +1499,7 @@
       font-size: 11px;
       font-weight: 700;
       color: var(--teal);
-      background: rgba(14, 165, 233, .08);
+      background: rgba(14,165,233,.08);
       border: none;
       cursor: pointer;
       padding: 4px 8px;
@@ -1529,45 +1513,30 @@
       gap: 10px;
       margin-bottom: 20px;
     }
-
     .bc-hero {
       background: var(--card);
       border-radius: var(--rXL);
       overflow: hidden;
       border: 1.5px solid var(--fog);
-      box-shadow: 0 4px 24px rgba(0, 0, 0, .07);
+      box-shadow: 0 4px 24px rgba(0,0,0,.07);
       cursor: pointer;
       transition: transform .1s;
       min-height: 130px;
     }
-
-    .bc-hero:active {
-      transform: scale(.985);
-    }
-
-    .bc-hero .bc-top {
-      height: 5px;
-    }
-
+    .bc-hero:active { transform: scale(.985); }
+    .bc-hero .bc-top { height: 5px; }
     .bc-hero .bc-body {
       padding: 16px 18px 18px;
       display: flex;
       flex-direction: column;
     }
-
     .bc-hero .bc-ic {
-      width: 36px;
-      height: 36px;
+      width: 36px; height: 36px;
       border-radius: 10px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 14px;
-      font-weight: 900;
-      border: 1.5px solid;
-      margin-bottom: 12px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 14px; font-weight: 900;
+      border: 1.5px solid; margin-bottom: 12px;
     }
-
     .bc-hero .bc-amt {
       font-size: 34px;
       font-weight: 900;
@@ -1575,7 +1544,6 @@
       line-height: 1;
       margin-bottom: 4px;
     }
-
     .bc-hero .bc-nm {
       font-size: 9px;
       font-weight: 800;
@@ -1584,17 +1552,8 @@
       letter-spacing: .12em;
       margin-bottom: 12px;
     }
-
-    .bc-hero .bc-pb {
-      height: 4px;
-      border-radius: 2px;
-      margin-top: auto;
-    }
-
-    .bc-hero .bc-pf {
-      height: 4px;
-      border-radius: 2px;
-    }
+    .bc-hero .bc-pb { height: 4px; border-radius: 2px; margin-top: auto; }
+    .bc-hero .bc-pf { height: 4px; border-radius: 2px; }
 
     /* Compact row for the other 3 buckets */
     .bc-compact-row {
@@ -1602,7 +1561,6 @@
       grid-template-columns: 1fr 1fr 1fr;
       gap: 8px;
     }
-
     .bc-compact {
       background: var(--card);
       border-radius: var(--rL);
@@ -1613,46 +1571,22 @@
       transition: transform .1s;
       padding: 10px;
     }
-
-    .bc-compact:active {
-      transform: scale(.94);
-    }
-
-    .bc-compact .bc-top {
-      height: 3px;
-      margin: -10px -10px 8px;
-    }
-
+    .bc-compact:active { transform: scale(.94); }
+    .bc-compact .bc-top { height: 3px; margin: -10px -10px 8px; }
     .bc-compact .bc-ic {
-      width: 24px;
-      height: 24px;
-      border-radius: 7px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 10px;
-      font-weight: 900;
-      border: 1.5px solid;
+      width: 24px; height: 24px; border-radius: 7px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 10px; font-weight: 900; border: 1.5px solid;
       margin-bottom: 6px;
     }
-
     .bc-compact .bc-amt {
-      font-size: 14px;
-      font-weight: 800;
-      margin-bottom: 2px;
+      font-size: 14px; font-weight: 800; margin-bottom: 2px;
     }
-
     .bc-compact .bc-nm {
-      font-size: 8px;
-      font-weight: 600;
-      color: var(--mist);
-      text-transform: uppercase;
-      letter-spacing: .08em;
+      font-size: 8px; font-weight: 600;
+      color: var(--mist); text-transform: uppercase; letter-spacing: .08em;
     }
-
-    .bc-compact.over {
-      border-color: var(--err);
-    }
+    .bc-compact.over { border-color: var(--err); }
 
     /* Keep legacy .bc for any other usage */
     .bc {
@@ -1901,10 +1835,7 @@
       color: var(--tealD);
       font-weight: 800;
     }
-
-    .src.on .src-ic {
-      color: var(--tealD);
-    }
+    .src.on .src-ic { color: var(--tealD); }
 
     .bkts {
       display: grid;
@@ -2550,13 +2481,11 @@
       padding: 14px 16px;
       margin-bottom: 6px;
       border: 1px solid var(--fog);
-      box-shadow: 0 1px 4px rgba(0, 0, 0, .04);
+      box-shadow: 0 1px 4px rgba(0,0,0,.04);
       transition: transform .1s;
     }
 
-    .htxn:active {
-      transform: scale(.99);
-    }
+    .htxn:active { transform: scale(.99); }
 
     .htxn-row {
       display: flex;
@@ -2614,30 +2543,10 @@
     }
 
     /* Bucket badge colours */
-    .htxn-bkt-necessary {
-      background: #f0fdf4;
-      color: #16a34a;
-    }
-
-    .htxn-bkt-committed {
-      background: #eef2ff;
-      color: #6366f1;
-    }
-
-    .htxn-bkt-comfortable {
-      background: #fffbeb;
-      color: #d97706;
-    }
-
-    .htxn-bkt-luxury {
-      background: #fff1f2;
-      color: #e11d48;
-    }
-
-    .htxn-bkt-unsorted {
-      background: var(--paper);
-      color: var(--mist);
-    }
+    .htxn-bkt-necessary { background: #f0fdf4; color: #16a34a; }
+    .htxn-bkt-committed { background: #eef2ff; color: #6366f1; }
+    .htxn-bkt-comfortable { background: #fffbeb; color: #d97706; }
+    .htxn-bkt-luxury { background: #fff1f2; color: #e11d48; }
 
     .htxn-right {
       text-align: right;
@@ -3151,7 +3060,7 @@
     #modal {
       position: fixed;
       inset: 0;
-      background: rgba(15, 23, 42, .65);
+      background: rgba(15,23,42,.65);
       backdrop-filter: blur(4px);
       -webkit-backdrop-filter: blur(4px);
       z-index: 900;
@@ -3173,7 +3082,7 @@
       max-width: 480px;
       max-height: 85vh;
       overflow-y: auto;
-      animation: mup .25s cubic-bezier(.32, 0, .67, 0);
+      animation: mup .25s cubic-bezier(.32,0,.67,0);
     }
 
     .m-handle {
@@ -3185,13 +3094,8 @@
     }
 
     @keyframes mup {
-      from {
-        transform: translateY(100%)
-      }
-
-      to {
-        transform: translateY(0)
-      }
+      from { transform: translateY(100%) }
+      to { transform: translateY(0) }
     }
 
     .m-title {
@@ -3226,10 +3130,7 @@
       transition: transform .1s, opacity .1s;
     }
 
-    .mb:active {
-      transform: scale(.97);
-      opacity: .9;
-    }
+    .mb:active { transform: scale(.97); opacity: .9; }
 
     .mb-ok {
       background: var(--teal);
@@ -3252,11 +3153,7 @@
       background: var(--paper);
       color: var(--slate);
     }
-
-    .mb-del {
-      background: #fee2e2;
-      color: #dc2626;
-    }
+    .mb-del { background: #fee2e2; color: #dc2626; }
 
     /* ═══════════════════════════════════════════════════
    TOAST
@@ -3266,7 +3163,7 @@
       bottom: calc(var(--safe-b) + 90px);
       left: 50%;
       transform: translateX(-50%) translateY(20px);
-      background: rgba(15, 23, 42, .92);
+      background: rgba(15,23,42,.92);
       backdrop-filter: blur(10px);
       -webkit-backdrop-filter: blur(10px);
       color: #fff;
@@ -3282,7 +3179,7 @@
       opacity: 0;
       pointer-events: none;
       transition: opacity .2s, transform .2s;
-      border: 1px solid rgba(255, 255, 255, .12);
+      border: 1px solid rgba(255,255,255,.12);
     }
 
     #toast.on {
@@ -4103,7 +4000,7 @@
       padding: 10px 16px;
       min-height: 44px;
       min-width: 80px;
-      -webkit-tap-highlight-color: rgba(0, 0, 0, .05);
+      -webkit-tap-highlight-color: rgba(0,0,0,.05);
       touch-action: manipulation;
     }
 
@@ -4454,193 +4351,63 @@
 
     /* FIX-2: Focus mode 3 levels */
     /* Focus mode — 3 levels with comprehensive coverage */
-    body.focus-comfortable {
-      font-size: 112%;
-    }
-
-    body.focus-large {
-      font-size: 128%;
-    }
-
+    body.focus-comfortable { font-size: 112%; }
+    body.focus-large { font-size: 128%; }
     /* Bucket cards */
-    body.focus-comfortable .bc-amt {
-      font-size: 19px !important;
-    }
-
-    body.focus-comfortable .bc-nm {
-      font-size: 10px !important;
-    }
-
-    body.focus-large .bc-amt {
-      font-size: 22px !important;
-    }
-
-    body.focus-large .bc-nm {
-      font-size: 11px !important;
-    }
-
+    body.focus-comfortable .bc-amt { font-size: 19px !important; }
+    body.focus-comfortable .bc-nm  { font-size: 10px !important; }
+    body.focus-large .bc-amt { font-size: 22px !important; }
+    body.focus-large .bc-nm  { font-size: 11px !important; }
     /* Transaction history */
-    body.focus-comfortable .htxn-am {
-      font-size: 17px !important;
-    }
-
-    body.focus-comfortable .htxn-nm {
-      font-size: 14px !important;
-    }
-
-    body.focus-comfortable .htxn-dt {
-      font-size: 11px !important;
-    }
-
-    body.focus-large .htxn-am {
-      font-size: 20px !important;
-    }
-
-    body.focus-large .htxn-nm {
-      font-size: 16px !important;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      white-space: nowrap;
-    }
-
-    body.focus-large .htxn-dt {
-      font-size: 12px !important;
-    }
-
+    body.focus-comfortable .htxn-am { font-size: 17px !important; }
+    body.focus-comfortable .htxn-nm { font-size: 14px !important; }
+    body.focus-comfortable .htxn-dt { font-size: 11px !important; }
+    body.focus-large .htxn-am { font-size: 20px !important; }
+    body.focus-large .htxn-nm { font-size: 16px !important; overflow:hidden;text-overflow:ellipsis;white-space:nowrap; }
+    body.focus-large .htxn-dt { font-size: 12px !important; }
     /* Tab bar */
-    body.focus-comfortable .tab-lbl {
-      font-size: 11px !important;
-    }
-
-    body.focus-large .tab-lbl {
-      font-size: 12px !important;
-    }
-
-    body.focus-comfortable .tab-gl {
-      font-size: 22px !important;
-    }
-
-    body.focus-large .tab-gl {
-      font-size: 25px !important;
-    }
-
+    body.focus-comfortable .tab-lbl { font-size: 11px !important; }
+    body.focus-large .tab-lbl { font-size: 12px !important; }
+    body.focus-comfortable .tab-gl { font-size: 22px !important; }
+    body.focus-large .tab-gl { font-size: 25px !important; }
     /* Top bar */
-    body.focus-comfortable .tb-name {
-      font-size: 27px !important;
-    }
-
-    body.focus-large .tb-name {
-      font-size: 31px !important;
-    }
-
-    body.focus-comfortable .tb-greet {
-      font-size: 12px !important;
-    }
-
-    body.focus-large .tb-greet {
-      font-size: 13px !important;
-    }
-
+    body.focus-comfortable .tb-name { font-size: 27px !important; }
+    body.focus-large .tb-name { font-size: 31px !important; }
+    body.focus-comfortable .tb-greet { font-size: 12px !important; }
+    body.focus-large .tb-greet { font-size: 13px !important; }
     /* Month total */
-    body.focus-comfortable .mm-tv {
-      font-size: 34px !important;
-    }
-
-    body.focus-large .mm-tv {
-      font-size: 38px !important;
-    }
-
+    body.focus-comfortable .mm-tv { font-size: 34px !important; }
+    body.focus-large .mm-tv { font-size: 38px !important; }
     /* Settings & body text */
-    body.focus-comfortable .s-lbl {
-      font-size: 11px !important;
-    }
-
-    body.focus-large .s-lbl {
-      font-size: 12px !important;
-    }
-
-    body.focus-comfortable .act-t {
-      font-size: 15px !important;
-    }
-
-    body.focus-large .act-t {
-      font-size: 17px !important;
-    }
-
-    body.focus-comfortable .act-s {
-      font-size: 12px !important;
-    }
-
-    body.focus-large .act-s {
-      font-size: 13px !important;
-    }
-
+    body.focus-comfortable .s-lbl { font-size: 11px !important; }
+    body.focus-large .s-lbl { font-size: 12px !important; }
+    body.focus-comfortable .act-t { font-size: 15px !important; }
+    body.focus-large .act-t { font-size: 17px !important; }
+    body.focus-comfortable .act-s { font-size: 12px !important; }
+    body.focus-large .act-s { font-size: 13px !important; }
     /* Insight/story cards */
     body.focus-comfortable .ai-insight-text,
-    body.focus-comfortable .ai-story-text {
-      font-size: 14px !important;
-    }
-
+    body.focus-comfortable .ai-story-text { font-size: 14px !important; }
     body.focus-large .ai-insight-text,
-    body.focus-large .ai-story-text {
-      font-size: 16px !important;
-    }
-
+    body.focus-large .ai-story-text { font-size: 16px !important; }
     /* Buttons */
-    body.focus-comfortable .mb {
-      font-size: 16px !important;
-      padding: 15px !important;
-    }
-
-    body.focus-large .mb {
-      font-size: 18px !important;
-      padding: 17px !important;
-    }
-
+    body.focus-comfortable .mb { font-size: 16px !important; padding: 15px !important; }
+    body.focus-large .mb { font-size: 18px !important; padding: 17px !important; }
     /* Minimum tap targets in large mode */
-    body.focus-large .tab {
-      min-height: 60px;
-    }
-
-    body.focus-large button {
-      min-height: 44px;
-    }
-
+    body.focus-large .tab { min-height: 60px; }
+    body.focus-large button { min-height: 44px; }
     .focus-badge {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      background: var(--paper);
-      border: 1.5px solid var(--fog);
-      border-radius: 8px;
-      padding: 4px 10px;
-      gap: 6px;
-      cursor: pointer;
-      transition: all .15s;
-      min-width: 120px;
+      display: inline-flex; align-items: center; justify-content: center;
+      background: var(--paper); border: 1.5px solid var(--fog);
+      border-radius: 8px; padding: 4px 10px; gap: 6px;
+      cursor: pointer; transition: all .15s; min-width: 120px;
     }
-
     .focus-badge-aa {
-      font-size: 18px;
-      font-weight: 800;
-      color: var(--teal);
-      line-height: 1;
-      transition: font-size .2s;
+      font-size: 18px; font-weight: 800; color: var(--teal); line-height: 1; transition: font-size .2s;
     }
-
-    .focus-badge-label {
-      font-size: 12px;
-      font-weight: 600;
-      color: var(--slate);
-    }
-
-    body.focus-comfortable .focus-badge-aa {
-      font-size: 22px;
-    }
-
-    body.focus-large .focus-badge-aa {
-      font-size: 26px;
-    }
+    .focus-badge-label { font-size: 12px; font-weight: 600; color: var(--slate); }
+    body.focus-comfortable .focus-badge-aa { font-size: 22px; }
+    body.focus-large .focus-badge-aa { font-size: 26px; }
 
     /* ── FOCUS MODE (accessibility) ── */
     body.focus-mode {
@@ -4713,968 +4480,349 @@
     body.focus-mode #tabBar {
       padding: 12px max(8px, var(--safe-r)) calc(var(--safe-b) + 12px) max(8px, var(--safe-l));
     }
-
-    /* ── AI FEATURES CSS ─────────────────────────────────── */
-    /* Smart Add bar */
-    .ai-add-bar {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      background: var(--card);
-      border: 1.5px solid var(--fog);
-      border-radius: 16px;
-      padding: 12px 14px;
-      margin: 12px max(16px, var(--safe-r)) 0 max(16px, var(--safe-l));
-      box-shadow: 0 2px 8px rgba(0, 0, 0, .06)
-    }
-
-    .ai-add-input {
-      flex: 1;
-      border: none;
-      background: none;
-      font-size: 15px;
-      color: var(--ink);
-      font-family: var(--ff);
-      outline: none;
-      min-width: 0
-    }
-
-    .ai-add-input::placeholder {
-      color: var(--mist)
-    }
-
-    .ai-add-btn {
-      width: 36px;
-      height: 36px;
-      border-radius: 10px;
-      border: none;
-      background: var(--tealL);
-      color: var(--tealD);
-      font-size: 16px;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      flex-shrink: 0;
-      transition: background .12s
-    }
-
-    .ai-add-btn:active {
-      background: var(--teal);
-      color: #fff
-    }
-
-    .ai-add-btn:disabled {
-      opacity: .4;
-      cursor: not-allowed
-    }
-
-    /* AI confirmation card */
-    .ai-confirm-card {
-      margin: 10px 16px;
-      background: var(--card);
-      border-radius: 16px;
-      border: 1.5px solid var(--teal);
-      overflow: hidden;
-      animation: fadeUp .2s ease
-    }
-
-    .ai-confirm-row {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      padding: 12px 14px;
-      border-bottom: 1px solid var(--fog)
-    }
-
-    .ai-confirm-row:last-child {
-      border-bottom: none
-    }
-
-    .ai-confirm-label {
-      font-size: 10px;
-      font-weight: 700;
-      color: var(--mist);
-      letter-spacing: 1.5px;
-      text-transform: uppercase;
-      width: 64px;
-      flex-shrink: 0
-    }
-
-    .ai-confirm-value {
-      flex: 1;
-      font-size: 14px;
-      font-weight: 600;
-      color: var(--ink)
-    }
-
-    .ai-confirm-edit {
-      font-size: 11px;
-      color: var(--teal);
-      font-weight: 700;
-      background: none;
-      border: none;
-      cursor: pointer;
-      font-family: var(--ff);
-      padding: 0
-    }
-
-    .ai-save-btn {
-      display: block;
-      width: calc(100% - 32px);
-      margin: 10px 16px;
-      padding: 14px;
-      background: var(--teal);
-      color: #fff;
-      border: none;
-      border-radius: 14px;
-      font-size: 15px;
-      font-weight: 700;
-      font-family: var(--ff);
-      cursor: pointer;
-      letter-spacing: .3px
-    }
-
-    .ai-save-btn:active {
-      opacity: .85
-    }
-
-    .ai-manual-toggle {
-      text-align: center;
-      padding: 8px 0 4px;
-      font-size: 12px;
-      color: var(--mist);
-      cursor: pointer;
-      font-family: var(--ff)
-    }
-
-    .ai-manual-toggle span {
-      color: var(--teal);
-      font-weight: 600
-    }
-
-    /* AI status / thinking */
-    .ai-status {
-      font-size: 12px;
-      color: var(--mist);
-      padding: 6px 16px 0;
-      min-height: 20px;
-      font-style: italic
-    }
-
-    /* Voice indicator */
-    .ai-voice-ring {
-      display: inline-block;
-      width: 36px;
-      height: 36px;
-      border-radius: 10px;
-      background: #fee2e2;
-      color: #ef4444;
-      border: none;
-      font-size: 18px;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      flex-shrink: 0;
-      transition: all .15s
-    }
-
-    .ai-voice-ring.recording {
-      background: #ef4444;
-      color: #fff;
-      animation: pulse 1s infinite
-    }
-
-    /* Photo scan */
-    .ai-photo-btn {
-      width: 36px;
-      height: 36px;
-      border-radius: 10px;
-      background: #ede9fe;
-      color: #7c3aed;
-      border: none;
-      font-size: 16px;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      flex-shrink: 0
-    }
-
-    /* OCR progress */
-    .ai-ocr-progress {
-      margin: 8px 16px;
-      font-size: 12px;
-      color: var(--teal);
-      font-weight: 600;
-      display: none
-    }
-
-    /* AI Insight card on Home */
-    .ai-insight-card {
-      margin: 0 max(16px, var(--safe-r)) 14px max(16px, var(--safe-l));
-      background: linear-gradient(135deg, var(--tealL), #ede9fe22);
-      border: 1px solid var(--teal);
-      border-radius: 16px;
-      padding: 14px 16px;
-      position: relative
-    }
-
-    .ai-insight-eyebrow {
-      font-size: 9px;
-      font-weight: 800;
-      color: var(--tealD);
-      letter-spacing: 2px;
-      text-transform: uppercase;
-      margin-bottom: 5px
-    }
-
-    .ai-insight-text {
-      font-size: 13px;
-      color: var(--ink);
-      font-weight: 500;
-      line-height: 1.5
-    }
-
-    .ai-insight-close {
-      position: absolute;
-      top: 10px;
-      right: 12px;
-      background: none;
-      border: none;
-      font-size: 14px;
-      color: var(--mist);
-      cursor: pointer;
-      font-family: var(--ff)
-    }
-
-    /* AI Reaction toast — slightly taller */
-    .ai-reaction {
-      font-size: 13px;
-      line-height: 1.4
-    }
-
-    /* Monthly Story card */
-    .ai-story-card {
-      margin: 12px max(16px, var(--safe-r)) 12px max(16px, var(--safe-l));
-      background: var(--card);
-      border-radius: 16px;
-      padding: 16px;
-      border-left: 3px solid var(--teal)
-    }
-
-    .ai-story-eyebrow {
-      font-size: 9px;
-      font-weight: 800;
-      color: var(--tealD);
-      letter-spacing: 2px;
-      margin-bottom: 8px
-    }
-
-    .ai-story-text {
-      font-size: 13px;
-      color: var(--ink);
-      line-height: 1.7
-    }
-
-    /* Honest Mirror card */
-    .ai-mirror-card {
-      margin: 12px max(16px, var(--safe-r)) 12px max(16px, var(--safe-l));
-      background: #fffbeb;
-      border-radius: 16px;
-      padding: 16px;
-      border: 1px solid #fde68a
-    }
-
-    .ai-mirror-text {
-      font-size: 13px;
-      color: #92400e;
-      line-height: 1.6;
-      margin-bottom: 10px
-    }
-
-    .ai-mirror-btn {
-      background: #f59e0b;
-      color: #fff;
-      border: none;
-      border-radius: 10px;
-      padding: 9px 16px;
-      font-size: 13px;
-      font-weight: 700;
-      cursor: pointer;
-      font-family: var(--ff)
-    }
-
-    /* Forecast card */
-    .ai-forecast-card {
-      margin: 0 max(16px, var(--safe-r)) 14px max(16px, var(--safe-l));
-      background: var(--card);
-      border-radius: 16px;
-      padding: 14px 16px;
-      border: 1px solid var(--fog)
-    }
-
-    .ai-forecast-eyebrow {
-      font-size: 9px;
-      font-weight: 800;
-      color: var(--mist);
-      letter-spacing: 2px;
-      margin-bottom: 6px
-    }
-
-    .ai-forecast-text {
-      font-size: 13px;
-      color: var(--ink);
-      line-height: 1.5
-    }
-
-    .ai-forecast-bar {
-      height: 6px;
-      background: var(--fog);
-      border-radius: 3px;
-      margin-top: 10px;
-      overflow: hidden
-    }
-
-    .ai-forecast-fill {
-      height: 100%;
-      border-radius: 3px;
-      background: var(--teal);
-      transition: width .4s ease
-    }
-
-    @keyframes fadeUp {
-      from {
-        opacity: 0;
-        transform: translateY(8px)
-      }
-
-      to {
-        opacity: 1;
-        transform: translateY(0)
-      }
-    }
-
-    @keyframes pulse {
-
-      0%,
-      100% {
-        box-shadow: 0 0 0 0 rgba(239, 68, 68, .4)
-      }
-
-      50% {
-        box-shadow: 0 0 0 8px rgba(239, 68, 68, 0)
-      }
-    }
-
-    /* BUG-012: prefers-reduced-motion — accessibility */
-    @media (prefers-reduced-motion: reduce) {
-
-      *,
-      *::before,
-      *::after {
-        animation-duration: 0.01ms !important;
-        animation-iteration-count: 1 !important;
-        transition-duration: 0.01ms !important;
-      }
-    }
-
-    /* BUG-022: keyboard focus indicator */
-    button:focus-visible {
-      outline: 2px solid var(--teal);
-      outline-offset: 2px;
-      border-radius: 4px;
-    }
-
-    /* ── NATIVE APP FEEL IMPROVEMENTS ─────────────────────────── */
-    /* Momentum scrolling on all scroll containers */
-    .scr-body,
-    .fbar,
-    .tag-chips,
-    .srcs,
-    .bkts,
-    .src-balance-pill {
-      -webkit-overflow-scrolling: touch;
-      overscroll-behavior: contain;
-    }
-
-    /* GPU-accelerate scrolling containers */
-    .scr-body {
-      -webkit-transform: translateZ(0);
-      transform: translateZ(0);
-      will-change: scroll-position;
-    }
-
-    /* Prevent text selection on interactive elements */
-    .tab,
-    .bc,
-    .fp,
-    .mb,
-    .shdr-back,
-    .shdr-action,
-    .sbn-action,
-    .tab-fab {
-      -webkit-user-select: none;
-      user-select: none;
-      -webkit-touch-callout: none;
-    }
-
-    /* Better active states for cards — instant feedback */
-    .bc {
-      transition: transform .08s ease, box-shadow .08s ease;
-    }
-
-    .bc:active {
-      transform: scale(.97);
-      box-shadow: none;
-    }
-
-    .htxn:active {
-      opacity: .85;
-    }
-
-    /* Tab bar active state */
-    .tab:active .tab-gl {
-      transform: scale(.88);
-    }
-
-    .tab .tab-gl {
-      transition: transform .1s;
-    }
-
-    /* Prevent iOS double-tap zoom on buttons */
-    .tab,
-    button,
-    a {
-      touch-action: manipulation;
-    }
-
-    /* Smoother tab transitions */
-    .scr {
-      transition: none;
-    }
-
-    /* no flash between screens */
-    /* History amounts never wrap or clip */
-    .htxn-am {
-      overflow: hidden;
-      text-overflow: ellipsis;
-    }
-
-    /* Bucket grid equal-height cards */
-    .bgrid {
-      align-items: stretch;
-    }
-
-    .bc {
-      display: flex;
-      flex-direction: column;
-    }
-
-    .bc-body {
-      flex: 1;
-      display: flex;
-      flex-direction: column;
-      justify-content: space-between;
-    }
-
-    /* Sources empty state centering */
-    .src-empty {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      padding: 60px 32px;
-      text-align: center;
-      flex: 1;
-      min-height: 300px;
-    }
-
-    /* Insights cards full-width */
-    .ins-card {
-      margin-left: max(16px, var(--safe-l));
-      margin-right: max(16px, var(--safe-r));
-    }
-
-    /* Fix: bottom safe area for scr-body so last item not hidden behind tab bar */
-    .scr-body {
-      padding-bottom: calc(env(safe-area-inset-bottom, 0px) + 8px);
-    }
-
-    /* scr-body--padded: content padding that respects safe areas */
-    .scr-body--padded {
-      padding-top: 16px;
-      padding-bottom: calc(16px + env(safe-area-inset-bottom, 0px));
-      padding-left: max(16px, env(safe-area-inset-left, 0px));
-      padding-right: max(16px, env(safe-area-inset-right, 0px));
-    }
-
-    /* When insightsBody has padded container, inner cards should use 0 margin */
-    #insightsBody .ins-card {
-      margin-left: 0;
-      margin-right: 0;
-    }
-
-    /* FIX-4: AI Config settings section */
-    .ai-cfg-section {
-      font-size: 9px;
-      font-weight: 800;
-      color: var(--mist);
-      letter-spacing: .08em;
-      text-transform: uppercase;
-      padding: 10px 0 4px;
-      margin-top: 4px;
-      border-top: 1px solid var(--fog);
-    }
-
-    .ai-cfg-section:first-child {
-      border-top: none;
-      margin-top: 0;
-    }
-
-    .ai-cfg-row {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 9px 0;
-      border-bottom: 1px solid var(--fog);
-      gap: 12px;
-    }
-
-    .ai-cfg-row:last-child {
-      border-bottom: none;
-    }
-
-    .ai-cfg-info {
-      flex: 1;
-      min-width: 0;
-    }
-
-    .ai-cfg-label {
-      font-size: 13px;
-      font-weight: 600;
-      color: var(--ink);
-    }
-
-    .ai-cfg-desc {
-      font-size: 11px;
-      color: var(--mist);
-      margin-top: 2px;
-    }
-
-    .ai-cfg-toggle {
-      flex-shrink: 0;
-      padding: 5px 12px;
-      border-radius: 20px;
-      font-size: 11px;
-      font-weight: 700;
-      border: 1.5px solid var(--fog);
-      background: var(--paper);
-      color: var(--slate);
-      cursor: pointer;
-      transition: all .15s;
-      min-width: 44px;
-      text-align: center;
-      font-family: var(--ff);
-    }
-
-    .ai-cfg-toggle.on {
-      background: var(--teal);
-      color: #fff;
-      border-color: var(--teal);
-    }
-
-    /* FIX-5A: My Month peek pattern — faint gradient reveals more content below */
-    #mmBody:not(.scrolled-once) {
-      -webkit-mask-image: linear-gradient(to bottom, black 0%, black calc(100% - 48px), transparent 100%);
-      mask-image: linear-gradient(to bottom, black 0%, black calc(100% - 48px), transparent 100%);
-    }
-
-    /* FIX-6A: Coloured left border per bucket on transaction cards */
-    .htxn {
-      border-left: 3.5px solid var(--fog);
-    }
-
-    .htxn[data-bucket="necessary"] {
-      border-left-color: #10b981;
-    }
-
-    .htxn[data-bucket="committed"] {
-      border-left-color: #818cf8;
-    }
-
-    .htxn[data-bucket="comfortable"] {
-      border-left-color: #f59e0b;
-    }
-
-    .htxn[data-bucket="luxury"] {
-      border-left-color: #f43f5e;
-    }
-
-    .htxn[data-bucket=""] {
-      border-left-color: var(--fog);
-    }
-
-    /* FIX-6B: Group header total */
-    .mgrp-tot {
-      font-size: 11px;
-      font-weight: 700;
-      color: var(--teal);
-    }
-
-    /* FIX-6C: Swipe actions */
-    .htxn-wrap {
-      position: relative;
-      overflow: hidden;
-      border-radius: var(--r);
-      margin-bottom: 8px;
-    }
-
-    .htxn-wrap .htxn {
-      margin-bottom: 0;
-      border-radius: var(--r);
-      transition: transform .22s ease;
-    }
-
-    .htxn-actions-reveal {
-      position: absolute;
-      right: 0;
-      top: 0;
-      bottom: 0;
-      display: flex;
-      align-items: stretch;
-      transform: translateX(100%);
-      transition: transform .22s ease;
-      border-radius: 0 var(--r) var(--r) 0;
-      overflow: hidden;
-      width: 160px;
-    }
-
-    .htxn-wrap.swiped .htxn-actions-reveal {
-      transform: translateX(0);
-    }
-
-    .htxn-wrap.swiped .htxn {
-      transform: translateX(-160px);
-      border-radius: var(--r) 0 0 var(--r);
-    }
-
-    .hact-del {
-      background: #ef4444;
-      color: #fff;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      width: 80px;
-      font-size: 11px;
-      font-weight: 700;
-      cursor: pointer;
-      border: none;
-      gap: 4px;
-      font-family: var(--ff);
-    }
-
-    .hact-move {
-      background: var(--teal);
-      color: #fff;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      width: 80px;
-      font-size: 11px;
-      font-weight: 700;
-      cursor: pointer;
-      border: none;
-      gap: 4px;
-      font-family: var(--ff);
-    }
-
-    /* ── REDESIGN v5.0: FLOATING ADD BUTTON (FAB) ── */
-    #fabAdd {
-      position: fixed;
-      bottom: calc(var(--safe-b) + 68px);
-      right: max(20px, var(--safe-r));
-      width: 58px;
-      height: 58px;
-      border-radius: 50%;
-      background: var(--teal);
-      color: #fff;
-      font-size: 28px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      box-shadow: 0 4px 20px rgba(14, 165, 233, .5), 0 0 0 0 rgba(14, 165, 233, .4);
-      border: none;
-      cursor: pointer;
-      z-index: 200;
-      transition: transform .15s, box-shadow .15s;
-      animation: fabPulse 3s ease infinite;
-      line-height: 1;
-    }
-
-    #fabAdd:active {
-      transform: scale(.9);
-      box-shadow: 0 2px 10px rgba(14, 165, 233, .4);
-    }
-
-    @keyframes fabPulse {
-
-      0%,
-      100% {
-        box-shadow: 0 4px 20px rgba(14, 165, 233, .5), 0 0 0 0 rgba(14, 165, 233, .3);
-      }
-
-      50% {
-        box-shadow: 0 4px 20px rgba(14, 165, 233, .5), 0 0 0 10px rgba(14, 165, 233, .0);
-      }
-    }
-
-    body.on-add-screen #fabAdd {
-      display: none;
-    }
-
-    #tabBar .tab-add-slot {
-      display: none;
-    }
-
-    /* ── REDESIGN v5.0: PERSONALITY BADGE ── */
-    .personality-badge {
-      background: linear-gradient(135deg, var(--ink) 0%, #1e293b 100%);
-      border-radius: var(--rXL);
-      padding: 24px 22px;
-      margin-bottom: 14px;
-      border: 1px solid rgba(255, 255, 255, .08);
-      position: relative;
-      overflow: hidden;
-    }
-
-    .personality-badge::before {
-      content: '';
-      position: absolute;
-      top: -40px;
-      right: -40px;
-      width: 120px;
-      height: 120px;
-      background: radial-gradient(circle, rgba(14, 165, 233, .15) 0%, transparent 70%);
-      border-radius: 50%;
-    }
-
-    .personality-label {
-      font-size: 9px;
-      font-weight: 800;
-      color: var(--teal);
-      text-transform: uppercase;
-      letter-spacing: .14em;
-      margin-bottom: 8px;
-    }
-
-    .personality-title {
-      font-size: 26px;
-      font-weight: 900;
-      color: #fff;
-      letter-spacing: -.8px;
-      line-height: 1.1;
-      margin-bottom: 8px;
-    }
-
-    .personality-desc {
-      font-size: 13px;
-      color: rgba(255, 255, 255, .55);
-      line-height: 1.5;
-    }
-
-    /* ── REDESIGN v5.0: MY MONTH HERO ── */
-    .mm-hero {
-      background: var(--ink);
-      padding: 20px max(20px, var(--safe-r)) 28px max(20px, var(--safe-l));
-    }
-
-    .mm-month-label {
-      font-size: 10px;
-      font-weight: 800;
-      color: var(--mist);
-      text-transform: uppercase;
-      letter-spacing: .12em;
-      margin-bottom: 8px;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
-
-    .mm-total {
-      font-size: 44px;
-      font-weight: 900;
-      color: var(--teal);
-      letter-spacing: -2.5px;
-      line-height: 1;
-      margin-bottom: 16px;
-    }
-
-    /* ── REDESIGN v5.0: ANNUAL WRAP ── */
-    #pgAnnualWrap {
-      background: var(--ink);
-      z-index: 500;
-    }
-
-    .aw-header {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: calc(var(--safe-t) + 12px) 20px 12px;
-      border-bottom: 1px solid rgba(255, 255, 255, .08);
-    }
-
-    .aw-title {
-      font-size: 15px;
-      font-weight: 800;
-      color: #fff;
-    }
-
-    .aw-close,
-    .aw-share {
-      font-size: 14px;
-      font-weight: 700;
-      color: var(--teal);
-      background: none;
-      border: none;
-      cursor: pointer;
-      padding: 6px 10px;
-    }
-
-    .aw-body {
-      padding: 24px 20px;
-      overflow-y: auto;
-      display: flex;
-      flex-direction: column;
-      gap: 14px;
-      -webkit-overflow-scrolling: touch;
-    }
-
-    .aw-card {
-      background: rgba(255, 255, 255, .05);
-      border: 1px solid rgba(255, 255, 255, .08);
-      border-radius: 18px;
-      padding: 20px;
-      animation: fadeSlideUp .4s ease both;
-    }
-
-    .aw-card:nth-child(1) {
-      animation-delay: .0s;
-    }
-
-    .aw-card:nth-child(2) {
-      animation-delay: .1s;
-    }
-
-    .aw-card:nth-child(3) {
-      animation-delay: .2s;
-    }
-
-    .aw-card:nth-child(4) {
-      animation-delay: .3s;
-    }
-
-    .aw-card:nth-child(5) {
-      animation-delay: .4s;
-    }
-
-    .aw-card:nth-child(6) {
-      animation-delay: .5s;
-    }
-
-    @keyframes fadeSlideUp {
-      from {
-        opacity: 0;
-        transform: translateY(20px);
-      }
-
-      to {
-        opacity: 1;
-        transform: translateY(0);
-      }
-    }
-
-    .aw-label {
-      font-size: 9px;
-      font-weight: 800;
-      color: var(--teal);
-      text-transform: uppercase;
-      letter-spacing: .12em;
-      margin-bottom: 6px;
-    }
-
-    .aw-value {
-      font-size: 32px;
-      font-weight: 900;
-      color: #fff;
-      letter-spacing: -1.5px;
-      line-height: 1;
-    }
-
-    .aw-sub {
-      font-size: 12px;
-      color: rgba(255, 255, 255, .45);
-      margin-top: 4px;
-    }
-
-    /* ── REDESIGN v5.0: CATEGORY CREEP CARD ── */
-    .creep-card {
-      background: #fff7ed;
-      border: 1px solid #fdba74;
-      border-radius: 14px;
-      padding: 14px 16px;
-      margin-bottom: 10px;
-    }
-
-    .creep-title {
-      font-size: 13px;
-      font-weight: 800;
-      color: #c2410c;
-      margin-bottom: 4px;
-    }
-
-    .creep-body {
-      font-size: 12px;
-      color: #9a3412;
-      line-height: 1.5;
-    }
-
-    /* ── REDESIGN v5.0: Tab bar .tab-add-slot hidden ── */
-    .tab[data-t="add"] {
-      display: none;
-    }
+  /* ── AI FEATURES CSS ─────────────────────────────────── */
+  /* Smart Add bar */
+  .ai-add-bar{display:flex;align-items:center;gap:10px;background:var(--card);border:1.5px solid var(--fog);border-radius:16px;padding:12px 14px;margin:12px max(16px, var(--safe-r)) 0 max(16px, var(--safe-l));box-shadow:0 2px 8px rgba(0,0,0,.06)}
+  .ai-add-input{flex:1;border:none;background:none;font-size:15px;color:var(--ink);font-family:var(--ff);outline:none;min-width:0}
+  .ai-add-input::placeholder{color:var(--mist)}
+  .ai-add-btn{width:36px;height:36px;border-radius:10px;border:none;background:var(--tealL);color:var(--tealD);font-size:16px;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:background .12s}
+  .ai-add-btn:active{background:var(--teal);color:#fff}
+  .ai-add-btn:disabled{opacity:.4;cursor:not-allowed}
+  /* AI confirmation card */
+  .ai-confirm-card{margin:10px 16px;background:var(--card);border-radius:16px;border:1.5px solid var(--teal);overflow:hidden;animation:fadeUp .2s ease}
+  .ai-confirm-row{display:flex;align-items:center;gap:10px;padding:12px 14px;border-bottom:1px solid var(--fog)}
+  .ai-confirm-row:last-child{border-bottom:none}
+  .ai-confirm-label{font-size:10px;font-weight:700;color:var(--mist);letter-spacing:1.5px;text-transform:uppercase;width:64px;flex-shrink:0}
+  .ai-confirm-value{flex:1;font-size:14px;font-weight:600;color:var(--ink)}
+  .ai-confirm-edit{font-size:11px;color:var(--teal);font-weight:700;background:none;border:none;cursor:pointer;font-family:var(--ff);padding:0}
+  .ai-save-btn{display:block;width:calc(100% - 32px);margin:10px 16px;padding:14px;background:var(--teal);color:#fff;border:none;border-radius:14px;font-size:15px;font-weight:700;font-family:var(--ff);cursor:pointer;letter-spacing:.3px}
+  .ai-save-btn:active{opacity:.85}
+  .ai-manual-toggle{text-align:center;padding:8px 0 4px;font-size:12px;color:var(--mist);cursor:pointer;font-family:var(--ff)}
+  .ai-manual-toggle span{color:var(--teal);font-weight:600}
+  /* AI status / thinking */
+  .ai-status{font-size:12px;color:var(--mist);padding:6px 16px 0;min-height:20px;font-style:italic}
+  /* Voice indicator */
+  .ai-voice-ring{display:inline-block;width:36px;height:36px;border-radius:10px;background:#fee2e2;color:#ef4444;border:none;font-size:18px;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all .15s}
+  .ai-voice-ring.recording{background:#ef4444;color:#fff;animation:pulse 1s infinite}
+  /* Photo scan */
+  .ai-photo-btn{width:36px;height:36px;border-radius:10px;background:#ede9fe;color:#7c3aed;border:none;font-size:16px;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+  /* OCR progress */
+  .ai-ocr-progress{margin:8px 16px;font-size:12px;color:var(--teal);font-weight:600;display:none}
+  /* AI Insight card on Home */
+  .ai-insight-card{margin:0 max(16px, var(--safe-r)) 14px max(16px, var(--safe-l));background:linear-gradient(135deg,var(--tealL),#ede9fe22);border:1px solid var(--teal);border-radius:16px;padding:14px 16px;position:relative}
+  .ai-insight-eyebrow{font-size:9px;font-weight:800;color:var(--tealD);letter-spacing:2px;text-transform:uppercase;margin-bottom:5px}
+  .ai-insight-text{font-size:13px;color:var(--ink);font-weight:500;line-height:1.5}
+  .ai-insight-close{position:absolute;top:10px;right:12px;background:none;border:none;font-size:14px;color:var(--mist);cursor:pointer;font-family:var(--ff)}
+  /* AI Reaction toast — slightly taller */
+  .ai-reaction{font-size:13px;line-height:1.4}
+  /* Monthly Story card */
+  .ai-story-card{margin:12px max(16px, var(--safe-r)) 12px max(16px, var(--safe-l));background:var(--card);border-radius:16px;padding:16px;border-left:3px solid var(--teal)}
+  .ai-story-eyebrow{font-size:9px;font-weight:800;color:var(--tealD);letter-spacing:2px;margin-bottom:8px}
+  .ai-story-text{font-size:13px;color:var(--ink);line-height:1.7}
+  /* Honest Mirror card */
+  .ai-mirror-card{margin:12px max(16px, var(--safe-r)) 12px max(16px, var(--safe-l));background:#fffbeb;border-radius:16px;padding:16px;border:1px solid #fde68a}
+  .ai-mirror-text{font-size:13px;color:#92400e;line-height:1.6;margin-bottom:10px}
+  .ai-mirror-btn{background:#f59e0b;color:#fff;border:none;border-radius:10px;padding:9px 16px;font-size:13px;font-weight:700;cursor:pointer;font-family:var(--ff)}
+  /* Forecast card */
+  .ai-forecast-card{margin:0 max(16px, var(--safe-r)) 14px max(16px, var(--safe-l));background:var(--card);border-radius:16px;padding:14px 16px;border:1px solid var(--fog)}
+  .ai-forecast-eyebrow{font-size:9px;font-weight:800;color:var(--mist);letter-spacing:2px;margin-bottom:6px}
+  .ai-forecast-text{font-size:13px;color:var(--ink);line-height:1.5}
+  .ai-forecast-bar{height:6px;background:var(--fog);border-radius:3px;margin-top:10px;overflow:hidden}
+  .ai-forecast-fill{height:100%;border-radius:3px;background:var(--teal);transition:width .4s ease}
+  @keyframes fadeUp{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+  @keyframes pulse{0%,100%{box-shadow:0 0 0 0 rgba(239,68,68,.4)}50%{box-shadow:0 0 0 8px rgba(239,68,68,0)}}
+
+  /* BUG-012: prefers-reduced-motion — accessibility */
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+    }
+  }
+
+  /* BUG-022: keyboard focus indicator */
+  button:focus-visible { outline: 2px solid var(--teal); outline-offset: 2px; border-radius: 4px; }
+
+  /* ── NATIVE APP FEEL IMPROVEMENTS ─────────────────────────── */
+  /* Momentum scrolling on all scroll containers */
+  .scr-body, .fbar, .tag-chips, .srcs, .bkts, .src-balance-pill {
+    -webkit-overflow-scrolling: touch;
+    overscroll-behavior: contain;
+  }
+  /* GPU-accelerate scrolling containers */
+  .scr-body {
+    -webkit-transform: translateZ(0);
+    transform: translateZ(0);
+    will-change: scroll-position;
+  }
+  /* Prevent text selection on interactive elements */
+  .tab, .bc, .fp, .mb, .shdr-back, .shdr-action, .sbn-action, .tab-fab {
+    -webkit-user-select: none;
+    user-select: none;
+    -webkit-touch-callout: none;
+  }
+  /* Better active states for cards — instant feedback */
+  .bc { transition: transform .08s ease, box-shadow .08s ease; }
+  .bc:active { transform: scale(.97); box-shadow: none; }
+  .htxn:active { opacity: .85; }
+  /* Tab bar active state */
+  .tab:active .tab-gl { transform: scale(.88); }
+  .tab .tab-gl { transition: transform .1s; }
+  /* Prevent iOS double-tap zoom on buttons */
+  .tab, button, a { touch-action: manipulation; }
+  /* Smoother tab transitions */
+  .scr { transition: none; } /* no flash between screens */
+  /* History amounts never wrap or clip */
+  .htxn-am { overflow: hidden; text-overflow: ellipsis; }
+  /* Bucket grid equal-height cards */
+  .bgrid { align-items: stretch; }
+  .bc { display: flex; flex-direction: column; }
+  .bc-body { flex: 1; display: flex; flex-direction: column; justify-content: space-between; }
+  /* Sources empty state centering */
+  .src-empty { 
+    display: flex; flex-direction: column; align-items: center;
+    justify-content: center; padding: 60px 32px; text-align: center;
+    flex: 1; min-height: 300px;
+  }
+  /* Insights cards full-width */
+  .ins-card { margin-left: max(16px, var(--safe-l)); margin-right: max(16px, var(--safe-r)); }
+  /* Fix: bottom safe area for scr-body so last item not hidden behind tab bar */
+  .scr-body { padding-bottom: calc(env(safe-area-inset-bottom, 0px) + 8px); }
+
+  /* scr-body--padded: content padding that respects safe areas */
+  .scr-body--padded {
+    padding-top: 16px;
+    padding-bottom: calc(16px + env(safe-area-inset-bottom, 0px));
+    padding-left: max(16px, env(safe-area-inset-left, 0px));
+    padding-right: max(16px, env(safe-area-inset-right, 0px));
+  }
+
+  /* When insightsBody has padded container, inner cards should use 0 margin */
+  #insightsBody .ins-card {
+    margin-left: 0;
+    margin-right: 0;
+  }
+
+  /* FIX-4: AI Config settings section */
+  .ai-cfg-section {
+    font-size: 9px; font-weight: 800; color: var(--mist);
+    letter-spacing: .08em; text-transform: uppercase;
+    padding: 10px 0 4px; margin-top: 4px;
+    border-top: 1px solid var(--fog);
+  }
+  .ai-cfg-section:first-child { border-top: none; margin-top: 0; }
+  .ai-cfg-row {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 9px 0; border-bottom: 1px solid var(--fog); gap: 12px;
+  }
+  .ai-cfg-row:last-child { border-bottom: none; }
+  .ai-cfg-info { flex: 1; min-width: 0; }
+  .ai-cfg-label { font-size: 13px; font-weight: 600; color: var(--ink); }
+  .ai-cfg-desc { font-size: 11px; color: var(--mist); margin-top: 2px; }
+  .ai-cfg-toggle {
+    flex-shrink: 0; padding: 5px 12px; border-radius: 20px;
+    font-size: 11px; font-weight: 700; border: 1.5px solid var(--fog);
+    background: var(--paper); color: var(--slate); cursor: pointer;
+    transition: all .15s; min-width: 44px; text-align: center;
+    font-family: var(--ff);
+  }
+  .ai-cfg-toggle.on { background: var(--teal); color: #fff; border-color: var(--teal); }
+
+  /* FIX-5A: My Month peek pattern — faint gradient reveals more content below */
+  #mmBody:not(.scrolled-once) {
+    -webkit-mask-image: linear-gradient(to bottom, black 0%, black calc(100% - 48px), transparent 100%);
+    mask-image: linear-gradient(to bottom, black 0%, black calc(100% - 48px), transparent 100%);
+  }
+
+  /* FIX-6A: Coloured left border per bucket on transaction cards */
+  .htxn { border-left: 3.5px solid var(--fog); }
+  .htxn[data-bucket="necessary"] { border-left-color: #10b981; }
+  .htxn[data-bucket="committed"] { border-left-color: #818cf8; }
+  .htxn[data-bucket="comfortable"] { border-left-color: #f59e0b; }
+  .htxn[data-bucket="luxury"] { border-left-color: #f43f5e; }
+  .htxn[data-bucket=""] { border-left-color: var(--fog); }
+
+  /* FIX-6B: Group header total */
+  .mgrp-tot { font-size: 11px; font-weight: 700; color: var(--teal); }
+
+  /* FIX-6C: Swipe actions */
+  .htxn-wrap { position: relative; overflow: hidden; border-radius: var(--r); margin-bottom: 8px; }
+  .htxn-wrap .htxn { margin-bottom: 0; border-radius: var(--r); transition: transform .22s ease; }
+  .htxn-actions-reveal {
+    position: absolute; right: 0; top: 0; bottom: 0;
+    display: flex; align-items: stretch;
+    transform: translateX(100%); transition: transform .22s ease;
+    border-radius: 0 var(--r) var(--r) 0; overflow: hidden; width: 160px;
+  }
+  .htxn-wrap.swiped .htxn-actions-reveal { transform: translateX(0); }
+  .htxn-wrap.swiped .htxn { transform: translateX(-160px); border-radius: var(--r) 0 0 var(--r); }
+  .hact-del {
+    background: #ef4444; color: #fff; display: flex; flex-direction: column;
+    align-items: center; justify-content: center; width: 80px;
+    font-size: 11px; font-weight: 700; cursor: pointer; border: none; gap: 4px;
+    font-family: var(--ff);
+  }
+  .hact-move {
+    background: var(--teal); color: #fff; display: flex; flex-direction: column;
+    align-items: center; justify-content: center; width: 80px;
+    font-size: 11px; font-weight: 700; cursor: pointer; border: none; gap: 4px;
+    font-family: var(--ff);
+  }
+
+  /* ── REDESIGN v5.0: FLOATING ADD BUTTON (FAB) ── */
+  #fabAdd {
+    position: fixed;
+    bottom: calc(var(--safe-b) + 68px);
+    right: max(20px, var(--safe-r));
+    width: 58px; height: 58px;
+    border-radius: 50%;
+    background: var(--teal);
+    color: #fff;
+    font-size: 28px;
+    display: flex; align-items: center; justify-content: center;
+    box-shadow: 0 4px 20px rgba(14,165,233,.5), 0 0 0 0 rgba(14,165,233,.4);
+    border: none; cursor: pointer;
+    z-index: 200;
+    transition: transform .15s, box-shadow .15s;
+    animation: fabPulse 3s ease infinite;
+    line-height: 1;
+  }
+  #fabAdd:active {
+    transform: scale(.9);
+    box-shadow: 0 2px 10px rgba(14,165,233,.4);
+  }
+  @keyframes fabPulse {
+    0%, 100% { box-shadow: 0 4px 20px rgba(14,165,233,.5), 0 0 0 0 rgba(14,165,233,.3); }
+    50% { box-shadow: 0 4px 20px rgba(14,165,233,.5), 0 0 0 10px rgba(14,165,233,.0); }
+  }
+  body.on-add-screen #fabAdd { display: none; }
+  #tabBar .tab-add-slot { display: none; }
+
+  /* ── REDESIGN v5.0: PERSONALITY BADGE ── */
+  .personality-badge {
+    background: linear-gradient(135deg, var(--ink) 0%, #1e293b 100%);
+    border-radius: var(--rXL);
+    padding: 24px 22px;
+    margin-bottom: 14px;
+    border: 1px solid rgba(255,255,255,.08);
+    position: relative; overflow: hidden;
+  }
+  .personality-badge::before {
+    content: '';
+    position: absolute; top: -40px; right: -40px;
+    width: 120px; height: 120px;
+    background: radial-gradient(circle, rgba(14,165,233,.15) 0%, transparent 70%);
+    border-radius: 50%;
+  }
+  .personality-label {
+    font-size: 9px; font-weight: 800; color: var(--teal);
+    text-transform: uppercase; letter-spacing: .14em; margin-bottom: 8px;
+  }
+  .personality-title {
+    font-size: 26px; font-weight: 900; color: #fff;
+    letter-spacing: -.8px; line-height: 1.1; margin-bottom: 8px;
+  }
+  .personality-desc {
+    font-size: 13px; color: rgba(255,255,255,.55); line-height: 1.5;
+  }
+
+  /* ── REDESIGN v5.0: MY MONTH HERO ── */
+  .mm-hero {
+    background: var(--ink);
+    padding: 20px max(20px,var(--safe-r)) 28px max(20px,var(--safe-l));
+  }
+  .mm-month-label {
+    font-size: 10px; font-weight: 800;
+    color: var(--mist); text-transform: uppercase;
+    letter-spacing: .12em; margin-bottom: 8px;
+    display: flex; align-items: center; gap: 8px;
+  }
+  .mm-total {
+    font-size: 44px; font-weight: 900;
+    color: var(--teal); letter-spacing: -2.5px;
+    line-height: 1; margin-bottom: 16px;
+  }
+
+  /* ── REDESIGN v5.0: ANNUAL WRAP ── */
+  #pgAnnualWrap {
+    background: var(--ink);
+    z-index: 500;
+  }
+  .aw-header {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: calc(var(--safe-t) + 12px) 20px 12px;
+    border-bottom: 1px solid rgba(255,255,255,.08);
+  }
+  .aw-title {
+    font-size: 15px; font-weight: 800; color: #fff;
+  }
+  .aw-close, .aw-share {
+    font-size: 14px; font-weight: 700;
+    color: var(--teal); background: none; border: none; cursor: pointer;
+    padding: 6px 10px;
+  }
+  .aw-body {
+    padding: 24px 20px; overflow-y: auto;
+    display: flex; flex-direction: column; gap: 14px;
+    -webkit-overflow-scrolling: touch;
+  }
+  .aw-card {
+    background: rgba(255,255,255,.05);
+    border: 1px solid rgba(255,255,255,.08);
+    border-radius: 18px; padding: 20px;
+    animation: fadeSlideUp .4s ease both;
+  }
+  .aw-card:nth-child(1) { animation-delay: .0s; }
+  .aw-card:nth-child(2) { animation-delay: .1s; }
+  .aw-card:nth-child(3) { animation-delay: .2s; }
+  .aw-card:nth-child(4) { animation-delay: .3s; }
+  .aw-card:nth-child(5) { animation-delay: .4s; }
+  .aw-card:nth-child(6) { animation-delay: .5s; }
+  @keyframes fadeSlideUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  .aw-label {
+    font-size: 9px; font-weight: 800; color: var(--teal);
+    text-transform: uppercase; letter-spacing: .12em; margin-bottom: 6px;
+  }
+  .aw-value {
+    font-size: 32px; font-weight: 900; color: #fff;
+    letter-spacing: -1.5px; line-height: 1;
+  }
+  .aw-sub {
+    font-size: 12px; color: rgba(255,255,255,.45); margin-top: 4px;
+  }
+
+  /* ── REDESIGN v5.0: CATEGORY CREEP CARD ── */
+  .creep-card {
+    background: #fff7ed; border: 1px solid #fdba74;
+    border-radius: 14px; padding: 14px 16px; margin-bottom: 10px;
+  }
+  .creep-title {
+    font-size: 13px; font-weight: 800; color: #c2410c; margin-bottom: 4px;
+  }
+  .creep-body {
+    font-size: 12px; color: #9a3412; line-height: 1.5;
+  }
+
+  /* ── REDESIGN v5.0: Tab bar .tab-add-slot hidden ── */
+  .tab[data-t="add"] { display: none; }
 
     /* BUG-9: Magnification effect on history cards — macOS dock style */
-    .htxn-wrap {
-      transform-origin: center;
-      transition: transform .18s cubic-bezier(.34, 1.56, .64, 1);
-    }
-
-    .htxn-wrap:active {
-      transform: scale(1.025);
-      z-index: 2;
-    }
-
+    .htxn-wrap { transform-origin: center; transition: transform .18s cubic-bezier(.34,1.56,.64,1); }
+    .htxn-wrap:active { transform: scale(1.025); z-index: 2; }
     /* On devices that support hover (desktop) */
     @media (hover: hover) {
-      .htxn-wrap:hover {
-        transform: scale(1.02);
-        z-index: 2;
-        box-shadow: 0 8px 32px rgba(0, 0, 0, .12);
-      }
-
-      .htxn-wrap:hover .htxn {
-        box-shadow: 0 4px 16px rgba(0, 0, 0, .08);
-      }
+      .htxn-wrap:hover { transform: scale(1.02); z-index: 2; box-shadow: 0 8px 32px rgba(0,0,0,.12); }
+      .htxn-wrap:hover .htxn { box-shadow: 0 4px 16px rgba(0,0,0,.08); }
     }
-
     /* Neighbour cards subtly shrink when one is active (dock illusion) */
     .histList-container:has(.htxn-wrap:active) .htxn-wrap:not(:active) {
       transform: scale(0.985);
     }
+
   </style>
 </head>
 
@@ -5978,9 +5126,7 @@
             <div id="aiForecastCard" style="display:none" class="ai-forecast-card">
               <div class="ai-forecast-eyebrow">📈 MONTH FORECAST</div>
               <div class="ai-forecast-text" id="aiForecastText"></div>
-              <div class="ai-forecast-bar">
-                <div class="ai-forecast-fill" id="aiForecastFill" style="width:0%"></div>
-              </div>
+              <div class="ai-forecast-bar"><div class="ai-forecast-fill" id="aiForecastFill" style="width:0%"></div></div>
             </div>
             <div class="h-hero" id="hHero"></div>
             <div class="h-body fade-up" id="hBody"></div>
@@ -6068,22 +5214,19 @@
             <!-- ── AI SMART ADD ── -->
             <div class="ai-add-bar">
               <input class="ai-add-input" id="aiAddInput" type="text" inputmode="text"
-                placeholder="Say it, type it or scan a bill…" oninput="APP.aiAddParse(this.value)"
+                placeholder="Say it, type it or scan a bill…"
+                oninput="APP.aiAddParse(this.value)"
                 onkeydown="if(event.key==='Enter'){event.preventDefault();APP.aiAddConfirm();}">
               <!-- Voice button -->
-              <button class="ai-voice-ring" id="aiVoiceBtn" onclick="APP.aiVoiceToggle()" title="Voice input"
-                aria-label="Voice input" aria-pressed="false">🎤</button>
+              <button class="ai-voice-ring" id="aiVoiceBtn" onclick="APP.aiVoiceToggle()" title="Voice input" aria-label="Voice input" aria-pressed="false">🎤</button>
               <!-- Photo/scan button -->
-              <button class="ai-photo-btn" onclick="APP.aiPhotoTrigger()" title="Scan receipt"
-                aria-label="Scan receipt with camera">📷</button>
-              <!-- BUG-14: hidden file inputs for both camera and gallery -->
-              <input type="file" id="aiPhotoInput" accept="image/*" capture="environment" style="display:none"
-                onchange="APP.aiPhotoProcess(this)">
-              <input type="file" id="aiGalleryInput" accept="image/*" style="display:none"
-                onchange="APP.aiPhotoProcess(this)">
-              <input type="file" id="aiPhotoInput" accept="image/*" capture="environment" style="display:none"
-                onchange="APP.aiPhotoProcess(this)">
+              <button class="ai-photo-btn" onclick="APP.aiPhotoTrigger()" title="Scan receipt" aria-label="Scan receipt with camera">📷</button>
             </div>
+            <!-- Hidden file inputs: camera capture and gallery pick -->
+            <input type="file" id="aiPhotoInput" accept="image/*" capture="environment"
+              style="display:none" onchange="APP.aiPhotoProcess(this)">
+            <input type="file" id="aiGalleryInput" accept="image/*"
+              style="display:none" onchange="APP.aiPhotoProcess(this)">
             <div class="ai-status" id="aiStatus"></div>
             <div class="ai-ocr-progress" id="aiOcrProgress">📷 Reading receipt…</div>
 
@@ -6110,62 +5253,59 @@
                 <button class="ai-confirm-edit" onclick="APP.aiEditField('src')">Edit</button>
               </div>
               <div class="ai-confirm-actions" style="display:flex;gap:8px;margin-top:10px">
-                <button class="ai-redo-btn" onclick="APP.aiRedoVoice()"
-                  style="flex:1;padding:9px;border-radius:var(--r);background:var(--paper);border:1.5px solid var(--fog);font-size:13px;font-weight:700;color:var(--slate);cursor:pointer;font-family:var(--ff)">🎤
-                  Redo</button>
+                <button class="ai-redo-btn" onclick="APP.aiRedoVoice()" style="flex:1;padding:9px;border-radius:var(--r);background:var(--paper);border:1.5px solid var(--fog);font-size:13px;font-weight:700;color:var(--slate);cursor:pointer;font-family:var(--ff)">🎤 Redo</button>
               </div>
             </div>
-            <button class="ai-save-btn" id="aiSaveBtn" style="display:none" onclick="APP.aiSaveConfirmed()">✅ Save
-              Spend</button>
-            <div class="ai-manual-toggle" id="aiManualToggle" onclick="APP.aiToggleManual()">or <span>add manually
-                ↓</span></div>
+            <button class="ai-save-btn" id="aiSaveBtn" style="display:none" onclick="APP.aiSaveConfirmed()">✅ Save Spend</button>
+            <div class="ai-manual-toggle" id="aiManualToggle" onclick="APP.aiToggleManual()">or <span>add manually ↓</span></div>
 
             <!-- MANUAL FORM (collapsible) -->
             <div id="aiManualForm" style="display:none">
-              <div class="amt-hero">
-                <span class="amt-sym">₹</span>
-                <input class="amt-in" id="addAmt" type="number" inputmode="decimal" placeholder="0" min="1"
-                  max="9999999" oninput="APP.valAdd()">
+            <div class="amt-hero">
+              <span class="amt-sym">₹</span>
+              <input class="amt-in" id="addAmt" type="number" inputmode="decimal" placeholder="0" min="1" max="9999999"
+                oninput="APP.valAdd()">
+            </div>
+            <div class="add-sec" style="margin-bottom:0">
+              <span class="add-lbl">DATE</span>
+              <input class="add-in" id="addDate" type="text" inputmode="text"
+                maxlength="20" placeholder="e.g. 23 Mar"
+                style="margin-bottom:0"
+                value="">
+            </div>
+            <div class="add-sec">
+              <span class="add-lbl">WHAT WAS IT FOR?</span>
+              <input class="add-in" id="addDesc" type="text" inputmode="text"
+                placeholder="e.g. Lunch, Petrol, School fees" maxlength="100">
+            </div>
+            <div class="add-sec" style="margin-top:18px">
+              <span class="add-lbl">HOW DID YOU PAY?</span>
+              <div class="srcs" id="srcGrid"></div>
+            </div>
+            <div class="add-sec" style="margin-top:18px">
+              <span class="add-lbl">WHICH BUCKET?</span>
+              <div class="bkts" id="bktGrid"></div>
+            </div>
+            <div style="padding:0 16px;margin-top:14px;padding-bottom:40px">
+              <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px">
+                <span class="add-lbl">TAGS <span
+                    style="font-size:9px;color:var(--mist);font-weight:500;letter-spacing:0;text-transform:none">optional</span></span>
+                <button onclick="APP._toggleCustomTag()"
+                  style="font-size:10px;color:var(--teal);font-weight:700;background:none;border:none;cursor:pointer;font-family:var(--ff)">+
+                  Custom</button>
               </div>
-              <div class="add-sec" style="margin-bottom:0">
-                <span class="add-lbl">DATE</span>
-                <input class="add-in" id="addDate" type="text" inputmode="text" maxlength="20" placeholder="e.g. 23 Mar"
-                  style="margin-bottom:0" value="">
-              </div>
-              <div class="add-sec">
-                <span class="add-lbl">WHAT WAS IT FOR?</span>
-                <input class="add-in" id="addDesc" type="text" inputmode="text"
-                  placeholder="e.g. Lunch, Petrol, School fees" maxlength="100">
-              </div>
-              <div class="add-sec" style="margin-top:18px">
-                <span class="add-lbl">HOW DID YOU PAY?</span>
-                <div class="srcs" id="srcGrid"></div>
-              </div>
-              <div class="add-sec" style="margin-top:18px">
-                <span class="add-lbl">WHICH BUCKET?</span>
-                <div class="bkts" id="bktGrid"></div>
-              </div>
-              <div style="padding:0 16px;margin-top:14px;padding-bottom:40px">
-                <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px">
-                  <span class="add-lbl">TAGS <span
-                      style="font-size:9px;color:var(--mist);font-weight:500;letter-spacing:0;text-transform:none">optional</span></span>
-                  <button onclick="APP._toggleCustomTag()"
-                    style="font-size:10px;color:var(--teal);font-weight:700;background:none;border:none;cursor:pointer;font-family:var(--ff)">+
-                    Custom</button>
+              <div id="addTagChips"
+                style="display:flex;gap:6px;overflow-x:auto;padding-bottom:4px;-webkit-overflow-scrolling:touch"></div>
+              <div id="addTagCustomArea" style="display:none;margin-top:8px">
+                <div class="tag-chip-custom">
+                  <input class="tag-custom-in" id="addTagCustom" type="text" inputmode="text" maxlength="30"
+                    placeholder="Custom tag…" autocorrect="off" autocapitalize="none" spellcheck="false"
+                    onkeydown="if(event.key==='Enter'){event.preventDefault();APP.addCustomTag();}">
+                  <button class="tag-add-btn" onclick="APP.addCustomTag()">Add</button>
                 </div>
-                <div id="addTagChips"
-                  style="display:flex;gap:6px;overflow-x:auto;padding-bottom:4px;-webkit-overflow-scrolling:touch">
-                </div>
-                <div id="addTagCustomArea" style="display:none;margin-top:8px">
-                  <div class="tag-chip-custom">
-                    <input class="tag-custom-in" id="addTagCustom" type="text" inputmode="text" maxlength="30"
-                      placeholder="Custom tag…" autocorrect="off" autocapitalize="none" spellcheck="false"
-                      onkeydown="if(event.key==='Enter'){event.preventDefault();APP.addCustomTag();}">
-                    <button class="tag-add-btn" onclick="APP.addCustomTag()">Add</button>
-                  </div>
-                </div>
-                <div id="addTagSelected" style="display:flex;flex-wrap:wrap;gap:4px;margin-top:6px"></div>
               </div>
+              <div id="addTagSelected" style="display:flex;flex-wrap:wrap;gap:4px;margin-top:6px"></div>
+            </div>
             </div><!-- end aiManualForm -->
           </div>
         </div>
@@ -6214,9 +5354,7 @@
         <div class="sbn-dot" id="sbnDot"></div>
         <div class="sbn-text" id="sbnText"></div>
         <div class="sbn-action" id="sbnAction" onclick="APP.sbnTap()"></div>
-        <button class="sbn-close" onclick="APP.sbnClose()" aria-label="Close tip"
-          title="Tips return next time you open the app"
-          style="background:none;border:none;color:var(--mist);font-size:16px;cursor:pointer;padding:4px 6px;flex-shrink:0;font-family:var(--ff)">×</button>
+        <button class="sbn-close" onclick="APP.sbnClose()" aria-label="Close tip" title="Tips return next time you open the app" style="background:none;border:none;color:var(--mist);font-size:16px;cursor:pointer;padding:4px 6px;flex-shrink:0;font-family:var(--ff)">×</button>
         <div class="sbn-dots" id="sbnDots"></div>
       </div>
       <div id="tabBar">
@@ -6280,15 +5418,11 @@
   </div>
 
   <div id="toast"></div>
-  <div id="moodPrompt" role="status" aria-live="polite"
-    style="display:none;position:fixed;bottom:calc(env(safe-area-inset-bottom,0px) + 88px);left:50%;transform:translateX(-50%);background:var(--card);border:1px solid var(--fog);border-radius:40px;padding:8px 16px;align-items:center;gap:10px;box-shadow:0 8px 24px rgba(0,0,0,.12);z-index:801;white-space:nowrap">
+  <div id="moodPrompt" role="status" aria-live="polite" style="display:none;position:fixed;bottom:calc(env(safe-area-inset-bottom,0px) + 88px);left:50%;transform:translateX(-50%);background:var(--card);border:1px solid var(--fog);border-radius:40px;padding:8px 16px;align-items:center;gap:10px;box-shadow:0 8px 24px rgba(0,0,0,.12);z-index:801;white-space:nowrap">
     <span style="font-size:12px;color:var(--slate);font-weight:600">How did that feel?</span>
-    <button onclick="APP.tapMood('happy')"
-      style="font-size:22px;background:none;border:none;cursor:pointer;padding:4px;line-height:1;font-family:var(--ff)">&#x1F60A;</button>
-    <button onclick="APP.tapMood('neutral')"
-      style="font-size:22px;background:none;border:none;cursor:pointer;padding:4px;line-height:1;font-family:var(--ff)">&#x1F610;</button>
-    <button onclick="APP.tapMood('regret')"
-      style="font-size:22px;background:none;border:none;cursor:pointer;padding:4px;line-height:1;font-family:var(--ff)">&#x1F62C;</button>
+    <button onclick="APP.tapMood('happy')" style="font-size:22px;background:none;border:none;cursor:pointer;padding:4px;line-height:1;font-family:var(--ff)">&#x1F60A;</button>
+    <button onclick="APP.tapMood('neutral')" style="font-size:22px;background:none;border:none;cursor:pointer;padding:4px;line-height:1;font-family:var(--ff)">&#x1F610;</button>
+    <button onclick="APP.tapMood('regret')" style="font-size:22px;background:none;border:none;cursor:pointer;padding:4px;line-height:1;font-family:var(--ff)">&#x1F62C;</button>
   </div>
 
   <div id="iBanner">
@@ -6373,10 +5507,10 @@
       try {
         const saved = JSON.parse(localStorage.getItem('sn_ai_config') || 'null');
         return Object.assign({}, AI_CONFIG_DEFAULT, saved || {});
-      } catch (e) { return { ...AI_CONFIG_DEFAULT }; }
+      } catch(e) { return { ...AI_CONFIG_DEFAULT }; }
     }
     function saveAIConfig(cfg) {
-      try { localStorage.setItem('sn_ai_config', JSON.stringify(cfg)); } catch (e) { }
+      try { localStorage.setItem('sn_ai_config', JSON.stringify(cfg)); } catch(e) {}
     }
 
     // ── STORAGE GUARD ─────────────────────────────────────────────
@@ -6445,38 +5579,38 @@
 
       // settings backfill
       if (!d.settings) d.settings = {};
-      if (typeof d.settings.notif === 'undefined') d.settings.notif = false;
+      if (typeof d.settings.notif     === 'undefined') d.settings.notif     = false;
       if (typeof d.settings.focusMode === 'undefined') d.settings.focusMode = false;
 
       // profile backfill
       if (!d.profile) d.profile = {};
-      if (typeof d.profile.dob === 'undefined') d.profile.dob = '';
-      if (typeof d.profile.city === 'undefined') d.profile.city = '';
+      if (typeof d.profile.dob   === 'undefined') d.profile.dob   = '';
+      if (typeof d.profile.city  === 'undefined') d.profile.city  = '';
       if (typeof d.profile.quote === 'undefined') d.profile.quote = '';
-      if (typeof d.profile.role === 'undefined') d.profile.role = 'working';
+      if (typeof d.profile.role  === 'undefined') d.profile.role  = 'working';
 
       // top-level backfill
       if (typeof d.lastSrc === 'undefined') d.lastSrc = null;
 
       // limits backfill
       if (!d.limits) d.limits = {};
-      if (typeof d.limits.necessary === 'undefined') d.limits.necessary = 15000;
-      if (typeof d.limits.committed === 'undefined') d.limits.committed = 30000;
+      if (typeof d.limits.necessary   === 'undefined') d.limits.necessary   = 15000;
+      if (typeof d.limits.committed   === 'undefined') d.limits.committed   = 30000;
       if (typeof d.limits.comfortable === 'undefined') d.limits.comfortable = 10000;
-      if (typeof d.limits.luxury === 'undefined') d.limits.luxury = 5000;
+      if (typeof d.limits.luxury      === 'undefined') d.limits.luxury      = 5000;
 
       // transaction-level backfill — tags is the most common v1 gap
       if (Array.isArray(d.transactions)) {
         d.transactions = d.transactions.map(t => ({
           ...t,
-          tags: Array.isArray(t.tags) ? t.tags : [],
+          tags:   Array.isArray(t.tags) ? t.tags : [],
           source: t.source || null,
           bucket: t.bucket || null,
         }));
       }
 
       d.schemaVersion = SCHEMA_VERSION;
-      try { console.info('[Spend-na] Migrated schema v' + sv + ' → v' + SCHEMA_VERSION); } catch { }
+      try { console.info('[Spend-na] Migrated schema v' + sv + ' → v' + SCHEMA_VERSION); } catch {}
       return d;
     }
 
@@ -6487,21 +5621,21 @@
     // Use FLAGS.set('key', bool) to toggle.
     // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
     const FLAG_DEFAULTS = {
-      ai_features: true,
+      ai_features:    true,
       sources_screen: true,
-      tags_system: true,
-      beta_ui: false,
-      data_sharding: false,
+      tags_system:    true,
+      beta_ui:        false,
+      data_sharding:  false,
     };
     const FLAGS = (() => {
       const LF = 'sn_flags';
       const _r = () => { try { return JSON.parse(localStorage.getItem(LF) || 'null') || {}; } catch { return {}; } };
-      const _w = o => { try { localStorage.setItem(LF, JSON.stringify(o)); } catch { } };
+      const _w = o => { try { localStorage.setItem(LF, JSON.stringify(o)); } catch {} };
       return {
-        get(k) { const s = _r(); return typeof s[k] !== 'undefined' ? s[k] : (FLAG_DEFAULTS[k] ?? false); },
-        set(k, v) { const s = _r(); s[k] = v; _w(s); },
-        all() { const s = _r(); const m = {}; Object.keys(FLAG_DEFAULTS).forEach(k => m[k] = typeof s[k] !== 'undefined' ? s[k] : FLAG_DEFAULTS[k]); return m; },
-        initNew() { _w({ ...FLAG_DEFAULTS, beta_ui: true }); },
+        get(k)      { const s = _r(); return typeof s[k] !== 'undefined' ? s[k] : (FLAG_DEFAULTS[k] ?? false); },
+        set(k, v)   { const s = _r(); s[k] = v; _w(s); },
+        all()       { const s = _r(); const m = {}; Object.keys(FLAG_DEFAULTS).forEach(k => m[k] = typeof s[k] !== 'undefined' ? s[k] : FLAG_DEFAULTS[k]); return m; },
+        initNew()   { _w({ ...FLAG_DEFAULTS, beta_ui: true }); },
         initExist() { const s = _r(); _w({ ...FLAG_DEFAULTS, ...s }); },
       };
     })();
@@ -6552,13 +5686,13 @@
         // Manifest metadata — lightweight index for future sharding
         payload.manifest = {
           schemaVersion: SCHEMA_VERSION,
-          exportedAt: payload.exportedAt,
-          totalRecords: payload.totalRecords,
-          months: [...new Set((d.transactions || []).map(t => t.month).filter(Boolean))].sort(),
+          exportedAt:    payload.exportedAt,
+          totalRecords:  payload.totalRecords,
+          months:        [...new Set((d.transactions || []).map(t => t.month).filter(Boolean))].sort(),
           countsByMonth: (d.transactions || []).reduce((acc, t) => { if (t.month) acc[t.month] = (acc[t.month] || 0) + 1; return acc; }, {}),
           totalsByMonth: (d.transactions || []).reduce((acc, t) => { if (t.month) acc[t.month] = (acc[t.month] || 0) + (t.amount || 0); return acc; }, {}),
-          buckets: Object.keys(BUCKETS),
-          app: 'Spend-na',
+          buckets:       Object.keys(BUCKETS),
+          app:           'Spend-na',
         };
         payload.note = 'Spend-na complete database. Import back anytime to restore everything from the beginning.';
         const json = JSON.stringify(payload, null, 2);
@@ -6665,7 +5799,7 @@
         const months = this.months();
         return {
           schemaVersion: SCHEMA_VERSION,
-          totalRecords: txns.length,
+          totalRecords:  txns.length,
           months,
           countsByMonth: months.reduce((acc, m) => { acc[m] = txns.filter(t => t.month === m).length; return acc; }, {}),
           totalsByMonth: months.reduce((acc, m) => { acc[m] = txns.filter(t => t.month === m).reduce((s, t) => s + (t.amount || 0), 0); return acc; }, {}),
@@ -6683,8 +5817,8 @@
           transactions: txns,
         };
         const blob = new Blob([JSON.stringify(payload, null, 2)], { type: 'application/json' });
-        const url = URL.createObjectURL(blob);
-        const a = document.createElement('a');
+        const url  = URL.createObjectURL(blob);
+        const a    = document.createElement('a');
         a.href = url;
         a.download = `spend-na-${monthStr.replace(' ', '-')}.json`;
         a.click();
@@ -6949,7 +6083,7 @@
             if (until > Date.now()) { S.loginLockUntil = until; }
             else { sessionStorage.removeItem('sn_lock_until'); }
           }
-        } catch (e) { }
+        } catch(e) {}
       },
       unlock() {
         const now = Date.now();
@@ -6958,7 +6092,7 @@
         if (!pw) return;
         if (md5(pw) === D.passwordHash) {
           S.loginAttempts = 0; S.loginLockUntil = 0;
-          try { sessionStorage.removeItem('sn_lock_until'); } catch (e) { }
+          try { sessionStorage.removeItem('sn_lock_until'); } catch(e) {}
           document.getElementById('lkErr').textContent = '';
           this.launch();
         } else {
@@ -6966,7 +6100,7 @@
           if (S.loginAttempts >= 5) {
             S.loginLockUntil = Date.now() + 30000;
             S.loginAttempts = 0;
-            try { sessionStorage.setItem('sn_lock_until', String(S.loginLockUntil)); } catch (e) { }
+            try { sessionStorage.setItem('sn_lock_until', String(S.loginLockUntil)); } catch(e) {}
             document.getElementById('lkErr').textContent = 'Too many attempts. Locked for 30s.';
           }
           else { document.getElementById('lkErr').textContent = `Wrong password. ${5 - S.loginAttempts} attempt${5 - S.loginAttempts !== 1 ? 's' : ''} left.`; }
@@ -7046,8 +6180,7 @@
             : 'Clear all data and start fresh?',
           txnCount > 0 ? [
             { l: 'Cancel', c: 'mb-nil', a: () => this.cm() },
-            {
-              l: '💾 Save file first', c: 'mb-ok', a: () => {
+            { l: '💾 Save file first', c: 'mb-ok', a: () => {
                 this.cm();
                 DB.exportFile(D);
                 setTimeout(() => {
@@ -7166,13 +6299,13 @@
         try {
           const lnWarn = getLateNightWarning();
           if (lnWarn) msgs.push({ dot: '#8b5cf6', text: lnWarn, action: 'History ›', target: 'history' });
-        } catch (e) { }
+        } catch(e) {}
 
         // v5.0 AI: Salary Day Intelligence
         try {
           const salMsg = getSalaryDayIntelligence();
           if (salMsg) msgs.push({ dot: '#10b981', text: salMsg, action: 'Sources ›', target: 'sources' });
-        } catch (e) { }
+        } catch(e) {}
 
         msgs.push({ dot: '#f59e0b', text: '💡 Tag your spends to track events like birthdays, travel and festivals separately', action: 'Add ›', target: 'add' });
         msgs.push({ dot: '#0ea5e9', text: '💾 Save your data file regularly — it\'s your backup AND your password recovery key', action: 'Settings ›', target: 'settings' });
@@ -7258,7 +6391,7 @@
           const levels = ['', 'focus-comfortable', 'focus-large'];
           document.body.classList.remove('focus-mode', 'focus-comfortable', 'focus-large');
           if (saved > 0) document.body.classList.add(levels[saved]);
-        } catch (e) {
+        } catch(e) {
           // Fallback: legacy focusMode bool
           const saved = D?.settings?.focusMode;
           if (saved) document.body.classList.add('focus-comfortable');
@@ -7277,7 +6410,7 @@
         body.classList.remove('focus-mode', 'focus-comfortable', 'focus-large');
         const next = (current + 1) % 3;
         if (next > 0) body.classList.add(levels[next]);
-        try { localStorage.setItem('sn_focus_level', String(next)); } catch (e) { }
+        try { localStorage.setItem('sn_focus_level', String(next)); } catch(e) {}
         this._updateFocusBadge(next, labels[next]);
         toast(`Text size: ${labels[next]}`);
       },
@@ -7381,6 +6514,7 @@
 
       // ── FOLDER BACKUP — ZIP IMPORT ──────────────────────────────
       async importZipFolder() {
+        const self = APP; // explicit reference — avoids any this-binding issues in callbacks
         let JSZip;
         try {
           if (!window.JSZip) {
@@ -7388,71 +6522,127 @@
             await new Promise((res, rej) => {
               const s = document.createElement('script');
               s.src = 'https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js';
-              s.onload = res; s.onerror = rej;
+              s.onload = res;
+              s.onerror = () => rej(new Error('jszip_load_failed'));
               document.head.appendChild(s);
             });
           }
           JSZip = window.JSZip;
-        } catch (e) { toast('Could not load import library — are you online?'); return; }
+        } catch (e) {
+          toast('Could not load ZIP library — are you online?');
+          return;
+        }
 
         const file = await new Promise(res => {
           const inp = document.createElement('input');
-          inp.type = 'file'; inp.accept = '.zip,application/zip,application/x-zip-compressed';
-          inp.onchange = e => res(e.target.files[0] || null); inp.click();
+          inp.type = 'file';
+          inp.accept = '.zip,application/zip,application/x-zip-compressed';
+          inp.onchange = e => res(e.target.files[0] || null);
+          inp.click();
         });
         if (!file) return;
 
         toast('📂 Reading folder backup…');
         try {
           const zip = await JSZip.loadAsync(file);
+
+          // Validate: must have Spend-na/manifest.json
           const manifestFile = zip.file('Spend-na/manifest.json');
-          if (!manifestFile) { toast('Not a valid Spend-na folder backup'); return; }
+          if (!manifestFile) {
+            toast('Not a valid Spend-na folder backup — manifest missing');
+            return;
+          }
           const manifest = JSON.parse(await manifestFile.async('string'));
-          if (manifest.app !== 'Spend-na') { toast('Not a Spend-na backup file'); return; }
+          if (manifest.app !== 'Spend-na') {
+            toast('Not a Spend-na backup file');
+            return;
+          }
+
           // Read profile + limits
           let profileData = {}, limitsData = {};
-          const pf = zip.file('Spend-na/profile.json'); if (pf) { try { profileData = JSON.parse(await pf.async('string')); } catch { } }
-          const lf = zip.file('Spend-na/limits.json'); if (lf) { try { limitsData = JSON.parse(await lf.async('string')); } catch { } }
+          const pf = zip.file('Spend-na/profile.json');
+          if (pf) { try { profileData = JSON.parse(await pf.async('string')); } catch {} }
+          const lf = zip.file('Spend-na/limits.json');
+          if (lf) { try { limitsData = JSON.parse(await lf.async('string')); } catch {} }
+
           // Read all transaction shards
           const allTxns = [];
-          const txnFiles = Object.keys(zip.files).filter(n => n.startsWith('Spend-na/transactions/txn_') && n.endsWith('.json'));
+          const txnFiles = Object.keys(zip.files).filter(n =>
+            n.startsWith('Spend-na/transactions/txn_') && n.endsWith('.json')
+          );
           for (const fname of txnFiles) {
-            try { const shard = JSON.parse(await zip.files[fname].async('string')); if (Array.isArray(shard.transactions)) allTxns.push(...shard.transactions); } catch { }
+            try {
+              const shard = JSON.parse(await zip.files[fname].async('string'));
+              if (Array.isArray(shard.transactions)) allTxns.push(...shard.transactions);
+            } catch {}
           }
+
           // Read sources shards
           const allSources = [];
-          const srcFiles = Object.keys(zip.files).filter(n => n.startsWith('Spend-na/sources/') && n.endsWith('.json'));
+          const srcFiles = Object.keys(zip.files).filter(n =>
+            n.startsWith('Spend-na/sources/') && n.endsWith('.json')
+          );
           for (const fname of srcFiles) {
-            try { const shard = JSON.parse(await zip.files[fname].async('string')); if (Array.isArray(shard.sources)) allSources.push(...shard.sources); } catch { }
+            try {
+              const shard = JSON.parse(await zip.files[fname].async('string'));
+              if (Array.isArray(shard.sources)) allSources.push(...shard.sources);
+            } catch {}
           }
-          if (allTxns.length === 0 && txnFiles.length > 0) { toast('Backup appears empty or corrupted'); return; }
-          const reconstructed = migrateData({ app: 'Spend-na', version: 4, schemaVersion: SCHEMA_VERSION, created: profileData.created || new Date().toISOString(), passwordHash: profileData.passwordHash || D?.passwordHash || '', profile: profileData.profile || {}, settings: profileData.settings || {}, limits: limitsData.limits || {}, transactions: allTxns, pushToken: profileData.pushToken || null });
+
+          if (txnFiles.length > 0 && allTxns.length === 0) {
+            toast('Backup transaction files appear empty or corrupted');
+            return;
+          }
+
+          const reconstructed = migrateData({
+            app: 'Spend-na', version: 4, schemaVersion: SCHEMA_VERSION,
+            created:      profileData.created      || new Date().toISOString(),
+            passwordHash: profileData.passwordHash || D?.passwordHash || '',
+            profile:      profileData.profile      || {},
+            settings:     profileData.settings     || {},
+            limits:       limitsData.limits        || {},
+            transactions: allTxns,
+            pushToken:    profileData.pushToken    || null,
+          });
+
           const monthCount = [...new Set(allTxns.map(t => t.month).filter(Boolean))].length;
           modal(
             '📂 Restore folder backup?',
             `Found ${allTxns.length} transactions across ${monthCount} month${monthCount !== 1 ? 's' : ''}${allSources.length ? ` + ${allSources.length} income sources` : ''}. What would you like to do?`,
             [
-              { l: 'Cancel', c: 'mb-nil', a: () => this.cm() },
-              {
-                l: 'Replace all data', c: 'mb-ok', a: () => {
-                  const hash = D.passwordHash; D = reconstructed; D.passwordHash = hash; DB.save(D);
-                  if (allSources.length) { const existing = SRC_DB.load().sources || []; const map = new Map();[...existing, ...allSources].forEach(s => { if (s.id) map.set(s.id, s); }); SRC_DB.save({ sources: Array.from(map.values()) }); }
-                  this.cm(); this.r_home(); toast(`✅ ${allTxns.length} records restored from folder backup`);
+              { l: 'Cancel', c: 'mb-nil', a: () => self.cm() },
+              { l: 'Replace all data', c: 'mb-ok', a: () => {
+                const hash = D.passwordHash;
+                D = reconstructed;
+                D.passwordHash = hash;
+                DB.save(D);
+                if (allSources.length) {
+                  const existing = SRC_DB.load().sources || [];
+                  const map = new Map();
+                  [...existing, ...allSources].forEach(s => { if (s.id) map.set(s.id, s); });
+                  SRC_DB.save({ sources: Array.from(map.values()) });
                 }
-              },
-              {
-                l: 'Merge (keep both)', c: 'mb-sec', a: () => {
-                  const map = new Map();[...(D.transactions || []), ...allTxns].forEach(t => { if (!map.has(t.id)) map.set(t.id, t); });
-                  D.transactions = Array.from(map.values()).sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
-                  if (allSources.length) { const sd = SRC_DB.load(); const srcMap = new Map();[...(sd.sources || []), ...allSources].forEach(s => { if (s.id) srcMap.set(s.id, s); }); SRC_DB.save({ sources: Array.from(srcMap.values()) }); }
-                  DB.save(D); this.cm(); this.r_home(); toast(`✅ Merged — ${D.transactions.length} total records`);
+                self.cm(); self.r_home();
+                toast(`✅ ${allTxns.length} records restored from folder backup`);
+              }},
+              { l: 'Merge (keep both)', c: 'mb-sec', a: () => {
+                const map = new Map();
+                [...(D.transactions || []), ...allTxns].forEach(t => { if (!map.has(t.id)) map.set(t.id, t); });
+                D.transactions = Array.from(map.values()).sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
+                if (allSources.length) {
+                  const sd = SRC_DB.load();
+                  const srcMap = new Map();
+                  [...(sd.sources || []), ...allSources].forEach(s => { if (s.id) srcMap.set(s.id, s); });
+                  SRC_DB.save({ sources: Array.from(srcMap.values()) });
                 }
-              },
+                DB.save(D); self.cm(); self.r_home();
+                toast(`✅ Merged — ${D.transactions.length} total records`);
+              }},
             ]
           );
         } catch (e) {
           console.error('ZIP import error:', e);
-          toast('Could not read backup file — may be corrupted');
+          toast('Could not read backup — file may be corrupted or not a ZIP');
         }
       },
 
@@ -7609,44 +6799,44 @@
       <div class="sec-row"><span class="sec-lbl">THIS MONTH</span><button class="sec-lnk" onclick="APP.go('limits')">Limits ›</button></div>
       <div class="bgrid">
         ${(() => {
-            const bktEntries = Object.entries(BUCKETS);
-            const topBkt = bktEntries.reduce((best, [k]) => {
-              return (sm[k] || 0) > (sm[best] || 0) ? k : best;
-            }, bktEntries[0][0]);
+          const bktEntries = Object.entries(BUCKETS);
+          const topBkt = bktEntries.reduce((best,[k]) => {
+            return (sm[k]||0) > (sm[best]||0) ? k : best;
+          }, bktEntries[0][0]);
 
-            const renderHero = ([k, cfg]) => {
-              const amt = sm[k] || 0, limit = lim[k] || 0;
-              const isOver = limit > 0 && amt > limit;
-              const isNear = limit > 0 && amt >= limit * .8 && !isOver;
-              const pct = limit > 0 ? Math.min((amt / limit) * 100, 100) : 0;
-              const col = isOver ? '#ef4444' : isNear ? '#f59e0b' : cfg.c;
-              return `<div class="bc-hero${isOver ? ' over' : ''}" onclick="APP.go('month')">
+          const renderHero = ([k, cfg]) => {
+            const amt = sm[k]||0, limit = lim[k]||0;
+            const isOver = limit>0 && amt>limit;
+            const isNear = limit>0 && amt>=limit*.8 && !isOver;
+            const pct = limit>0 ? Math.min((amt/limit)*100,100) : 0;
+            const col = isOver ? '#ef4444' : isNear ? '#f59e0b' : cfg.c;
+            return `<div class="bc-hero${isOver?' over':''}" onclick="APP.go('month')">
               <div class="bc-top" style="background:${col}"></div>
               <div class="bc-body">
                 <div class="bc-ic" style="background:${cfg.cl};color:${cfg.c};border-color:${cfg.cm}">${cfg.g}</div>
                 <div class="bc-amt" style="color:${col}">${fmtF(amt)}</div>
-                <div class="bc-nm">${cfg.l} ${isOver ? '<span style="color:#ef4444;font-size:8px">● OVER LIMIT</span>' : ''}</div>
-                ${limit > 0 ? `<div class="bc-pb" style="background:${cfg.cl}"><div class="bc-pf" style="background:${col};width:${pct}%"></div></div>` : ''}
+                <div class="bc-nm">${cfg.l} ${isOver?'<span style="color:#ef4444;font-size:8px">● OVER LIMIT</span>':''}</div>
+                ${limit>0?`<div class="bc-pb" style="background:${cfg.cl}"><div class="bc-pf" style="background:${col};width:${pct}%"></div></div>`:''}
               </div>
             </div>`;
-            };
+          };
 
-            const renderCompact = ([k, cfg]) => {
-              const amt = sm[k] || 0, limit = lim[k] || 0;
-              const isOver = limit > 0 && amt > limit;
-              const col = isOver ? '#ef4444' : cfg.c;
-              return `<div class="bc-compact${isOver ? ' over' : ''}" onclick="APP.go('month')">
+          const renderCompact = ([k, cfg]) => {
+            const amt = sm[k]||0, limit = lim[k]||0;
+            const isOver = limit>0 && amt>limit;
+            const col = isOver ? '#ef4444' : cfg.c;
+            return `<div class="bc-compact${isOver?' over':''}" onclick="APP.go('month')">
               <div class="bc-top" style="background:${col}"></div>
               <div class="bc-ic" style="background:${cfg.cl};color:${cfg.c};border-color:${cfg.cm}">${cfg.g}</div>
               <div class="bc-amt" style="color:${col}">${fmt(amt)}</div>
               <div class="bc-nm">${cfg.l}</div>
             </div>`;
-            };
+          };
 
-            const heroHTML = renderHero([topBkt, BUCKETS[topBkt]]);
-            const compactHTML = bktEntries.filter(([k]) => k !== topBkt).map(renderCompact).join('');
-            return heroHTML + `<div class="bc-compact-row">${compactHTML}</div>`;
-          })()}
+          const heroHTML = renderHero([topBkt, BUCKETS[topBkt]]);
+          const compactHTML = bktEntries.filter(([k]) => k !== topBkt).map(renderCompact).join('');
+          return heroHTML + `<div class="bc-compact-row">${compactHTML}</div>`;
+        })()}
       </div>
       <div class="sec-row" style="margin-top:4px"><span class="sec-lbl">MY DATA</span><button class="sec-lnk" onclick="APP.go('history')">All history ›</button></div>
       ${srcIndicatorHTML}
@@ -8040,19 +7230,19 @@
 
       <!-- CATEGORY CREEP (v5.0) -->
       ${(() => {
-            try {
-              const creepResults = detectCategoryCreep();
-              if (!creepResults || creepResults.length === 0) return '';
-              return creepResults.map(({ k, pct, latest }) => {
-                const cfg = BUCKETS[k];
-                const projected = Math.round(latest * 1.08);
-                return `<div class="creep-card">
+        try {
+          const creepResults = detectCategoryCreep();
+          if (!creepResults || creepResults.length === 0) return '';
+          return creepResults.map(({k, pct, latest}) => {
+            const cfg = BUCKETS[k];
+            const projected = Math.round(latest * 1.08);
+            return `<div class="creep-card">
               <div class="creep-title">📈 Category Creep: ${cfg.l}</div>
               <div class="creep-body">${cfg.l} spending has grown ${pct}% over 3 months. At this rate it crosses ${fmtF(projected)} by next month.</div>
             </div>`;
-              }).join('');
-            } catch (e) { return ''; }
-          })()}
+          }).join('');
+        } catch(e) { return ''; }
+      })()}
 
       <!-- FOOTER NOTE -->
       <div style="text-align:center;padding:12px 0 4px">
@@ -8083,33 +7273,33 @@
       showAnnualWrap() {
         const txns = D.transactions || [];
         if (txns.length < 5) { toast('Not enough data for Annual Wrap yet'); return; }
-        const total = txns.reduce((s, t) => s + t.amount, 0);
-        const biggest = txns.reduce((best, t) => t.amount > (best.amount || 0) ? t : best, {});
+        const total = txns.reduce((s,t)=>s+t.amount,0);
+        const biggest = txns.reduce((best,t) => t.amount>(best.amount||0)?t:best, {});
         const merchants = {};
-        txns.forEach(t => { if (t.merchant) merchants[t.merchant] = (merchants[t.merchant] || 0) + 1; });
-        const topMerchant = Object.entries(merchants).sort((a, b) => b[1] - a[1])[0];
+        txns.forEach(t => { if(t.merchant) merchants[t.merchant]=(merchants[t.merchant]||0)+1; });
+        const topMerchant = Object.entries(merchants).sort((a,b)=>b[1]-a[1])[0];
         const monthTotals = {};
-        txns.forEach(t => { monthTotals[t.month] = (monthTotals[t.month] || 0) + t.amount; });
-        const bestMonth = Object.entries(monthTotals).sort((a, b) => a[1] - b[1])[0];
-        const worstMonth = Object.entries(monthTotals).sort((a, b) => b[1] - a[1])[0];
+        txns.forEach(t => { monthTotals[t.month]=(monthTotals[t.month]||0)+t.amount; });
+        const bestMonth = Object.entries(monthTotals).sort((a,b)=>a[1]-b[1])[0];
+        const worstMonth = Object.entries(monthTotals).sort((a,b)=>b[1]-a[1])[0];
         document.getElementById('awBody').innerHTML = `
           <div class="aw-card"><div class="aw-label">Total Tracked</div>
             <div class="aw-value">${fmtF(total)}</div>
             <div class="aw-sub">${txns.length} transactions</div></div>
           <div class="aw-card"><div class="aw-label">Biggest Spend</div>
-            <div class="aw-value">${fmtF(biggest.amount || 0)}</div>
-            <div class="aw-sub">${esc(biggest.merchant || 'Unknown')}</div></div>
+            <div class="aw-value">${fmtF(biggest.amount||0)}</div>
+            <div class="aw-sub">${esc(biggest.merchant||'Unknown')}</div></div>
           <div class="aw-card"><div class="aw-label">Most Frequent</div>
-            <div class="aw-value">${esc(topMerchant?.[0] || '–')}</div>
-            <div class="aw-sub">${topMerchant?.[1] || 0} times</div></div>
+            <div class="aw-value">${esc(topMerchant?.[0]||'–')}</div>
+            <div class="aw-sub">${topMerchant?.[1]||0} times</div></div>
           <div class="aw-card"><div class="aw-label">Best Month</div>
-            <div class="aw-value">${fmtF(bestMonth?.[1] || 0)}</div>
-            <div class="aw-sub">${esc(bestMonth?.[0] || '–')}</div></div>
+            <div class="aw-value">${fmtF(bestMonth?.[1]||0)}</div>
+            <div class="aw-sub">${esc(bestMonth?.[0]||'–')}</div></div>
           <div class="aw-card"><div class="aw-label">Heaviest Month</div>
-            <div class="aw-value">${fmtF(worstMonth?.[1] || 0)}</div>
-            <div class="aw-sub">${esc(worstMonth?.[0] || '–')}</div></div>
+            <div class="aw-value">${fmtF(worstMonth?.[1]||0)}</div>
+            <div class="aw-sub">${esc(worstMonth?.[0]||'–')}</div></div>
           <div class="aw-card"><div class="aw-label">Daily Average</div>
-            <div class="aw-value">${fmtF(Math.round(total / Math.max(1, txns.length)))}</div>
+            <div class="aw-value">${fmtF(Math.round(total/Math.max(1,txns.length)))}</div>
             <div class="aw-sub">per transaction</div></div>
         `;
         this.show('pgAnnualWrap');
@@ -8117,10 +7307,10 @@
 
       shareAnnualWrap() {
         const txns = D.transactions || [];
-        const total = txns.reduce((s, t) => s + t.amount, 0);
+        const total = txns.reduce((s,t)=>s+t.amount,0);
         const text = `🎉 My Year in Rupees — Spend-na\nTotal: ${fmtF(total)}\n${txns.length} transactions tracked\nTracked with Spend-na · hakki.in`;
-        if (navigator.share) { navigator.share({ title: 'My Year in Rupees', text }).catch(() => { }); }
-        else { navigator.clipboard.writeText(text).then(() => toast('Copied!')).catch(() => toast('Share not available')); }
+        if (navigator.share) { navigator.share({ title: 'My Year in Rupees', text }).catch(()=>{}); }
+        else { navigator.clipboard.writeText(text).then(()=>toast('Copied!')).catch(()=>toast('Share not available')); }
       },
 
       // ── HISTORY ──
@@ -8135,24 +7325,22 @@
           const pills = [
             { k: null, l: 'All' },
             ...Object.entries(BUCKETS).map(([k, v]) => ({ k, l: v.l })),
-            { k: 'unsorted', l: 'Unsorted' },
             ...allUsedTags.map(tag => ({ k: `tag:${tag}`, l: `#${tag}` }))
           ];
           fbar.innerHTML = pills.map(p => {
             const on = S.histF === p.k;
             const cfg = p.k && !p.k.startsWith('tag:') && BUCKETS[p.k];
             const isTag = p.k && p.k.startsWith('tag:');
-            return `<button class="fp${on ? ' on' : ''}${isTag ? ' tag-fp' : ''}" style="${on ? (cfg ? `border-color:${cfg.c};background:${cfg.c}` : isTag ? `border-color:var(--teal);background:var(--teal)` : `border-color:var(--ink);background:var(--ink)`) : ''}" data-filterkey="${esc(p.k || '')}" onclick="APP.setHF(this.dataset.filterkey)">${esc(p.l)}</button>`;
+            return `<button class="fp${on ? ' on' : ''}${isTag ? ' tag-fp' : ''}" style="${on ? (cfg ? `border-color:${cfg.c};background:${cfg.c}` : isTag ? `border-color:var(--teal);background:var(--teal)` : `border-color:var(--ink);background:var(--ink)`) : ''}" data-filterkey="${esc(p.k || '')}">${esc(p.l)}</button>`;
           }).join('');
         }
         const q = (document.getElementById('srchIn')?.value || '').toLowerCase();
         const _searchTerms = expandSearchQuery(q);
         const filt = all.filter(t => {
-          const ms = !q || _searchTerms.some(term => (t.merchant || '').toLowerCase().includes(term) || String(t.amount).includes(term));
+          const ms = !q || _searchTerms.some(term => (t.merchant||'').toLowerCase().includes(term) || String(t.amount).includes(term));
           // Step 9: tag filter coexists with bucket/unsorted filters
           const mb = S.histF == null ? true
-            : S.histF === 'unsorted' ? !t.bucket
-              : S.histF.startsWith('tag:') ? (t.tags || []).includes(S.histF.slice(4))
+            : S.histF.startsWith('tag:') ? (t.tags || []).includes(S.histF.slice(4))
                 : t.bucket === S.histF;
           return ms && mb;
         });
@@ -8164,27 +7352,27 @@
           return;
         }
         listEl.innerHTML = Object.entries(grp).map(([mon, items]) => {
-          const grpTotal = items.reduce((s, t) => s + t.amount, 0);
+          const grpTotal = items.reduce((s,t)=>s+t.amount,0);
           return `<div>
           <div class="mgrp-hdr"><div class="mgrp-nm">${esc(mon)}</div><div class="mgrp-tot">${fmtF(grpTotal)}</div></div>
           ${items.map(t => {
             const cfg = t.bucket ? BUCKETS[t.bucket] : null;
             const tTags = t.tags || [];
             return `<div class="htxn-wrap" data-txid="${t.id}">
-              <div class="htxn" id="ht_${t.id}" data-bucket="${esc(t.bucket || '')}">
+              <div class="htxn" id="ht_${t.id}" data-bucket="${esc(t.bucket||'')}">
                 <div class="htxn-row">
                   <div class="htxn-ic">${ico(t.merchant)}</div>
                   <div class="htxn-info">
                     <div class="htxn-nm">${esc(t.merchant)}</div>
                     <div class="htxn-meta">
                       <span class="htxn-dt">${t.date} · ${t.time}</span>
-                      ${cfg ? `<span class="htxn-bkt htxn-bkt-${t.bucket || 'unsorted'}">${cfg.l}</span>` : `<span class="htxn-bkt htxn-bkt-unsorted">Unsorted</span>`}
+                      ${cfg ? `<span class="htxn-bkt htxn-bkt-${t.bucket}">${cfg.l}</span>` : ''}
                     </div>
-                    ${tTags.length > 0 ? `<div style="display:flex;flex-wrap:wrap;gap:4px;margin-top:5px">${tTags.map(tag => `<span class="tag-pill">#${esc(tag)}</span>`).join('')}</div>` : ''}
+                    ${tTags.length>0 ? `<div style="display:flex;flex-wrap:wrap;gap:4px;margin-top:5px">${tTags.map(tag=>`<span class="tag-pill">#${esc(tag)}</span>`).join('')}</div>` : ''}
                   </div>
                   <div class="htxn-right">
                     <div class="htxn-am">${fmtF(t.amount)}</div>
-                    <div class="htxn-src">${esc(t.source || '')}</div>
+                    <div class="htxn-src">${esc(t.source||'')}</div>
                     <div class="htxn-acts">
                       <button class="h-edit" onclick="APP.tgEdit('${t.id}')">Edit</button>
                       <span style="color:var(--fog)">|</span>
@@ -8198,23 +7386,23 @@
                   <label class="ie-lbl" style="display:block;margin-bottom:4px">DATE</label>
                   <div style="display:flex;gap:8px;margin-bottom:10px">
                     <input class="s-in" style="font-size:13px;padding:8px 10px;flex:1" type="text"
-                      id="ie-date-${t.id}" value="${esc(t.date || '')}" maxlength="20"
+                      id="ie-date-${t.id}" value="${esc(t.date||'')}" maxlength="20"
                       placeholder="e.g. 23 Mar" inputmode="text">
                     <button onclick="APP.hSaveDate('${t.id}')" style="background:var(--teal);color:#fff;border:none;border-radius:var(--r);padding:8px 12px;font-size:12px;font-weight:700;cursor:pointer;white-space:nowrap;font-family:var(--ff)">Save Date</button>
                   </div>
                   <label class="ie-lbl" style="display:block;margin-bottom:4px">DESCRIPTION</label>
-                  <input class="s-in" style="font-size:13px;padding:8px 10px;margin-bottom:10px" type="text" id="ie-desc-${t.id}" value="${esc(t.merchant || '')}" maxlength="60" placeholder="e.g. Swiggy, Coffee">
+                  <input class="s-in" style="font-size:13px;padding:8px 10px;margin-bottom:10px" type="text" id="ie-desc-${t.id}" value="${esc(t.merchant||'')}" maxlength="60" placeholder="e.g. Swiggy, Coffee">
                   <button onclick="APP.hSaveDesc('${t.id}')" style="margin-bottom:12px;width:100%;background:var(--teal);color:#fff;border:none;border-radius:var(--r);padding:9px;font-size:13px;font-weight:700;cursor:pointer;font-family:var(--ff)">Save Description \u2713</button>
                   <span class="ie-lbl">CHANGE BUCKET</span>
-                  <div class="ie-row">${Object.entries(BUCKETS).map(([bk, bc]) => { const on = t.bucket === bk; return `<button class="ie-btn" style="${on ? `border-color:${bc.c};background:${bc.cl}` : ''}" onclick="APP.hClassify('${t.id}','${bk}')"><div class="ie-ic" style="background:${bc.cl};color:${bc.c};border-color:${bc.cm}">${bc.g}</div><span class="ie-lb2" style="${on ? `color:${bc.c};font-weight:800` : ''}">${bc.l}</span></button>`; }).join('')}</div>
+                  <div class="ie-row">${Object.entries(BUCKETS).map(([bk,bc])=>{const on=t.bucket===bk;return `<button class="ie-btn" style="${on?`border-color:${bc.c};background:${bc.cl}`:''}" onclick="APP.hClassify('${t.id}','${bk}')"><div class="ie-ic" style="background:${bc.cl};color:${bc.c};border-color:${bc.cm}">${bc.g}</div><span class="ie-lb2" style="${on?`color:${bc.c};font-weight:800`:''}">${bc.l}</span></button>`;}).join('')}</div>
                   <span class="ie-lbl" style="margin-top:12px;display:block">TAGS</span>
-                  <div class="tag-chips" id="iet_${t.id}">${PRESET_TAGS.map(tag => { const on = tTags.includes(tag); return `<button class="tag-chip${on ? ' on' : ''}" onclick="APP.hToggleTag('${t.id}','${esc(tag)}')">#${esc(tag)}</button>`; }).join('')}</div>
+                  <div class="tag-chips" id="iet_${t.id}">${PRESET_TAGS.map(tag=>{const on=tTags.includes(tag);return `<button class="tag-chip${on?' on':''}" onclick="APP.hToggleTag('${t.id}','${esc(tag)}')">#${esc(tag)}</button>`;}).join('')}</div>
                   <div class="tag-chip-custom" style="margin-top:8px">
                     <input class="tag-custom-in" id="ietc_${t.id}" type="text" inputmode="text" maxlength="30" placeholder="Custom tag\u2026" autocorrect="off" autocapitalize="none" spellcheck="false" onkeydown="if(event.key==='Enter'){event.preventDefault();APP.hAddCustomTag('${t.id}');}">
                     <button class="tag-add-btn" onclick="APP.hAddCustomTag('${t.id}')">Add</button>
                   </div>
                   <div id="iet_sel_${t.id}" style="display:flex;flex-wrap:wrap;gap:4px;margin-top:8px">
-                    ${tTags.map(tag => `<span class="tag-pill">#${esc(tag)}<button class="tag-pill-rm" onclick="APP.hToggleTag('${t.id}','${esc(tag)}')">\u00d7</button></span>`).join('')}
+                    ${tTags.map(tag=>`<span class="tag-pill">#${esc(tag)}<button class="tag-pill-rm" onclick="APP.hToggleTag('${t.id}','${esc(tag)}')">\u00d7</button></span>`).join('')}
                   </div>
                 </div>
               </div>
@@ -8226,19 +7414,22 @@
           }).join('')}
         </div></div>`;
         }).join('');
+        // BUG-7: re-attach filter pill click listeners after render
+        document.getElementById('fBar').querySelectorAll('.fp').forEach(function(btn) {
+          btn.addEventListener('click', function() { APP.setHF(btn.dataset.filterkey); });
+        });
         // FIX-6C: init swipe gestures after render
         (function initSwipeActions(container) {
-          if (container._swipeInit) return; container._swipeInit = true;
-          var startX = 0, startY = 0, activeWrap = null;
-          container.addEventListener('touchstart', function (e) { startX = e.touches[0].clientX; startY = e.touches[0].clientY; activeWrap = e.target.closest('.htxn-wrap'); }, { passive: true });
-          container.addEventListener('touchend', function (e) {
-            if (!activeWrap) return;
-            var dx = e.changedTouches[0].clientX - startX, dy = Math.abs(e.changedTouches[0].clientY - startY);
-            if (dy > 30) return;
-            if (dx < -50) { container.querySelectorAll('.htxn-wrap.swiped').forEach(function (w) { if (w !== activeWrap) w.classList.remove('swiped'); }); activeWrap.classList.add('swiped'); }
-            else if (dx > 20) { activeWrap.classList.remove('swiped'); }
-          }, { passive: true });
-          container.addEventListener('touchstart', function (e) { if (!e.target.closest('.htxn-wrap.swiped')) container.querySelectorAll('.htxn-wrap.swiped').forEach(function (w) { w.classList.remove('swiped'); }); }, { passive: true });
+          var startX=0,startY=0,activeWrap=null;
+          container.addEventListener('touchstart',function(e){startX=e.touches[0].clientX;startY=e.touches[0].clientY;activeWrap=e.target.closest('.htxn-wrap');},{passive:true});
+          container.addEventListener('touchend',function(e){
+            if(!activeWrap)return;
+            var dx=e.changedTouches[0].clientX-startX,dy=Math.abs(e.changedTouches[0].clientY-startY);
+            if(dy>30)return;
+            if(dx<-50){container.querySelectorAll('.htxn-wrap.swiped').forEach(function(w){if(w!==activeWrap)w.classList.remove('swiped');});activeWrap.classList.add('swiped');}
+            else if(dx>20){activeWrap.classList.remove('swiped');}
+          },{passive:true});
+          container.addEventListener('touchstart',function(e){if(!e.target.closest('.htxn-wrap.swiped'))container.querySelectorAll('.htxn-wrap.swiped').forEach(function(w){w.classList.remove('swiped');});},{passive:true});
         })(listEl);
       },
       toggleMonthGroup(mon) {
@@ -8279,14 +7470,12 @@
         // FIX-6C: delete from swipe action
         modal('Delete this spend?', 'This cannot be undone.', [
           { l: 'Cancel', c: 'mb-nil', a: () => this.cm() },
-          {
-            l: 'Delete', c: 'mb-err', a: () => {
-              D.transactions = D.transactions.filter(t => t.id !== id);
-              DB.save(D); this.markUnsaved(); this.cm();
-              document.getElementById('fBar').innerHTML = '';
-              this.r_history(); toast('Deleted');
-            }
-          }
+          { l: 'Delete', c: 'mb-err', a: () => {
+            D.transactions = D.transactions.filter(t => t.id !== id);
+            DB.save(D); this.markUnsaved(); this.cm();
+            document.getElementById('fBar').innerHTML = '';
+            this.r_history(); toast('Deleted');
+          }}
         ]);
       },
       aiRedoVoice() {
@@ -8306,7 +7495,7 @@
         const txns = D.transactions || [];
         if (txns.length === 0) { toast('No transactions to export yet'); return; }
         const total = txns.filter(t => t.bucket).reduce((s, t) => s + t.amount, 0), month = new Date().toLocaleDateString('en-IN', { month: 'long', year: 'numeric' }), sm = summary();
-        const rows = txns.map(t => { const cfg = t.bucket ? BUCKETS[t.bucket] : null; return `<tr><td>${t.date}</td><td><strong>${t.merchant}</strong></td><td style="text-align:right;font-weight:700">₹${t.amount.toLocaleString('en-IN')}</td><td style="text-align:center"><span style="background:${cfg ? cfg.cl : '#f1f5f9'};color:${cfg ? cfg.c : '#94a3b8'};font-size:11px;font-weight:700;padding:3px 8px;border-radius:6px">${cfg ? cfg.l : 'Unsorted'}</span></td></tr>`; }).join('');
+        const rows = txns.map(t => { const cfg = t.bucket ? BUCKETS[t.bucket] : null; return `<tr><td>${t.date}</td><td><strong>${t.merchant}</strong></td><td style="text-align:right;font-weight:700">₹${t.amount.toLocaleString('en-IN')}</td><td style="text-align:center"><span style="background:${cfg ? cfg.cl : '#f1f5f9'};color:${cfg ? cfg.c : '#94a3b8'};font-size:11px;font-weight:700;padding:3px 8px;border-radius:6px">${cfg ? cfg.l : '—'}</span></td></tr>`; }).join('');
         const bCards = Object.entries(BUCKETS).map(([k, c]) => { const amt = sm[k] || 0, pct = total > 0 ? Math.round((amt / total) * 100) : 0; return `<div style="flex:1;min-width:120px;background:${c.cl};border-radius:12px;padding:14px"><div style="font-size:10px;color:${c.c};font-weight:700">${c.l.toUpperCase()}</div><div style="font-size:20px;font-weight:800;color:${c.c};margin-top:6px">₹${amt.toLocaleString('en-IN')}</div><div style="font-size:11px;color:#64748b;margin-top:4px">${pct}%</div></div>`; }).join('');
         const html = `<!DOCTYPE html><html><head><meta charset="utf-8"><title>Spend-na History — ${month}</title><style>body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:#f8fafc;margin:0;padding:20px;-webkit-font-smoothing:antialiased}table{width:100%;border-collapse:collapse}td{padding:10px 12px;border-bottom:1px solid #f1f5f9;font-size:13px;color:#334155}.w{max-width:700px;margin:0 auto}</style></head><body><div class="w"><div style="background:linear-gradient(135deg,#0f172a,#1e293b);border-radius:20px;padding:28px;margin-bottom:20px"><div style="font-size:11px;color:#0ea5e9;font-weight:700;letter-spacing:2px;margin-bottom:6px">SPEND-NA · HISTORY</div><div style="font-size:28px;font-weight:900;color:#fff;letter-spacing:-0.5px">${month}</div><div style="font-size:40px;font-weight:800;color:#0ea5e9;margin-top:12px">₹${total.toLocaleString('en-IN')}</div><div style="font-size:13px;color:#94a3b8;margin-top:4px">${txns.length} total records</div></div><div style="display:flex;flex-wrap:wrap;gap:10px;margin-bottom:20px">${bCards}</div><div style="background:white;border-radius:16px;overflow:hidden;margin-bottom:16px"><div style="padding:16px 20px;border-bottom:1px solid #f1f5f9"><strong>All Transactions (${txns.length} total records)</strong></div><table><tbody>${rows}</tbody></table></div><div style="text-align:center;padding:20px;color:#94a3b8;font-size:11px">Generated by Spend-na · 🔒 All data stays on your device · © Sandeep Hakki · hakki.in · 2026</div></div></body></html>`;
         const fname = `spend-na-history-${month.replace(/\s+/g, '-')}.html`;
@@ -8395,7 +7584,7 @@
         S.saveBusy = true;
         try {
           const now = new Date();
-          D.transactions = [{ id: `t_${Date.now()}_${Math.random().toString(36).slice(2, 6)}`, timestamp: now.toISOString(), date: now.toLocaleDateString('en-IN', { day: '2-digit', month: 'short' }), time: now.toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit' }), month: (function () { var d = (document.getElementById('addDate')?.value || '').trim().split(' '); var mn = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']; return (d.length >= 3 && mn.includes(d[1]) && d[2] && d[2].length === 4) ? d[1] + ' ' + d[2] : now.toLocaleDateString('en-IN', { month: 'short', year: 'numeric' }); })() /* BUG-15 */, merchant: desc || 'Manual Entry', amount: amt, bucket: S.addBkt, source: S.addSrc, tags: [..._addTags] }, ...(D.transactions || [])];
+          D.transactions = [{ id: `t_${Date.now()}_${Math.random().toString(36).slice(2, 6)}`, timestamp: now.toISOString(), date: now.toLocaleDateString('en-IN', { day: '2-digit', month: 'short' }), time: now.toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit' }), month: (function(){var d=(document.getElementById('addDate')?.value||'').trim().split(' ');var mn=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];return(d.length>=3&&mn.includes(d[1])&&d[2]&&d[2].length===4)?d[1]+' '+d[2]:now.toLocaleDateString('en-IN',{month:'short',year:'numeric'});})() /* BUG-15 */, merchant: desc || 'Manual Entry', amount: amt, bucket: S.addBkt, source: S.addSrc, tags: [..._addTags] }, ...(D.transactions || [])];
           DB.save(D); this.markUnsaved();
           _addTags = []; // clear after save — no stale tags on next open
           if (navigator.vibrate) navigator.vibrate(50);
@@ -8495,7 +7684,7 @@
             </div>
             <div class="focus-badge" onclick="APP.cycleFocusMode()">
               <span class="focus-badge-aa">Aa</span>
-              <span class="focus-badge-label">${(() => { const l = parseInt(localStorage.getItem('sn_focus_level') || '0', 10); return ['Default', 'Comfortable', 'Large'][l] || 'Default'; })()}</span>
+              <span class="focus-badge-label">${(() => { const l = parseInt(localStorage.getItem('sn_focus_level')||'0',10); return ['Default','Comfortable','Large'][l]||'Default'; })()}</span>
             </div>
           </div>
         </div>
@@ -8572,26 +7761,26 @@
         };
         return `
           <div class="ai-cfg-section">HOME SCREEN</div>
-          ${row('insight', 'AI Insight Card ✨', 'Weekly pattern observation')}
-          ${row('forecast', 'Spend Forecast 📈', 'Month-end projection')}
-          ${row('streak', 'Spend Streak 🔥', 'Under-budget day counter')}
+          ${row('insight','AI Insight Card ✨','Weekly pattern observation')}
+          ${row('forecast','Spend Forecast 📈','Month-end projection')}
+          ${row('streak','Spend Streak 🔥','Under-budget day counter')}
           <div class="ai-cfg-section">ADD SPEND</div>
-          ${row('voice', 'Voice Input 🎤', 'Speak to log a spend')}
-          ${row('photo', 'Photo Scan 📷', 'Photograph bills and receipts')}
-          ${row('reactions', 'AI Reactions', 'Smart toast after each save')}
-          ${row('mood', 'Mood Tagging 😊', 'How did this spend feel?')}
-          ${row('duplicate', 'Duplicate Detector ⚠️', 'Catch accidental double entries')}
+          ${row('voice','Voice Input 🎤','Speak to log a spend')}
+          ${row('photo','Photo Scan 📷','Photograph bills and receipts')}
+          ${row('reactions','AI Reactions','Smart toast after each save')}
+          ${row('mood','Mood Tagging 😊','How did this spend feel?')}
+          ${row('duplicate','Duplicate Detector ⚠️','Catch accidental double entries')}
           <div class="ai-cfg-section">HISTORY</div>
-          ${row('whyBuyThis', 'Why Did I Buy This? ✨', 'Pattern insight per transaction')}
-          ${row('smartSearch', 'Smart Search 🔎', 'Food finds Swiggy, chai, lunch')}
+          ${row('whyBuyThis','Why Did I Buy This? ✨','Pattern insight per transaction')}
+          ${row('smartSearch','Smart Search 🔎','Food finds Swiggy, chai, lunch')}
           <div class="ai-cfg-section">MY MONTH</div>
-          ${row('story', 'Monthly Story 📖', 'AI-written month narrative')}
-          ${row('mirror', 'Honest Mirror 🪞', 'Multi-month overrun alert')}
-          ${row('spendTwin', 'Spend Twin 👫', 'Compare to similar past month')}
+          ${row('story','Monthly Story 📖','AI-written month narrative')}
+          ${row('mirror','Honest Mirror 🪞','Multi-month overrun alert')}
+          ${row('spendTwin','Spend Twin 👫','Compare to similar past month')}
           <div class="ai-cfg-section">SMART BANNER</div>
-          ${row('weeklyDigest', 'Weekly Digest 📅', 'Monday morning summary')}
+          ${row('weeklyDigest','Weekly Digest 📅','Monday morning summary')}
           <div class="ai-cfg-section">LIMITS</div>
-          ${row('budgetSuggest', 'Smart Budget Suggestion', 'AI-suggested limits from history')}
+          ${row('budgetSuggest','Smart Budget Suggestion','AI-suggested limits from history')}
         `;
       },
 
@@ -9206,46 +8395,46 @@
     // ── BUCKET KEYWORD MAP (for auto-categorization) ─────────────────
     const AI_BKT_KEYWORDS = {
       necessary: [
-        'rice', 'dal', 'atta', 'milk', 'bread', 'egg', 'vegetable', 'veg', 'sabzi', 'grocery', 'groceries',
-        'kirana', 'provision', 'medicine', 'medical', 'doctor', 'hospital', 'clinic', 'pharmacy', 'chemist',
-        'tablet', 'injection', 'lab', 'test', 'scan', 'rent', 'emi', 'loan', 'electricity', 'bill', 'water',
-        'gas', 'lpg', 'cylinder', 'mobile', 'recharge', 'internet', 'wifi', 'broadband', 'school', 'fees',
-        'tuition', 'bus', 'auto', 'rickshaw', 'metro', 'train', 'ticket', 'petrol', 'diesel', 'fuel', 'cng',
-        'maintenance', 'repair', 'plumber', 'electrician', 'maid', 'salary', 'insurance', 'lic', 'sip',
-        'mutual fund', 'ppf', 'nps', 'tax', 'challan', 'fine', 'hospital', 'medicine', 'medical',
-        'health', 'swiggy', 'zomato', 'food', 'lunch', 'dinner', 'breakfast', 'tiffin', 'mess', 'canteen',
-        'chai', 'tea', 'coffee', 'snack', 'biscuit'
+        'rice','dal','atta','milk','bread','egg','vegetable','veg','sabzi','grocery','groceries',
+        'kirana','provision','medicine','medical','doctor','hospital','clinic','pharmacy','chemist',
+        'tablet','injection','lab','test','scan','rent','emi','loan','electricity','bill','water',
+        'gas','lpg','cylinder','mobile','recharge','internet','wifi','broadband','school','fees',
+        'tuition','bus','auto','rickshaw','metro','train','ticket','petrol','diesel','fuel','cng',
+        'maintenance','repair','plumber','electrician','maid','salary','insurance','lic','sip',
+        'mutual fund','ppf','nps','tax','challan','fine','hospital','medicine','medical',
+        'health','swiggy','zomato','food','lunch','dinner','breakfast','tiffin','mess','canteen',
+        'chai','tea','coffee','snack','biscuit'
       ],
       committed: [
-        'emi', 'loan', 'credit card', 'insurance', 'lic', 'premium', 'sip', 'mutual fund', 'ppf',
-        'subscription', 'netflix', 'hotstar', 'prime', 'spotify', 'gym', 'membership', 'rent advance',
-        'deposit', 'maintenance', 'society', 'broadband', 'annual', 'yearly', 'quarterly'
+        'emi','loan','credit card','insurance','lic','premium','sip','mutual fund','ppf',
+        'subscription','netflix','hotstar','prime','spotify','gym','membership','rent advance',
+        'deposit','maintenance','society','broadband','annual','yearly','quarterly'
       ],
       comfortable: [
-        'shopping', 'clothes', 'shirt', 'trouser', 'shoe', 'apparel', 'salon', 'haircut', 'spa', 'massage',
-        'movie', 'cinema', 'pvr', 'inox', 'outing', 'picnic', 'weekend', 'party', 'gift', 'present',
-        'decoration', 'amazon', 'flipkart', 'meesho', 'myntra', 'ajio', 'electronics', 'gadget',
-        'mobile phone', 'laptop', 'headphone', 'earphone', 'watch', 'perfume', 'cosmetic', 'beauty',
-        'makeup', 'skincare', 'household', 'furniture', 'cushion', 'curtain'
+        'shopping','clothes','shirt','trouser','shoe','apparel','salon','haircut','spa','massage',
+        'movie','cinema','pvr','inox','outing','picnic','weekend','party','gift','present',
+        'decoration','amazon','flipkart','meesho','myntra','ajio','electronics','gadget',
+        'mobile phone','laptop','headphone','earphone','watch','perfume','cosmetic','beauty',
+        'makeup','skincare','household','furniture','cushion','curtain'
       ],
       luxury: [
-        'restaurant', 'fine dining', 'bar', 'pub', 'alcohol', 'beer', 'wine', 'whisky', 'party', 'club',
-        'lounge', 'resort', 'hotel', 'holiday', 'trip', 'vacation', 'tour', 'flight', 'air ticket',
-        'cab', 'uber', 'ola', 'rapido', 'international', 'foreign', 'jewellery', 'gold', 'diamond',
-        'luxury', 'branded', 'designer', 'premium', 'expensive', 'iphone', 'macbook', 'ps5', 'xbox',
-        'gaming', 'concert', 'event', 'show', 'ticket'
+        'restaurant','fine dining','bar','pub','alcohol','beer','wine','whisky','party','club',
+        'lounge','resort','hotel','holiday','trip','vacation','tour','flight','air ticket',
+        'cab','uber','ola','rapido','international','foreign','jewellery','gold','diamond',
+        'luxury','branded','designer','premium','expensive','iphone','macbook','ps5','xbox',
+        'gaming','concert','event','show','ticket'
       ]
     };
 
     // ── MERCHANT → BUCKET map for OCR ───────────────────────────────
     const AI_MERCHANT_MAP = {
-      swiggy: 'necessary', zomato: 'necessary', blinkit: 'necessary', zepto: 'necessary',
-      bigbasket: 'necessary', dunzo: 'necessary', jiomart: 'necessary', dmart: 'necessary',
-      apollo: 'necessary', medplus: 'necessary', netmeds: 'necessary', '1mg': 'necessary',
-      ola: 'necessary', uber: 'necessary', rapido: 'necessary', irctc: 'necessary',
-      netflix: 'committed', hotstar: 'committed', primevideo: 'committed', spotify: 'committed',
-      amazon: 'comfortable', flipkart: 'comfortable', myntra: 'comfortable', ajio: 'comfortable',
-      meesho: 'comfortable', nykaa: 'comfortable', tatacliq: 'comfortable',
+      swiggy:'necessary', zomato:'necessary', blinkit:'necessary', zepto:'necessary',
+      bigbasket:'necessary', dunzo:'necessary', jiomart:'necessary', dmart:'necessary',
+      apollo:'necessary', medplus:'necessary', netmeds:'necessary', '1mg':'necessary',
+      ola:'necessary', uber:'necessary', rapido:'necessary', irctc:'necessary',
+      netflix:'committed', hotstar:'committed', primevideo:'committed', spotify:'committed',
+      amazon:'comfortable', flipkart:'comfortable', myntra:'comfortable', ajio:'comfortable',
+      meesho:'comfortable', nykaa:'comfortable', tatacliq:'comfortable',
     };
 
     // ── PARSE NLT (natural language text) ────────────────────────────
@@ -9265,7 +8454,7 @@
       ];
       for (const p of amtPatterns) {
         const m = text.match(p);
-        if (m) { const v = parseFloat(m[1].replace(/,/g, '')); if (v > 0 && v < 9999999) { amt = v; break; } }
+        if (m) { const v = parseFloat(m[1].replace(/,/g,'')); if (v > 0 && v < 9999999) { amt = v; break; } }
       }
       if (!amt) return null;
 
@@ -9290,11 +8479,11 @@
       }
       // Then keyword scoring
       if (!bkt) {
-        const scores = { necessary: 0, committed: 0, comfortable: 0, luxury: 0 };
+        const scores = {necessary:0, committed:0, comfortable:0, luxury:0};
         for (const [b, kws] of Object.entries(AI_BKT_KEYWORDS)) {
           for (const kw of kws) { if (lower.includes(kw)) scores[b] += 1; }
         }
-        const best = Object.entries(scores).sort((a, b) => b[1] - a[1])[0];
+        const best = Object.entries(scores).sort((a,b)=>b[1]-a[1])[0];
         if (best[1] > 0) bkt = best[0];
       }
       if (!bkt) bkt = 'necessary'; // safe default
@@ -9372,7 +8561,7 @@
 
       // Pattern 4: under budget
       if (bkt && D.limits && D.limits[bkt] > 0) {
-        const spent = monthTxns.filter(t => t.bucket === bkt).reduce((s, t) => s + t.amount, 0);
+        const spent = monthTxns.filter(t => t.bucket === bkt).reduce((s,t) => s + t.amount, 0);
         const lim = D.limits[bkt];
         if (spent + amt < lim * 0.5) {
           return `Nice — well within your ${BUCKETS[bkt]?.l || bkt} budget 👏`;
@@ -9380,7 +8569,7 @@
       }
 
       // Pattern 5: first spend today
-      const today = now.toLocaleDateString('en-IN', { day: '2-digit', month: 'short' });
+      const today = now.toLocaleDateString('en-IN', {day:'2-digit', month:'short'});
       const todayTxns = txns.filter(t => t.date === today);
       if (todayTxns.length === 0) {
         return `First spend of the day logged ✓`;
@@ -9411,10 +8600,10 @@
       const weekendTxns = monthTxns.filter(t => { const d = new Date(t.timestamp); return d.getDay() === 0 || d.getDay() === 6; });
       const weekdayTxns = monthTxns.filter(t => { const d = new Date(t.timestamp); return d.getDay() > 0 && d.getDay() < 6; });
       if (weekendTxns.length > 2 && weekdayTxns.length > 2) {
-        const wkndAvg = weekendTxns.reduce((s, t) => s + t.amount, 0) / weekendTxns.length;
-        const wkdayAvg = weekdayTxns.reduce((s, t) => s + t.amount, 0) / weekdayTxns.length;
+        const wkndAvg = weekendTxns.reduce((s,t)=>s+t.amount,0) / weekendTxns.length;
+        const wkdayAvg = weekdayTxns.reduce((s,t)=>s+t.amount,0) / weekdayTxns.length;
         if (wkndAvg > wkdayAvg * 1.3) {
-          insights.push(`You spend ${Math.round((wkndAvg / wkdayAvg - 1) * 100)}% more on weekends — ₹${Math.round(wkndAvg).toLocaleString('en-IN')} avg vs ₹${Math.round(wkdayAvg).toLocaleString('en-IN')} weekdays`);
+          insights.push(`You spend ${Math.round((wkndAvg/wkdayAvg-1)*100)}% more on weekends — ₹${Math.round(wkndAvg).toLocaleString('en-IN')} avg vs ₹${Math.round(wkdayAvg).toLocaleString('en-IN')} weekdays`);
         }
       }
 
@@ -9422,8 +8611,8 @@
       if (prevTxns.length > 0) {
         let biggestGrowth = null, biggestPct = 0;
         for (const bk of Object.keys(BUCKETS)) {
-          const cur = monthTxns.filter(t => t.bucket === bk).reduce((s, t) => s + t.amount, 0);
-          const prev = prevTxns.filter(t => t.bucket === bk).reduce((s, t) => s + t.amount, 0);
+          const cur = monthTxns.filter(t=>t.bucket===bk).reduce((s,t)=>s+t.amount,0);
+          const prev = prevTxns.filter(t=>t.bucket===bk).reduce((s,t)=>s+t.amount,0);
           if (prev > 0 && cur > prev) {
             const pct = ((cur - prev) / prev) * 100;
             if (pct > biggestPct) { biggestPct = pct; biggestGrowth = bk; }
@@ -9443,8 +8632,8 @@
 
       // Best month ever
       const monthTotals = {};
-      txns.forEach(t => { if (t.month) monthTotals[t.month] = (monthTotals[t.month] || 0) + t.amount; });
-      const sortedMonths = Object.entries(monthTotals).sort((a, b) => a[1] - b[1]);
+      txns.forEach(t => { if (t.month) monthTotals[t.month] = (monthTotals[t.month]||0) + t.amount; });
+      const sortedMonths = Object.entries(monthTotals).sort((a,b)=>a[1]-b[1]);
       if (sortedMonths.length >= 3) {
         const [bestMonth, bestAmt] = sortedMonths[0];
         if (bestMonth !== currentMonth) {
@@ -9454,15 +8643,15 @@
 
       // Most frequent merchant
       const merchantCount = {};
-      monthTxns.forEach(t => { if (t.merchant && t.merchant !== 'Manual Entry') merchantCount[t.merchant] = (merchantCount[t.merchant] || 0) + 1; });
-      const topMerchant = Object.entries(merchantCount).sort((a, b) => b[1] - a[1])[0];
+      monthTxns.forEach(t => { if (t.merchant && t.merchant !== 'Manual Entry') merchantCount[t.merchant] = (merchantCount[t.merchant]||0)+1; });
+      const topMerchant = Object.entries(merchantCount).sort((a,b)=>b[1]-a[1])[0];
       if (topMerchant && topMerchant[1] >= 3) {
         insights.push(`${topMerchant[0]} appears ${topMerchant[1]} times this month — your most frequent spend`);
       }
 
       if (insights.length === 0) return null;
       // Pick one insight — rotate by week number
-      const weekNum = Math.floor(Date.now() / (7 * 86400000));
+      const weekNum = Math.floor(Date.now() / (7*86400000));
       return insights[weekNum % insights.length];
     }
 
@@ -9472,23 +8661,23 @@
       const currentMonth = offsetMonthStr(0);
       const now = new Date();
       const dayOfMonth = now.getDate();
-      const daysInMonth = new Date(now.getFullYear(), now.getMonth() + 1, 0).getDate();
+      const daysInMonth = new Date(now.getFullYear(), now.getMonth()+1, 0).getDate();
       if (dayOfMonth < 5) return null; // not enough data
 
       const monthTxns = txns.filter(t => t.month === currentMonth);
       if (monthTxns.length < 3) return null;
 
-      const spent = monthTxns.reduce((s, t) => s + t.amount, 0);
+      const spent = monthTxns.reduce((s,t)=>s+t.amount,0);
       const projected = Math.round((spent / dayOfMonth) * daysInMonth);
 
       // Comfortable range from last 3 months
       const ranges = [];
       for (let i = 1; i <= 3; i++) {
         const m = offsetMonthStr(-i);
-        const mTotal = txns.filter(t => t.month === m).reduce((s, t) => s + t.amount, 0);
+        const mTotal = txns.filter(t=>t.month===m).reduce((s,t)=>s+t.amount,0);
         if (mTotal > 0) ranges.push(mTotal);
       }
-      const avgRange = ranges.length > 0 ? ranges.reduce((s, v) => s + v, 0) / ranges.length : 0;
+      const avgRange = ranges.length > 0 ? ranges.reduce((s,v)=>s+v,0)/ranges.length : 0;
       const breathing = avgRange > 0 ? Math.round(avgRange * 1.1 - projected) : null;
 
       let text = `₹${spent.toLocaleString('en-IN')} in ${dayOfMonth} days → projected ₹${projected.toLocaleString('en-IN')} by month end.`;
@@ -9497,7 +8686,7 @@
         else text += ` ₹${Math.abs(breathing).toLocaleString('en-IN')} over your usual pace.`;
       }
 
-      const pct = avgRange > 0 ? Math.min((projected / avgRange) * 100, 100) : Math.min((spent / (projected || 1)) * 100, 100);
+      const pct = avgRange > 0 ? Math.min((projected / avgRange) * 100, 100) : Math.min((spent / (projected||1)) * 100, 100);
       return { text, pct: Math.round(pct) };
     }
 
@@ -9506,44 +8695,44 @@
       const txns = (D.transactions || []).filter(t => t.month === monthStr);
       if (txns.length < 3) return null;
 
-      const total = txns.reduce((s, t) => s + t.amount, 0);
-      const prevMonth = (() => { const d = new Date(); d.setDate(1); d.setMonth(d.getMonth() - 1); return d.toLocaleDateString('en-IN', { month: 'short', year: 'numeric' }); })();
-      const prevTxns = (D.transactions || []).filter(t => t.month === prevMonth);
-      const prevTotal = prevTxns.reduce((s, t) => s + t.amount, 0);
+      const total = txns.reduce((s,t)=>s+t.amount,0);
+      const prevMonth = (() => { const d = new Date(); d.setDate(1); d.setMonth(d.getMonth()-1); return d.toLocaleDateString('en-IN',{month:'short',year:'numeric'}); })();
+      const prevTxns = (D.transactions||[]).filter(t=>t.month===prevMonth);
+      const prevTotal = prevTxns.reduce((s,t)=>s+t.amount,0);
 
       // Top bucket
       let topBkt = null, topAmt = 0;
       for (const bk of Object.keys(BUCKETS)) {
-        const a = txns.filter(t => t.bucket === bk).reduce((s, t) => s + t.amount, 0);
+        const a = txns.filter(t=>t.bucket===bk).reduce((s,t)=>s+t.amount,0);
         if (a > topAmt) { topAmt = a; topBkt = bk; }
       }
 
       // Biggest single spend
-      const biggestTxn = txns.reduce((best, t) => t.amount > (best ? best.amount : 0) ? t : best, null);
+      const biggestTxn = txns.reduce((best,t) => t.amount > (best ? best.amount : 0) ? t : best, null);
 
       // Weekend concentration
-      const weekendAmt = txns.filter(t => { const d = new Date(t.timestamp); return d.getDay() === 0 || d.getDay() === 6; }).reduce((s, t) => s + t.amount, 0);
-      const weekendPct = total > 0 ? Math.round((weekendAmt / total) * 100) : 0;
+      const weekendAmt = txns.filter(t=>{const d=new Date(t.timestamp);return d.getDay()===0||d.getDay()===6;}).reduce((s,t)=>s+t.amount,0);
+      const weekendPct = total > 0 ? Math.round((weekendAmt/total)*100) : 0;
 
       // Budget check
       const overBuckets = Object.keys(BUCKETS).filter(bk => {
-        const spent = txns.filter(t => t.bucket === bk).reduce((s, t) => s + t.amount, 0);
+        const spent = txns.filter(t=>t.bucket===bk).reduce((s,t)=>s+t.amount,0);
         return D.limits && D.limits[bk] > 0 && spent <= D.limits[bk];
       });
 
       // Build story sentences
       const sentences = [];
-      const vsLast = prevTotal > 0 ? Math.round(((total - prevTotal) / prevTotal) * 100) : null;
+      const vsLast = prevTotal > 0 ? Math.round(((total-prevTotal)/prevTotal)*100) : null;
       if (vsLast !== null) {
         sentences.push(vsLast > 10 ? `${monthStr} was a heavier month — up ${vsLast}% from last month.` :
-          vsLast < -10 ? `${monthStr} was a lean month — down ${Math.abs(vsLast)}% from last month.` :
-            `${monthStr} was steady — spending stayed close to last month.`);
+                       vsLast < -10 ? `${monthStr} was a lean month — down ${Math.abs(vsLast)}% from last month.` :
+                       `${monthStr} was steady — spending stayed close to last month.`);
       } else {
         sentences.push(`${monthStr} had ${txns.length} recorded spends totalling ${fmtF(total)}.`);
       }
 
       if (topBkt) {
-        const topPct = Math.round((topAmt / total) * 100);
+        const topPct = Math.round((topAmt/total)*100);
         sentences.push(`${BUCKETS[topBkt].l} was your biggest category at ${topPct}% of total spend.`);
       }
 
@@ -9565,7 +8754,7 @@
       try {
         const comparison = generateHonestComparison(monthStr);
         if (comparison) sentences.push(comparison);
-      } catch (e) { }
+      } catch(e) {}
 
       return sentences.join(' ');
     }
@@ -9580,12 +8769,12 @@
         let streak = 0;
         for (let i = 1; i <= 4; i++) {
           const m = offsetMonthStr(-i);
-          const spent = txns.filter(t => t.month === m && t.bucket === bk).reduce((s, t) => s + t.amount, 0);
+          const spent = txns.filter(t=>t.month===m&&t.bucket===bk).reduce((s,t)=>s+t.amount,0);
           if (spent > limits[bk]) streak++; else break;
         }
         if (streak >= 2) {
           // Check we haven't shown this recently
-          const shown = (() => { try { return JSON.parse(localStorage.getItem('sn_mirror_shown') || '{}'); } catch (e) { return {}; } })();
+          const shown = (() => { try { return JSON.parse(localStorage.getItem('sn_mirror_shown')||'{}'); } catch(e) { return {}; } })();
           const thisMonth = offsetMonthStr(0);
           if (shown[bk] === thisMonth) continue;
           const newLimit = Math.round(limits[bk] * 1.3 / 100) * 100; // round to nearest 100
@@ -9607,22 +8796,22 @@
     // ── SPEND STREAK 🔥 ──────────────────────────────────────────
     function updateStreak() {
       if (!getAIConfig().streak) return null;
-      const today = new Date().toISOString().slice(0, 10);
+      const today = new Date().toISOString().slice(0,10);
       const lim = D.limits || {};
-      const totalLimit = Object.values(lim).reduce((s, v) => s + (v || 0), 0);
+      const totalLimit = Object.values(lim).reduce((s,v)=>s+(v||0),0);
       if (totalLimit === 0) return null;
       const dailyBudget = totalLimit / 30;
-      const todayTotal = (D.transactions || []).filter(t => t.date && t.date.startsWith(today)).reduce((s, t) => s + (t.amount || 0), 0);
-      let streak = { count: 0, lastDate: '', best: 0 };
-      try { streak = JSON.parse(localStorage.getItem('sn_streak') || '{}'); } catch (e) { }
-      const yesterday = new Date(Date.now() - 86400000).toISOString().slice(0, 10);
+      const todayTotal = (D.transactions||[]).filter(t=>t.date&&t.date.startsWith(today)).reduce((s,t)=>s+(t.amount||0),0);
+      let streak = { count:0, lastDate:'', best:0 };
+      try { streak = JSON.parse(localStorage.getItem('sn_streak')||'{}'); } catch(e) {}
+      const yesterday = new Date(Date.now()-86400000).toISOString().slice(0,10);
       if (todayTotal <= dailyBudget) {
-        if (streak.lastDate === yesterday) { streak.count = (streak.count || 0) + 1; }
+        if (streak.lastDate === yesterday) { streak.count = (streak.count||0)+1; }
         else if (streak.lastDate !== today) { streak.count = 1; }
         streak.lastDate = today;
-        streak.best = Math.max(streak.best || 0, streak.count);
+        streak.best = Math.max(streak.best||0, streak.count);
       } else if (streak.lastDate !== today) { streak.count = 0; streak.lastDate = today; }
-      try { localStorage.setItem('sn_streak', JSON.stringify(streak)); } catch (e) { }
+      try { localStorage.setItem('sn_streak', JSON.stringify(streak)); } catch(e) {}
       return streak;
     }
 
@@ -9630,23 +8819,23 @@
     function checkDuplicate(amount, merchant) {
       if (!getAIConfig().duplicate) return null;
       const cutoff = Date.now() - (15 * 60 * 1000);
-      return (D.transactions || []).find(t => {
-        const tTime = new Date(t.timestamp || 0).getTime();
+      return (D.transactions||[]).find(t => {
+        const tTime = new Date(t.timestamp||0).getTime();
         return tTime > cutoff && Math.abs(t.amount - amount) < 2
-          && (t.merchant || '').toLowerCase() === (merchant || '').toLowerCase();
+          && (t.merchant||'').toLowerCase() === (merchant||'').toLowerCase();
       }) || null;
     }
 
     // ── SMART SEARCH SYNONYMS 🔎 ──────────────────────────────────
     const SEARCH_SYNONYMS = {
-      food: ['swiggy', 'zomato', 'restaurant', 'cafe', 'lunch', 'dinner', 'breakfast', 'chai', 'coffee', 'meals', 'dhaba'],
-      travel: ['uber', 'ola', 'rapido', 'auto', 'petrol', 'fuel', 'bus', 'train', 'flight', 'cab', 'taxi', 'toll'],
-      medical: ['apollo', 'medical', 'pharmacy', 'chemist', 'hospital', 'doctor', 'clinic', 'medicine'],
-      shopping: ['amazon', 'flipkart', 'myntra', 'ajio', 'meesho', 'zepto', 'blinkit', 'instamart'],
-      bills: ['electricity', 'wifi', 'broadband', 'mobile', 'recharge', 'gas', 'water', 'society'],
-      kids: ['school', 'fees', 'tuition', 'books', 'uniform', 'stationery'],
-      entertainment: ['netflix', 'hotstar', 'prime', 'spotify', 'youtube', 'movie', 'theatre'],
-      groceries: ['vegetables', 'fruits', 'kirana', 'supermarket', 'dmart', 'reliance', 'bigbazaar'],
+      food: ['swiggy','zomato','restaurant','cafe','lunch','dinner','breakfast','chai','coffee','meals','dhaba'],
+      travel: ['uber','ola','rapido','auto','petrol','fuel','bus','train','flight','cab','taxi','toll'],
+      medical: ['apollo','medical','pharmacy','chemist','hospital','doctor','clinic','medicine'],
+      shopping: ['amazon','flipkart','myntra','ajio','meesho','zepto','blinkit','instamart'],
+      bills: ['electricity','wifi','broadband','mobile','recharge','gas','water','society'],
+      kids: ['school','fees','tuition','books','uniform','stationery'],
+      entertainment: ['netflix','hotstar','prime','spotify','youtube','movie','theatre'],
+      groceries: ['vegetables','fruits','kirana','supermarket','dmart','reliance','bigbazaar'],
     };
     function expandSearchQuery(q) {
       if (!getAIConfig().smartSearch || !q) return [q.toLowerCase()];
@@ -9664,25 +8853,25 @@
     function generateSpendTwin(currentMonthStr) {
       if (!getAIConfig().spendTwin) return null;
       const txns = D.transactions || [];
-      const currentTxns = txns.filter(t => t.month === currentMonthStr);
+      const currentTxns = txns.filter(t=>t.month===currentMonthStr);
       if (currentTxns.length < 3) return null;
       const current = {};
-      Object.keys(BUCKETS).forEach(k => { current[k] = currentTxns.filter(t => t.bucket === k).reduce((s, t) => s + t.amount, 0); });
-      const currentTotal = Object.values(current).reduce((s, v) => s + v, 0);
+      Object.keys(BUCKETS).forEach(k => { current[k] = currentTxns.filter(t=>t.bucket===k).reduce((s,t)=>s+t.amount,0); });
+      const currentTotal = Object.values(current).reduce((s,v)=>s+v,0);
       if (currentTotal === 0) return null;
-      const pastMonths = [...new Set(txns.map(t => t.month))].filter(m => m !== currentMonthStr);
+      const pastMonths = [...new Set(txns.map(t=>t.month))].filter(m=>m!==currentMonthStr);
       if (pastMonths.length < 2) return null;
       let bestMatch = null, bestScore = Infinity;
       pastMonths.forEach(m => {
         const past = {};
-        Object.keys(BUCKETS).forEach(k => { past[k] = txns.filter(t => t.month === m && t.bucket === k).reduce((s, t) => s + t.amount, 0); });
-        const pastTotal = Object.values(past).reduce((s, v) => s + v, 0);
+        Object.keys(BUCKETS).forEach(k => { past[k] = txns.filter(t=>t.month===m&&t.bucket===k).reduce((s,t)=>s+t.amount,0); });
+        const pastTotal = Object.values(past).reduce((s,v)=>s+v,0);
         if (pastTotal === 0) return;
-        const score = Object.keys(BUCKETS).reduce((s, k) => s + Math.abs((currentTotal > 0 ? current[k] / currentTotal : 0) - (pastTotal > 0 ? past[k] / pastTotal : 0)), 0);
-        if (score < bestScore) { bestScore = score; bestMatch = { month: m, total: pastTotal }; }
+        const score = Object.keys(BUCKETS).reduce((s,k)=>s+Math.abs((currentTotal>0?current[k]/currentTotal:0)-(pastTotal>0?past[k]/pastTotal:0)),0);
+        if (score < bestScore) { bestScore=score; bestMatch={month:m,total:pastTotal}; }
       });
       if (!bestMatch || bestScore > 0.45) return null;
-      return { ...bestMatch, similarity: Math.round((1 - bestScore / 2) * 100) };
+      return { ...bestMatch, similarity: Math.round((1-bestScore/2)*100) };
     }
 
     // ── SMART BUDGET SUGGESTION ───────────────────────────────────
@@ -9690,18 +8879,18 @@
       if (!getAIConfig().budgetSuggest) return '';
       const txns = D.transactions || [];
       if (txns.length < 8) return '';
-      if (!Object.values(D.limits || {}).every(v => !v || v === 0)) return '';
-      const months = [-1, -2, -3].map(o => offsetMonthStr(o));
+      if (!Object.values(D.limits||{}).every(v=>!v||v===0)) return '';
+      const months = [-1,-2,-3].map(o=>offsetMonthStr(o));
       const avgs = {};
       Object.keys(BUCKETS).forEach(k => {
-        const totals = months.map(m => txns.filter(t => t.month === m && t.bucket === k).reduce((s, t) => s + t.amount, 0)).filter(v => v > 0);
-        avgs[k] = totals.length ? Math.round(totals.reduce((s, v) => s + v, 0) / totals.length / 100) * 100 : 0;
+        const totals = months.map(m=>txns.filter(t=>t.month===m&&t.bucket===k).reduce((s,t)=>s+t.amount,0)).filter(v=>v>0);
+        avgs[k] = totals.length ? Math.round(totals.reduce((s,v)=>s+v,0)/totals.length/100)*100 : 0;
       });
-      if (Object.values(avgs).every(v => v === 0)) return '';
+      if (Object.values(avgs).every(v=>v===0)) return '';
       window._aiSuggestedLimits = avgs;
       return '<div class="budget-suggest-card">'
         + '<div style="font-size:12px;font-weight:700;color:#15803d;margin-bottom:10px">Based on your last 3 months — suggested limits:</div>'
-        + Object.entries(BUCKETS).map(([k, c]) => avgs[k] > 0 ? `<div style="display:flex;justify-content:space-between;font-size:13px;padding:3px 0"><span style="color:${c.c}">${c.g} ${c.l}</span><span style="font-weight:700">${fmtF(avgs[k])}</span></div>` : '').join('')
+        + Object.entries(BUCKETS).map(([k,c])=>avgs[k]>0?`<div style="display:flex;justify-content:space-between;font-size:13px;padding:3px 0"><span style="color:${c.c}">${c.g} ${c.l}</span><span style="font-weight:700">${fmtF(avgs[k])}</span></div>`:'').join('')
         + '<button onclick="APP.applyBudgetSuggestion()" style="width:100%;margin-top:12px;padding:10px;background:#16a34a;color:#fff;border:none;border-radius:var(--r);font-size:13px;font-weight:700;cursor:pointer;font-family:var(--ff)">Apply these limits</button>'
         + '</div>';
     }
@@ -9711,59 +8900,59 @@
       if (!getAIConfig().weeklyDigest) return null;
       const now = new Date();
       if (now.getDay() !== 1) return null;
-      const weekKey = now.getFullYear() + '-W' + Math.ceil(now.getDate() / 7);
-      try { const saved = JSON.parse(localStorage.getItem('sn_weekly_digest') || '{}'); if (saved.week === weekKey) return saved.text; } catch (e) { }
-      const lastWeekStart = new Date(now - 7 * 86400000).toISOString().slice(0, 10);
-      const lastWeekEnd = new Date(now - 86400000).toISOString().slice(0, 10);
-      const txns = (D?.transactions || []).filter(t => t.date >= lastWeekStart && t.date <= lastWeekEnd);
-      if (txns.length === 0) return null;
-      const total = txns.reduce((s, t) => s + t.amount, 0);
-      const topBktKey = Object.keys(BUCKETS).reduce((best, k) => {
-        const a = txns.filter(t => t.bucket === k).reduce((s, t) => s + t.amount, 0);
-        return a > (txns.filter(t => t.bucket === best).reduce((s, t) => s + t.amount, 0)) ? k : best;
-      }, Object.keys(BUCKETS)[0]);
-      const days = [...new Set(txns.map(t => t.date))];
-      const hvy = days.reduce((b, d) => { const a = txns.filter(t => t.date === d).reduce((s, t) => s + t.amount, 0); return a > (b.amt || 0) ? { d, amt: a } : b; }, {});
-      const heavyDay = hvy.d ? new Date(hvy.d + 'T12:00:00').toLocaleDateString('en-IN', { weekday: 'long' }) : '';
-      const text = 'Last week: ' + fmtF(total) + ' \u00b7 ' + txns.length + ' spends \u00b7 Heaviest: ' + heavyDay + ' \u00b7 Top: ' + (BUCKETS[topBktKey]?.l || 'Mixed');
-      try { localStorage.setItem('sn_weekly_digest', JSON.stringify({ week: weekKey, text })); } catch (e) { }
+      const weekKey = now.getFullYear() + '-W' + Math.ceil(now.getDate()/7);
+      try { const saved=JSON.parse(localStorage.getItem('sn_weekly_digest')||'{}'); if(saved.week===weekKey) return saved.text; } catch(e) {}
+      const lastWeekStart = new Date(now-7*86400000).toISOString().slice(0,10);
+      const lastWeekEnd = new Date(now-86400000).toISOString().slice(0,10);
+      const txns = (D?.transactions||[]).filter(t=>t.date>=lastWeekStart&&t.date<=lastWeekEnd);
+      if (txns.length===0) return null;
+      const total = txns.reduce((s,t)=>s+t.amount,0);
+      const topBktKey = Object.keys(BUCKETS).reduce((best,k)=>{
+        const a=txns.filter(t=>t.bucket===k).reduce((s,t)=>s+t.amount,0);
+        return a>(txns.filter(t=>t.bucket===best).reduce((s,t)=>s+t.amount,0))?k:best;
+      },Object.keys(BUCKETS)[0]);
+      const days=[...new Set(txns.map(t=>t.date))];
+      const hvy=days.reduce((b,d)=>{const a=txns.filter(t=>t.date===d).reduce((s,t)=>s+t.amount,0);return a>(b.amt||0)?{d,amt:a}:b;},{});
+      const heavyDay = hvy.d ? new Date(hvy.d+'T12:00:00').toLocaleDateString('en-IN',{weekday:'long'}) : '';
+      const text = 'Last week: '+fmtF(total)+' \u00b7 '+txns.length+' spends \u00b7 Heaviest: '+heavyDay+' \u00b7 Top: '+(BUCKETS[topBktKey]?.l||'Mixed');
+      try { localStorage.setItem('sn_weekly_digest',JSON.stringify({week:weekKey,text})); } catch(e) {}
       return text;
     }
 
     // ── WHY DID I BUY THIS — observation generator ───────────────
     function _generateWhyObservation(t) {
       const txns = D.transactions || [];
-      const merchant = (t.merchant || '').toLowerCase();
-      const hour = t.time ? parseInt(t.time.split(':')[0], 10) : 12;
+      const merchant = (t.merchant||'').toLowerCase();
+      const hour = t.time ? parseInt(t.time.split(':')[0],10) : 12;
       const isLateNight = hour >= 22 || hour <= 4;
-      const thisMonth = txns.filter(x => x.month === t.month && (x.merchant || '').toLowerCase() === merchant);
-      const allTime = txns.filter(x => (x.merchant || '').toLowerCase() === merchant);
+      const thisMonth = txns.filter(x=>x.month===t.month&&(x.merchant||'').toLowerCase()===merchant);
+      const allTime = txns.filter(x=>(x.merchant||'').toLowerCase()===merchant);
       if (isLateNight && thisMonth.length >= 2)
-        return 'This \u20b9' + t.amount + ' ' + t.merchant + ' at ' + t.time + ' \u2014 ' + thisMonth.length + ' orders here this month were late night.';
+        return 'This \u20b9'+t.amount+' '+t.merchant+' at '+t.time+' \u2014 '+thisMonth.length+' orders here this month were late night.';
       if (thisMonth.length >= 3)
-        return t.merchant + ' appears ' + thisMonth.length + ' times this month \u2014 ' + fmtF(thisMonth.reduce((s, x) => s + x.amount, 0)) + ' total.';
+        return t.merchant+' appears '+thisMonth.length+' times this month \u2014 '+fmtF(thisMonth.reduce((s,x)=>s+x.amount,0))+' total.';
       if (allTime.length >= 5)
-        return 'You\u2019ve visited ' + t.merchant + ' ' + allTime.length + ' times. It\u2019s a regular habit.';
-      const dayTotal = txns.filter(x => x.date === t.date).reduce((s, x) => s + x.amount, 0);
-      const dow = new Date((t.timestamp || Date.now())).toLocaleDateString('en-IN', { weekday: 'long' });
-      return 'A ' + dow + ' spend \u2014 ' + fmtF(dayTotal) + ' total that day.';
+        return 'You\u2019ve visited '+t.merchant+' '+allTime.length+' times. It\u2019s a regular habit.';
+      const dayTotal = txns.filter(x=>x.date===t.date).reduce((s,x)=>s+x.amount,0);
+      const dow = new Date((t.timestamp||Date.now())).toLocaleDateString('en-IN',{weekday:'long'});
+      return 'A '+dow+' spend \u2014 '+fmtF(dayTotal)+' total that day.';
     }
 
     // ── MOOD PROMPT STYLES ────────────────────────────────────────
-    (function () {
+    (function() {
       if (document.getElementById('moodPromptStyle')) return;
       const s = document.createElement('style');
       s.id = 'moodPromptStyle';
       s.textContent = '#moodPrompt{position:fixed;bottom:calc(env(safe-area-inset-bottom,0px)+88px);left:50%;transform:translateX(-50%);background:var(--card);border:1px solid var(--fog);border-radius:40px;padding:8px 16px;display:none;align-items:center;gap:10px;box-shadow:0 8px 24px rgba(0,0,0,.12);z-index:801;white-space:nowrap}'
-        + '.mood-q{font-size:12px;color:var(--slate);font-weight:600}'
-        + '.mood-btn{font-size:22px;background:none;border:none;cursor:pointer;padding:4px;line-height:1;font-family:var(--ff)}';
+        +'.mood-q{font-size:12px;color:var(--slate);font-weight:600}'
+        +'.mood-btn{font-size:22px;background:none;border:none;cursor:pointer;padding:4px;line-height:1;font-family:var(--ff)}';
       document.head.appendChild(s);
     })();
 
     function _installAIMethods() {
 
       // ── aiAddParse — fires on every keystroke ──
-      APP.aiAddParse = function (val) {
+      APP.aiAddParse = function(val) {
         const status = document.getElementById('aiStatus');
         if (!val || val.trim().length < 3) { aiClear(); return; }
         const parsed = aiParseText(val);
@@ -9777,36 +8966,36 @@
       };
 
       // ── aiAddConfirm — Enter key shortcut ──
-      APP.aiAddConfirm = function () {
+      APP.aiAddConfirm = function() {
         if (AI.parsed) this.aiSaveConfirmed();
       };
 
       // ── aiSaveConfirmed — save from AI card ──
-      APP.aiSaveConfirmed = function () {
+      APP.aiSaveConfirmed = function() {
         const p = AI.parsed;
         if (!p) { toast('Nothing to save yet'); return; }
         if (!p.amt || p.amt <= 0) { toast('Please enter an amount'); return; }
         const now = new Date();
         const txn = {
-          id: `t_${Date.now()}_${Math.random().toString(36).slice(2, 6)}`,
+          id: `t_${Date.now()}_${Math.random().toString(36).slice(2,6)}`,
           timestamp: now.toISOString(),
-          date: now.toLocaleDateString('en-IN', { day: '2-digit', month: 'short' }),
-          time: now.toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit' }),
-          month: now.toLocaleDateString('en-IN', { month: 'short', year: 'numeric' }),
+          date: now.toLocaleDateString('en-IN',{day:'2-digit',month:'short'}),
+          time: now.toLocaleTimeString('en-IN',{hour:'2-digit',minute:'2-digit'}),
+          month: now.toLocaleDateString('en-IN',{month:'short',year:'numeric'}),
           merchant: p.desc || 'Spend',
           amount: p.amt,
           bucket: p.bkt,
           source: p.src,
           tags: [..._addTags]
         };
-        D.transactions = [txn, ...(D.transactions || [])];
+        D.transactions = [txn, ...(D.transactions||[])];
         // Remember last used source
         D.lastSrc = p.src;
         DB.save(D); this.markUnsaved();
         _addTags = [];
         if (navigator.vibrate) navigator.vibrate(50);
         // AI reaction toast
-        const reaction = (typeof getAIConfig === 'function' && getAIConfig().reactions === false) ? null : aiReaction(p.amt, p.desc, p.bkt, D.transactions.slice(1));
+        const reaction = (typeof getAIConfig==='function'&&getAIConfig().reactions===false) ? null : aiReaction(p.amt, p.desc, p.bkt, D.transactions.slice(1));
         toast(reaction, 3000);
         // Reset smart add
         const inp = document.getElementById('aiAddInput');
@@ -9816,19 +9005,19 @@
       };
 
       // ── aiEditField — tap Edit on confirmation card ──
-      APP.aiEditField = function (field) {
+      APP.aiEditField = function(field) {
         // Hide card, show manual form, focus relevant field
         this.aiToggleManual(true);
         setTimeout(() => {
           if (field === 'amt') { const el = document.getElementById('addAmt'); if (el) { el.focus(); el.select(); } }
           if (field === 'desc') { const el = document.getElementById('addDesc'); if (el) { el.focus(); el.select(); } }
-          if (field === 'bkt') { document.getElementById('bktGrid')?.scrollIntoView({ behavior: 'smooth' }); }
-          if (field === 'src') { document.getElementById('srcGrid')?.scrollIntoView({ behavior: 'smooth' }); }
+          if (field === 'bkt') { document.getElementById('bktGrid')?.scrollIntoView({behavior:'smooth'}); }
+          if (field === 'src') { document.getElementById('srcGrid')?.scrollIntoView({behavior:'smooth'}); }
         }, 100);
       };
 
       // ── aiToggleManual — show/hide manual form ──
-      APP.aiToggleManual = function (forceShow) {
+      APP.aiToggleManual = function(forceShow) {
         const form = document.getElementById('aiManualForm');
         const toggle = document.getElementById('aiManualToggle');
         if (!form) return;
@@ -9838,7 +9027,7 @@
       };
 
       // ── aiVoiceToggle — start/stop voice ──
-      APP.aiVoiceToggle = function () {
+      APP.aiVoiceToggle = function() {
         if (!getAIConfig().voice) { toast('Voice input is disabled in AI Settings'); return; }
         const btn = document.getElementById('aiVoiceBtn');
         if (AI.voiceActive) {
@@ -9865,7 +9054,7 @@
         if (status) status.textContent = '🎤 Listening…';
         const inp = document.getElementById('aiAddInput');
         rec.onresult = (e) => {
-          const transcript = Array.from(e.results).map(r => r[0].transcript).join('');
+          const transcript = Array.from(e.results).map(r=>r[0].transcript).join('');
           if (inp) inp.value = transcript;
           if (status) status.textContent = transcript ? '' : '🎤 Listening…';
           APP.aiAddParse(transcript);
@@ -9881,57 +9070,51 @@
           if (btn) { btn.classList.remove('recording'); btn.textContent = '🎤'; }
           if (status) status.textContent = '';
         };
-        try { rec.start(); } catch (e) { AI.voiceActive = false; if (btn) { btn.classList.remove('recording'); btn.textContent = '🎤'; } }
+        try { rec.start(); } catch(e) { AI.voiceActive = false; if (btn) { btn.classList.remove('recording'); btn.textContent = '🎤'; } }
       };
 
       // ── aiPhotoTrigger — open camera ──
-      APP.aiPhotoTrigger = function () {
+      APP.aiPhotoTrigger = function() {
         if (!getAIConfig().photo) { toast('Photo scan is disabled in AI Settings'); return; }
         // BUG-14: show choice between camera and gallery
         modal('Scan a bill', 'Choose how to add your receipt image:', [
           { l: '❌ Cancel', c: 'mb-nil', a: () => this.cm() },
-          {
-            l: '🖼️ Gallery', c: 'mb-nil', a: () => {
+          { l: '🖼️ Gallery', c: 'mb-nil', a: () => {
               this.cm();
               const g = document.getElementById('aiGalleryInput');
-              if (g) { g.value = ''; g.click(); }
-            }
-          },
-          {
-            l: '📷 Camera', c: 'mb-ok', a: () => {
+              if (g) { g.value=''; g.click(); }
+          }},
+          { l: '📷 Camera', c: 'mb-ok', a: () => {
               this.cm();
               const c = document.getElementById('aiPhotoInput');
-              if (c) { c.value = ''; c.click(); }
-            }
-          },
+              if (c) { c.value=''; c.click(); }
+          }},
         ]);
       };
 
       // ── aiPhotoProcess — OCR the selected image ──
-      APP.aiPhotoProcess = async function (inputEl) {
+      APP.aiPhotoProcess = async function(inputEl) {
         const file = inputEl && inputEl.files && inputEl.files[0];
         if (!file) return;
         const progress = document.getElementById('aiOcrProgress');
         const status = document.getElementById('aiStatus');
         if (progress) progress.style.display = 'block';
-        if (status) status.textContent = '📷 Reading receipt…';
+        if (status) status.textContent = '📷 Loading scanner…';
         try {
-          // Dynamically load Tesseract.js
+          // Dynamically load Tesseract.js from cdnjs (matches CSP allowlist)
           if (!window.Tesseract) {
             await new Promise((res, rej) => {
               const s = document.createElement('script');
-              // BUG-024: pinned to exact version. To update: compute new SRI hash with:
-              // curl -s "https://cdn.jsdelivr.net/npm/tesseract.js@5.1.1/dist/tesseract.min.js" | openssl dgst -sha384 -binary | openssl base64 -A
-              // Then update src version AND integrity hash below AND the CSP meta tag hash.
-              s.src = 'https://cdn.jsdelivr.net/npm/tesseract.js@5.1.1/dist/tesseract.min.js';
+              s.src = 'https://cdnjs.cloudflare.com/ajax/libs/tesseract.js/5.1.1/tesseract.min.js';
               s.crossOrigin = 'anonymous';
               s.onload = res;
-              s.onerror = () => { console.warn('Tesseract.js failed to load — OCR unavailable'); rej(new Error('Tesseract load failed')); };
+              s.onerror = () => { rej(new Error('Tesseract load failed')); };
               document.head.appendChild(s);
             });
           }
+          if (status) status.textContent = '📷 Reading receipt…';
           const { data: { text } } = await Tesseract.recognize(file, 'eng', {
-            logger: m => { if (status && m.status === 'recognizing text') status.textContent = `📷 Reading… ${Math.round(m.progress * 100)}%`; }
+            logger: m => { if (status && m.status === 'recognizing text') status.textContent = `📷 Reading… ${Math.round(m.progress*100)}%`; }
           });
           if (progress) progress.style.display = 'none';
           if (status) status.textContent = '';
@@ -9945,21 +9128,24 @@
           } else {
             toast('Could not read amount — try typing it');
           }
-        } catch (e) {
+        } catch(e) {
           if (progress) progress.style.display = 'none';
           if (status) status.textContent = '';
-          toast('Receipt scan failed — please type manually');
+          const msg = e.message === 'Tesseract load failed'
+            ? 'Scanner needs internet to load — please connect and try again'
+            : 'Receipt scan failed — try a clearer image or type manually';
+          toast(msg, 3500);
         }
         // Reset file input so same file can be re-selected
         if (inputEl) inputEl.value = '';
       };
 
       // ── aiParseOCR — parse raw OCR text from receipts ──
-      APP.aiParseOCR = function (text) { return aiParseOCR(text); };
+      APP.aiParseOCR = function(text) { return aiParseOCR(text); };
 
       // ── aiRenderInsight — render on home screen ──
-      APP.aiRenderInsight = function () {
-        if (!getAIConfig().insight) { const _c = document.getElementById('aiInsightCard'); if (_c) _c.style.display = 'none'; return; }
+      APP.aiRenderInsight = function() {
+        if (!getAIConfig().insight) { const _c=document.getElementById('aiInsightCard'); if(_c) _c.style.display='none'; return; }
         try {
           const card = document.getElementById('aiInsightCard');
           const textEl = document.getElementById('aiInsightText');
@@ -9975,8 +9161,8 @@
           if (!insight) { card.style.display = 'none'; return; }
           textEl.textContent = insight;
           card.style.display = 'block';
-          try { localStorage.setItem('sn_ai_insight', JSON.stringify({ text: insight, week: _aiWeekKey() })); } catch (e) { }
-        } catch (e) {
+          try { localStorage.setItem('sn_ai_insight', JSON.stringify({text: insight, week: _aiWeekKey()})); } catch(e) {}
+        } catch(e) {
           console.warn('AI insight render error:', e);
           const card = document.getElementById('aiInsightCard');
           if (card) card.style.display = 'none';
@@ -9984,15 +9170,15 @@
       };
 
       // ── aiDismissInsight ──
-      APP.aiDismissInsight = function () {
+      APP.aiDismissInsight = function() {
         const card = document.getElementById('aiInsightCard');
         if (card) card.style.display = 'none';
-        try { const d = JSON.parse(localStorage.getItem('sn_ai_insight') || '{}'); d.dismissed = true; d.week = _aiWeekKey(); localStorage.setItem('sn_ai_insight', JSON.stringify(d)); } catch (e) { }
+        try { const d = JSON.parse(localStorage.getItem('sn_ai_insight')||'{}'); d.dismissed = true; d.week = _aiWeekKey(); localStorage.setItem('sn_ai_insight', JSON.stringify(d)); } catch(e) {}
       };
 
       // ── aiRenderForecast — render on home screen ──
-      APP.aiRenderForecast = function () {
-        if (!getAIConfig().forecast) { const _c = document.getElementById('aiForecastCard'); if (_c) _c.style.display = 'none'; return; }
+      APP.aiRenderForecast = function() {
+        if (!getAIConfig().forecast) { const _c=document.getElementById('aiForecastCard'); if(_c) _c.style.display='none'; return; }
         try {
           const card = document.getElementById('aiForecastCard');
           const textEl = document.getElementById('aiForecastText');
@@ -10004,7 +9190,7 @@
           if (fill) fill.style.width = f.pct + '%';
           if (fill) fill.style.background = f.pct > 90 ? '#ef4444' : f.pct > 70 ? '#f59e0b' : 'var(--teal)';
           card.style.display = 'block';
-        } catch (e) {
+        } catch(e) {
           console.warn('AI forecast render error:', e);
           const card = document.getElementById('aiForecastCard');
           if (card) card.style.display = 'none';
@@ -10012,8 +9198,8 @@
       };
 
       // ── aiRenderStory — render on month screen ──
-      APP.aiRenderStory = function (monthStr) {
-        if (!getAIConfig().story) { const _c = document.getElementById('aiStoryCard'); if (_c) _c.style.display = 'none'; return; }
+      APP.aiRenderStory = function(monthStr) {
+        if (!getAIConfig().story) { const _c=document.getElementById('aiStoryCard'); if(_c) _c.style.display='none'; return; }
         try {
           const card = document.getElementById('aiStoryCard');
           const textEl = document.getElementById('aiStoryText');
@@ -10022,7 +9208,7 @@
           if (!story) { card.style.display = 'none'; return; }
           textEl.textContent = story;
           card.style.display = 'block';
-        } catch (e) {
+        } catch(e) {
           console.warn('AI story render error:', e);
           const card = document.getElementById('aiStoryCard');
           if (card) card.style.display = 'none';
@@ -10030,8 +9216,8 @@
       };
 
       // ── aiRenderMirror — render on month screen ──
-      APP.aiRenderMirror = function () {
-        if (!getAIConfig().mirror) { const _c = document.getElementById('aiMirrorCard'); if (_c) _c.style.display = 'none'; return; }
+      APP.aiRenderMirror = function() {
+        if (!getAIConfig().mirror) { const _c=document.getElementById('aiMirrorCard'); if(_c) _c.style.display='none'; return; }
         try {
           const card = document.getElementById('aiMirrorCard');
           const textEl = document.getElementById('aiMirrorText');
@@ -10042,7 +9228,7 @@
           textEl.textContent = mirror.text;
           if (btn) btn.textContent = `Set ${BUCKETS[mirror.bk]?.l || ''} limit to ${fmtF(mirror.newLimit)}`;
           card.style.display = 'block';
-        } catch (e) {
+        } catch(e) {
           console.warn('AI mirror render error:', e);
           const card = document.getElementById('aiMirrorCard');
           if (card) card.style.display = 'none';
@@ -10050,17 +9236,17 @@
       };
 
       // ── aiMirrorAction — user taps update limit ──
-      APP.aiMirrorAction = function () {
+      APP.aiMirrorAction = function() {
         if (!AI.mirrorBucket || !AI.mirrorNewLimit) return;
         if (!D.limits) D.limits = {};
         D.limits[AI.mirrorBucket] = AI.mirrorNewLimit;
         DB.save(D); this.markUnsaved();
         // Mark as shown this month
         try {
-          const shown = JSON.parse(localStorage.getItem('sn_mirror_shown') || '{}');
+          const shown = JSON.parse(localStorage.getItem('sn_mirror_shown')||'{}');
           shown[AI.mirrorBucket] = offsetMonthStr(0);
           localStorage.setItem('sn_mirror_shown', JSON.stringify(shown));
-        } catch (e) { }
+        } catch(e) {}
         const card = document.getElementById('aiMirrorCard');
         if (card) card.style.display = 'none';
         toast(`${BUCKETS[AI.mirrorBucket]?.l} limit updated to ${fmtF(AI.mirrorNewLimit)} ✓`);
@@ -10068,16 +9254,16 @@
       };
 
       // ── aiWhyThis — why did I buy this? ✨ ─────────────────────
-      APP.aiWhyThis = function (id) {
+      APP.aiWhyThis = function(id) {
         if (!getAIConfig().whyBuyThis) return;
-        const t = (D.transactions || []).find(x => x.id === id);
+        const t = (D.transactions||[]).find(x=>x.id===id);
         if (!t) return;
         const obs = _generateWhyObservation(t);
         modal('✨ Pattern insight', obs, [{ l: 'Got it', c: 'mb-ok', a: () => this.cm() }]);
       };
 
       // ── applyBudgetSuggestion ─────────────────────────────────
-      APP.applyBudgetSuggestion = function () {
+      APP.applyBudgetSuggestion = function() {
         if (!window._aiSuggestedLimits) return;
         D.limits = { ...window._aiSuggestedLimits };
         DB.save(D); this.markUnsaved();
@@ -10086,7 +9272,7 @@
       };
 
       // ── Mood tagging ─────────────────────────────────────────
-      APP._showMoodPrompt = function (txId) {
+      APP._showMoodPrompt = function(txId) {
         if (!getAIConfig().mood) return;
         const el = document.getElementById('moodPrompt');
         if (!el) return;
@@ -10094,17 +9280,17 @@
         el.style.display = 'flex';
         clearTimeout(el._t);
         el._t = setTimeout(() => {
-          if (el._pendingId === txId) { el.style.display = 'none'; }
+          if (el._pendingId === txId) { el.style.display='none'; }
         }, 4500);
       };
-      APP.tapMood = function (mood) {
+      APP.tapMood = function(mood) {
         const el = document.getElementById('moodPrompt');
         if (!el) return;
         clearTimeout(el._t);
         const txId = el._pendingId;
         el.style.display = 'none';
         if (!txId) return;
-        const t = (D.transactions || []).find(x => x.id === txId);
+        const t = (D.transactions||[]).find(x=>x.id===txId);
         if (t) { t.mood = mood; DB.save(D); }
         if (mood === 'regret') toast('Noted. Your patterns will reflect this.');
       };
@@ -10114,7 +9300,7 @@
     // ── OCR TEXT PARSER ─────────────────────────────────────────────
     function aiParseOCR(text) {
       if (!text) return null;
-      const lines = text.split('\n').map(l => l.trim()).filter(Boolean);
+      const lines = text.split('\n').map(l=>l.trim()).filter(Boolean);
 
       // Extract amount — look for largest currency amount in receipt
       let amt = null;
@@ -10124,13 +9310,13 @@
       let m;
       // Prefer labeled amounts
       while ((m = amtRe.exec(text)) !== null) {
-        const v = parseFloat(m[1].replace(/,/g, ''));
+        const v = parseFloat(m[1].replace(/,/g,''));
         if (v > 0 && v < 9999999) amtCandidates.push(v);
       }
       // Fall back to any number
       if (amtCandidates.length === 0) {
         while ((m = anyNumRe.exec(text)) !== null) {
-          const v = parseFloat(m[1].replace(/,/g, ''));
+          const v = parseFloat(m[1].replace(/,/g,''));
           if (v >= 10 && v < 9999999) amtCandidates.push(v);
         }
       }
@@ -10157,11 +9343,11 @@
         if (combined.includes(merchant)) { bkt = b; break; }
       }
       if (!bkt) {
-        const scores = { necessary: 0, committed: 0, comfortable: 0, luxury: 0 };
+        const scores = {necessary:0, committed:0, comfortable:0, luxury:0};
         for (const [b, kws] of Object.entries(AI_BKT_KEYWORDS)) {
           for (const kw of kws) { if (combined.includes(kw)) scores[b] += 1; }
         }
-        const best = Object.entries(scores).sort((a, b2) => b2[1] - a[1])[0];
+        const best = Object.entries(scores).sort((a,b2)=>b2[1]-a[1])[0];
         if (best[1] > 0) bkt = best[0];
       }
       if (!bkt) bkt = 'necessary';
@@ -10176,15 +9362,15 @@
     function getLateNightWarning() {
       const hour = new Date().getHours();
       if (hour < 6 || hour > 10) return null;
-      const yesterday = new Date(Date.now() - 86400000).toISOString().slice(0, 10);
-      const lateNight = (D.transactions || []).filter(t => {
+      const yesterday = new Date(Date.now()-86400000).toISOString().slice(0,10);
+      const lateNight = (D.transactions||[]).filter(t => {
         if (!t.date || t.date !== yesterday) return false;
         const h = t.time ? parseInt(t.time.split(':')[0]) : 12;
         return h >= 22 || h <= 4;
       });
       if (lateNight.length === 0) return null;
-      const total = lateNight.reduce((s, t) => s + t.amount, 0);
-      const merchants = [...new Set(lateNight.map(t => t.merchant))].slice(0, 2).join(', ');
+      const total = lateNight.reduce((s,t) => s+t.amount,0);
+      const merchants = [...new Set(lateNight.map(t=>t.merchant))].slice(0,2).join(', ');
       return `🌙 Last night: ${fmtF(total)} spent after 10pm — ${merchants}`;
     }
 
@@ -10193,17 +9379,17 @@
       const txns = D.transactions || [];
       const results = [];
       Object.keys(BUCKETS).forEach(k => {
-        const months = [-3, -2, -1, 0].map(o => ({
+        const months = [-3,-2,-1,0].map(o => ({
           month: offsetMonthStr(o),
-          total: txns.filter(t => t.month === offsetMonthStr(o) && t.bucket === k)
-            .reduce((s, t) => s + t.amount, 0)
+          total: txns.filter(t=>t.month===offsetMonthStr(o)&&t.bucket===k)
+                     .reduce((s,t)=>s+t.amount,0)
         }));
-        const totals = months.map(m => m.total).filter(v => v > 0);
+        const totals = months.map(m=>m.total).filter(v=>v>0);
         if (totals.length < 3) return;
-        const growing = totals.every((v, i) => i === 0 || v >= totals[i - 1] * 1.08);
+        const growing = totals.every((v,i) => i===0 || v >= totals[i-1] * 1.08);
         if (growing) {
-          const pct = Math.round(((totals[totals.length - 1] / totals[0]) - 1) * 100);
-          results.push({ k, pct, latest: totals[totals.length - 1] });
+          const pct = Math.round(((totals[totals.length-1]/totals[0])-1)*100);
+          results.push({k, pct, latest: totals[totals.length-1]});
         }
       });
       return results;
@@ -10212,45 +9398,45 @@
     // Feature 3: Salary Day Intelligence
     function getSalaryDayIntelligence() {
       const src = SRC_DB.load();
-      const salaryEntries = (src.sources || []).filter(s =>
-        (s.name || '').toLowerCase().includes('salary') ||
-        (s.name || '').toLowerCase().includes('income')
+      const salaryEntries = (src.sources||[]).filter(s =>
+        (s.name||'').toLowerCase().includes('salary') ||
+        (s.name||'').toLowerCase().includes('income')
       );
       if (salaryEntries.length === 0) return null;
-      const days = salaryEntries.map(s => new Date(s.timestamp || s.date).getDate());
-      const salaryDay = days.sort((a, b) =>
-        days.filter(d => d === b).length - days.filter(d => d === a).length
+      const days = salaryEntries.map(s => new Date(s.timestamp||s.date).getDate());
+      const salaryDay = days.sort((a,b) =>
+        days.filter(d=>d===b).length - days.filter(d=>d===a).length
       )[0];
       if (!salaryDay) return null;
       const today = new Date().getDate();
       const daysUntil = salaryDay > today ? salaryDay - today :
-        (new Date(new Date().getFullYear(), new Date().getMonth() + 1, salaryDay).getDate()
-          + (30 - today));
+        (new Date(new Date().getFullYear(), new Date().getMonth()+1, salaryDay).getDate()
+         + (30 - today));
       if (daysUntil > 3 || daysUntil <= 0) return null;
-      const currentSpend = (D.transactions || [])
+      const currentSpend = (D.transactions||[])
         .filter(t => t.month === offsetMonthStr(0))
-        .reduce((s, t) => s + t.amount, 0);
+        .reduce((s,t) => s+t.amount,0);
       const lastSalary = salaryEntries
         .filter(s => s.month === offsetMonthStr(-1))
-        .reduce((s, e) => s + (e.amount || 0), 0) ||
-        salaryEntries.reduce((s, e) => s + (e.amount || 0), 0) / salaryEntries.length;
+        .reduce((s,e) => s+(e.amount||0), 0) ||
+        salaryEntries.reduce((s,e) => s+(e.amount||0), 0) / salaryEntries.length;
       const remaining = lastSalary - currentSpend;
       const dayWord = daysUntil === 1 ? 'tomorrow' : `in ${daysUntil} days`;
-      return `💰 Salary expected ${dayWord}. You have ${fmtF(Math.max(0, remaining))} left this month.`;
+      return `💰 Salary expected ${dayWord}. You have ${fmtF(Math.max(0,remaining))} left this month.`;
     }
 
     // Feature 4: Honest Comparison
     function generateHonestComparison(monthStr) {
       const txns = D.transactions || [];
-      const current = txns.filter(t => t.month === monthStr).reduce((s, t) => s + t.amount, 0);
-      const pastMonths = [...new Set(txns.map(t => t.month))].filter(m => m !== monthStr);
+      const current = txns.filter(t=>t.month===monthStr).reduce((s,t)=>s+t.amount,0);
+      const pastMonths = [...new Set(txns.map(t=>t.month))].filter(m => m !== monthStr);
       if (pastMonths.length < 2) return null;
-      const avg = pastMonths.reduce((s, m) => {
-        return s + txns.filter(t => t.month === m).reduce((sum, t) => sum + t.amount, 0);
+      const avg = pastMonths.reduce((s,m) => {
+        return s + txns.filter(t=>t.month===m).reduce((sum,t)=>sum+t.amount,0);
       }, 0) / pastMonths.length;
       if (avg === 0) return null;
       const diff = current - avg;
-      const pct = Math.round(Math.abs(diff / avg) * 100);
+      const pct = Math.round(Math.abs(diff/avg)*100);
       if (pct < 5) return `This month's total is almost identical to your personal average of ${fmtF(Math.round(avg))}.`;
       return diff > 0
         ? `Compared to your own average, this month you spent ${pct}% more than usual — ${fmtF(Math.abs(diff))} above your typical ${fmtF(Math.round(avg))}.`
@@ -10259,7 +9445,7 @@
 
     // ── Week key helper ─────────────────────────────────────────────
     function _aiWeekKey() {
-      return 'w' + Math.floor(Date.now() / (7 * 86400000));
+      return 'w' + Math.floor(Date.now() / (7*86400000));
     }
 
     // ── INSTALL AI METHODS + HOOK r_home / r_add / r_month ──────────
@@ -10275,7 +9461,7 @@
 
     // Hook r_home to also render AI cards
     const _origRHome = APP.r_home.bind(APP);
-    APP.r_home = function () {
+    APP.r_home = function() {
       _origRHome();
       APP.aiRenderInsight();
       APP.aiRenderForecast();
@@ -10283,7 +9469,7 @@
 
     // Hook r_add to reset AI smart add input
     const _origRAdd = APP.r_add.bind(APP);
-    APP.r_add = function () {
+    APP.r_add = function() {
       _origRAdd();
       const inp = document.getElementById('aiAddInput');
       if (inp) inp.value = '';
@@ -10296,7 +9482,7 @@
     // Hook r_month to render AI story + mirror
     const _origRMonth = APP.r_month ? APP.r_month.bind(APP) : null;
     if (_origRMonth) {
-      APP.r_month = function (...args) {
+      APP.r_month = function(...args) {
         _origRMonth(...args);
         const monthStr = (S && S.monthOffset !== undefined) ? offsetMonthStr(S.monthOffset) : offsetMonthStr(0);
         APP.aiRenderStory(monthStr);
@@ -10317,7 +9503,7 @@
 
     // Hook saveManual to also show AI reaction
     const _origSaveManual = APP.saveManual.bind(APP);
-    APP.saveManual = function () {
+    APP.saveManual = function() {
       if (S.saveBusy) return; // BUG-006: prevent double-save in AI hook
       const amtEl = document.getElementById('addAmt');
       const amt = parseFloat((amtEl && amtEl.value) || '0');
@@ -10328,7 +9514,7 @@
       // Show AI reaction after a brief delay
       if (amt > 0 && bkt) {
         setTimeout(() => {
-          const reaction = (typeof getAIConfig === 'function' && getAIConfig().reactions === false) ? null : aiReaction(amt, desc, bkt, D.transactions || []);
+          const reaction = (typeof getAIConfig==='function'&&getAIConfig().reactions===false) ? null : aiReaction(amt, desc, bkt, D.transactions || []);
           toast(reaction, 3000);
         }, 300);
       }
@@ -10336,28 +9522,28 @@
 
     // BUG-017: global error handlers
     // BUG-6: Pinch zoom snap-back on iOS
-    (function () {
-      var _lte = 0, _pin = false;
-      document.addEventListener('touchstart', function (e) {
-        if (e.touches.length >= 2) _pin = true;
-      }, { passive: true });
-      document.addEventListener('touchend', function (e) {
-        var now = Date.now();
-        if (e.touches.length === 0 && now - _lte <= 300 && !_pin) e.preventDefault();
-        if (e.touches.length === 0) _lte = now;
-        if (_pin && e.touches.length === 0) {
-          _pin = false;
-          setTimeout(function () {
-            var m = document.querySelector('meta[name=viewport]');
-            if (!m) return;
-            var o = m.getAttribute('content');
-            m.setAttribute('content', o + ',maximum-scale=1.0,minimum-scale=1.0');
-            requestAnimationFrame(function () {
-              requestAnimationFrame(function () { m.setAttribute('content', o); });
+    (function(){
+      var _lte=0,_pin=false;
+      document.addEventListener('touchstart',function(e){
+        if(e.touches.length>=2)_pin=true;
+      },{passive:true});
+      document.addEventListener('touchend',function(e){
+        var now=Date.now();
+        if(e.touches.length===0&&now-_lte<=300&&!_pin)e.preventDefault();
+        if(e.touches.length===0)_lte=now;
+        if(_pin&&e.touches.length===0){
+          _pin=false;
+          setTimeout(function(){
+            var m=document.querySelector('meta[name=viewport]');
+            if(!m)return;
+            var o=m.getAttribute('content');
+            m.setAttribute('content',o+',maximum-scale=1.0,minimum-scale=1.0');
+            requestAnimationFrame(function(){
+              requestAnimationFrame(function(){m.setAttribute('content',o);});
             });
-          }, 120);
+          },120);
         }
-      }, { passive: false });
+      },{passive:false});
     })();
     window.onerror = (msg, src, line) => { console.error('Global error:', msg, src, line); };
     window.addEventListener('unhandledrejection', e => {
@@ -10368,12 +9554,12 @@
       e.preventDefault();
     });
 
-    // BUG-020: Escape key closes modal
+        // BUG-020: Escape key closes modal
     document.addEventListener('keydown', e => {
       if (e.key === 'Escape' && document.getElementById('modal').classList.contains('on')) APP.cm();
     });
 
-    APP.boot();
+        APP.boot();
 
     // BUG-021: Swipe right to go back on sub-screens
     (function () {
