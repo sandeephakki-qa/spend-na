@@ -293,7 +293,7 @@
 <head>
   <meta charset="UTF-8">
   <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' cdn.jsdelivr.net cdnjs.cloudflare.com; worker-src blob: cdnjs.cloudflare.com; img-src 'self' data: blob:; connect-src 'none'; style-src 'self' 'unsafe-inline';">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, viewport-fit=cover">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="default">
   <meta name="apple-mobile-web-app-title" content="Spend-na">
@@ -1855,13 +1855,14 @@
       border: 1px solid var(--glass-border);
       border-radius: var(--r);
       padding: 13px 15px;
-      font-size: 15px;
+      font-size: 16px;
       color: var(--ink);
       outline: none;
       transition: border-color .2s, background .2s;
       box-shadow: var(--sh);
       -webkit-user-select: text;
       user-select: text;
+      touch-action: manipulation;
     }
 
     .add-in:focus {
@@ -2474,7 +2475,7 @@
     }
 
     .exp-btn {
-      background: var(--ink);
+      background: var(--teal);
       border: none;
       border-radius: var(--r);
       padding: 8px 13px;
@@ -2548,6 +2549,8 @@
 
     .fp.on {
       color: #fff;
+      background: var(--teal);
+      border-color: var(--teal);
     }
 
     .mgrp-hdr {
@@ -3863,6 +3866,7 @@
       cursor: pointer;
       transition: all .12s;
       font-family: var(--ff);
+      touch-action: manipulation;
     }
 
     .tag-chip.on {
@@ -3888,12 +3892,13 @@
       border: 1px solid var(--glass-border);
       border-radius: 20px;
       padding: 7px 13px;
-      font-size: 13px;
+      font-size: 16px;
       color: var(--ink);
       outline: none;
       font-family: var(--ff);
       -webkit-user-select: text;
       user-select: text;
+      touch-action: manipulation;
     }
 
     .tag-custom-in:focus {
@@ -3911,6 +3916,7 @@
       cursor: pointer;
       white-space: nowrap;
       font-family: var(--ff);
+      touch-action: manipulation;
     }
 
     .tag-pill {
@@ -4622,7 +4628,7 @@
   /* ── AI FEATURES CSS ─────────────────────────────────── */
   /* Smart Add bar */
   .ai-add-bar{display:flex;align-items:center;gap:10px;background:rgba(255,255,255,.10);backdrop-filter:blur(24px) saturate(1.8);-webkit-backdrop-filter:blur(24px) saturate(1.8);border:1px solid rgba(255,255,255,.16);border-radius:16px;padding:12px 14px;margin:12px max(16px, var(--safe-r)) 0 max(16px, var(--safe-l));box-shadow:0 4px 16px rgba(0,0,0,.25)}
-  .ai-add-input{flex:1;border:none;background:none;font-size:15px;color:var(--ink);font-family:var(--ff);outline:none;min-width:0}
+  .ai-add-input{flex:1;border:none;background:none;font-size:16px;color:var(--ink);font-family:var(--ff);outline:none;min-width:0;touch-action:manipulation}
   .ai-add-input::placeholder{color:rgba(255,255,255,.35)}
   .ai-add-btn{width:36px;height:36px;border-radius:10px;border:none;background:var(--tealL);color:var(--tealD);font-size:16px;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:background .12s}
   .ai-add-btn:active{background:var(--teal);color:#fff}
@@ -4709,7 +4715,7 @@
   .tab:active .tab-gl { transform: scale(.88); }
   .tab .tab-gl { transition: transform .1s; }
   /* Prevent iOS double-tap zoom on buttons */
-  .tab, button, a { touch-action: manipulation; }
+  .tab, button, a, input, select, textarea { touch-action: manipulation; }
   /* Smoother tab transitions */
   .scr { transition: none; } /* no flash between screens */
   /* History amounts never wrap or clip */
@@ -4836,6 +4842,10 @@
     50% { box-shadow: 0 4px 20px rgba(14,165,233,.5), 0 0 0 10px rgba(14,165,233,.0); }
   }
   body.on-add-screen #fabAdd { display: none; }
+  /* Bug fix: when smartBanner is visible, lift FAB above it */
+  body.banner-visible #fabAdd {
+    bottom: calc(var(--safe-b) + 68px + 48px);
+  }
   #tabBar .tab-add-slot { display: none; }
 
   /* ── REDESIGN v5.0: PERSONALITY BADGE ── */
@@ -4876,8 +4886,10 @@
     padding: 20px max(20px,var(--safe-r)) 28px max(20px,var(--safe-l));
   }
   .mm-tc {
-    background: rgba(255,255,255,.08);
-    border: 1px solid rgba(255,255,255,.12);
+    background: rgba(15,23,42,.75);
+    border: 1px solid rgba(255,255,255,.15);
+    -webkit-backdrop-filter: blur(16px);
+    backdrop-filter: blur(16px);
   }
   .mm-month-label {
     font-size: 10px; font-weight: 800;
@@ -5479,7 +5491,7 @@
         <div class="sbn-dot" id="sbnDot"></div>
         <div class="sbn-text" id="sbnText"></div>
         <div class="sbn-action" id="sbnAction" onclick="APP.sbnTap()"></div>
-        <button class="sbn-close" onclick="APP.sbnClose()" aria-label="Close tip" title="Tips return next time you open the app" style="background:none;border:none;color:var(--mist);font-size:16px;cursor:pointer;padding:4px 6px;flex-shrink:0;font-family:var(--ff)">×</button>
+        <button class="sbn-close" onclick="document.getElementById('smartBanner').style.display='none';document.body.classList.remove('banner-visible');if(APP&&APP.sbnClose)APP.sbnClose();" aria-label="Close tip" title="Tips return next time you open the app" style="background:none;border:none;color:var(--mist);font-size:16px;cursor:pointer;padding:4px 6px;flex-shrink:0;font-family:var(--ff)">×</button>
         <div class="sbn-dots" id="sbnDots"></div>
       </div>
       <div id="tabBar">
@@ -6479,6 +6491,7 @@
         const el = document.getElementById('smartBanner');
         if (!el) return;
         el.style.display = 'flex';
+        document.body.classList.add('banner-visible');
         this._sbnIdx = 0;
         this._renderBanner();
         clearInterval(this._sbnTimer);
@@ -7464,7 +7477,7 @@
             const on = S.histF === p.k;
             const cfg = p.k && !p.k.startsWith('tag:') && BUCKETS[p.k];
             const isTag = p.k && p.k.startsWith('tag:');
-            return `<button class="fp${on ? ' on' : ''}${isTag ? ' tag-fp' : ''}" style="${on ? (cfg ? `border-color:${cfg.c};background:${cfg.c}` : isTag ? `border-color:var(--teal);background:var(--teal)` : `border-color:var(--ink);background:var(--ink)`) : ''}" data-filterkey="${esc(p.k || '')}">${esc(p.l)}</button>`;
+            return `<button class="fp${on ? ' on' : ''}${isTag ? ' tag-fp' : ''}" style="${on ? (cfg ? `border-color:${cfg.c};background:${cfg.c}` : isTag ? `border-color:var(--teal);background:var(--teal)` : `border-color:var(--teal);background:var(--teal)`) : ''}" data-filterkey="${esc(p.k || '')}">${esc(p.l)}</button>`;
           }).join('');
         }
         const q = (document.getElementById('srchIn')?.value || '').toLowerCase();
@@ -7670,7 +7683,7 @@
         document.getElementById('bktGrid').innerHTML = Object.entries(BUCKETS).map(([k, c]) =>
           `<div class="bkt" data-b="${k}" onclick="APP.selBkt('${k}')" style="flex:1;padding:10px 6px;border-radius:12px;border-width:1.5px;border-style:solid;border-color:var(--fog);background:var(--card);cursor:pointer;text-align:center;transition:all .12s;position:relative">
         <div style="width:24px;height:24px;border-radius:7px;background:${c.cl};border:1px solid ${c.cm};color:${c.c};font-size:11px;display:flex;align-items:center;justify-content:center;margin:0 auto 4px">${c.g}</div>
-        <div style="font-size:11px;font-weight:700;color:var(--slate);white-space:normal;word-break:break-word">${c.l}</div>
+        <div class="bkt-label-text" style="font-size:11px;font-weight:700;color:var(--ink);white-space:normal;word-break:break-word">${c.l}</div>
         <div id="bktck_${k}" style="display:none;position:absolute;top:-5px;right:-5px;width:13px;height:13px;border-radius:7px;background:${c.c};font-size:7px;font-weight:900;color:#fff;align-items:center;justify-content:center">✓</div>
       </div>`
         ).join('');
@@ -7688,6 +7701,9 @@
           el.style.borderColor = on ? c.c : 'var(--fog)';
           el.style.borderWidth = on ? '2px' : '1.5px';
           el.style.background = on ? c.cl : 'var(--card)';
+          // On light pastel background use dark text; on dark card use white
+          const labelEl = el.querySelector('.bkt-label-text');
+          if (labelEl) labelEl.style.color = on ? c.c : 'var(--ink)';
           if (ck) ck.style.display = on ? 'flex' : 'none';
         });
         this.valAdd();
