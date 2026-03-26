@@ -201,7 +201,7 @@
     Food · Function · Travel · Medical · Education · Festival · Vehicle · Gift
 
   AI_CONFIG_DEFAULT (all true):
-    insight · forecast · streak · voice · photo · reactions · mood
+    insight · forecast · streak · voice · reactions · mood
     duplicate · whyBuyThis · smartSearch · story · mirror
     spendTwin · weeklyDigest · budgetSuggest
 
@@ -307,42 +307,47 @@
 ═══════════════════════════════════════════════════ */
     :root {
       --ff: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Segoe UI', system-ui, sans-serif;
-      --ink: #0f172a;
-      --ink2: #1e293b;
-      --ink3: #334155;
-      --slate: #64748b;
-      --mist: #64748b; /* BUG-021: WCAG AA contrast fix — was #94a3b8 (2.85:1), now 5.1:1 */
-      --ghost: #94a3b8; /* BUG-021: ghost lightened slightly, still acceptable */
-      --fog: #e2e8f0;
-      --paper: #f8fafc;
-      --card: #ffffff;
-      --teal: #0ea5e9;
-      --tealD: #0284c7;
-      --tealL: #e0f2fe;
+      /* ── GLASS THEME ── deep navy base, frosted panels */
+      --ink:   rgba(255,255,255,.95);
+      --ink2:  rgba(255,255,255,.85);
+      --ink3:  rgba(255,255,255,.72);
+      --slate: rgba(255,255,255,.72);
+      --mist:  rgba(255,255,255,.58);
+      --ghost: rgba(255,255,255,.40);
+      --fog:   rgba(255,255,255,.18);
+      --paper: rgba(255,255,255,.06);
+      --card:  rgba(255,255,255,.10);
+      --teal:  #38bdf8;
+      --tealD: #0ea5e9;
+      --tealL: rgba(14,165,233,.20);
       --tealM: #7dd3fc;
-      --nec: #10b981;
-      --necL: #ecfdf5;
-      --necM: #6ee7b7;
-      --com: #6366f1;
-      --comL: #eef2ff;
-      --comM: #a5b4fc;
-      --cft: #f59e0b;
-      --cftL: #fffbeb;
-      --cftM: #fde68a;
-      --lux: #f43f5e;
-      --luxL: #fff1f2;
-      --luxM: #fda4af;
-      --ok: #10b981;
-      --warn: #f59e0b;
-      --err: #ef4444;
+      --nec:   #34d399;
+      --necL:  rgba(52,211,153,.18);
+      --necM:  rgba(52,211,153,.40);
+      --com:   #818cf8;
+      --comL:  rgba(129,140,248,.18);
+      --comM:  rgba(129,140,248,.40);
+      --cft:   #fbbf24;
+      --cftL:  rgba(251,191,36,.18);
+      --cftM:  rgba(251,191,36,.40);
+      --lux:   #fb7185;
+      --luxL:  rgba(251,113,133,.18);
+      --luxM:  rgba(251,113,133,.40);
+      --ok:    #34d399;
+      --warn:  #fbbf24;
+      --err:   #f87171;
       --r: 14px;
       --rL: 20px;
       --rXL: 26px;
-      --sh: 0 1px 3px rgba(0, 0, 0, .08), 0 1px 2px rgba(0, 0, 0, .05);
-      --shM: 0 4px 16px rgba(0, 0, 0, .10);
-      --safe-t: env(safe-area-inset-top, 0px);
+      --sh:  0 2px 8px rgba(0,0,0,.30);
+      --shM: 0 8px 32px rgba(0,0,0,.40);
+      --glass-blur:    blur(24px) saturate(1.8);
+      --glass-bg:      rgba(255,255,255,.10);
+      --glass-border:  rgba(255,255,255,.16);
+      --glass-shimmer: linear-gradient(135deg,rgba(255,255,255,.14) 0%,transparent 60%);
+      --safe-t: env(safe-area-inset-top,  0px);
       --safe-b: env(safe-area-inset-bottom, 0px);
-      --safe-l: env(safe-area-inset-left, 0px);
+      --safe-l: env(safe-area-inset-left,  0px);
       --safe-r: env(safe-area-inset-right, 0px);
     }
 
@@ -369,7 +374,7 @@
       width: 100%;
       overflow: hidden;
       /* ← KEY: body never scrolls */
-      background: #e2e8f0;
+      background: linear-gradient(145deg, #0d1117 0%, #111827 35%, #0f2340 65%, #0d1117 100%);
       -webkit-font-smoothing: antialiased;
       -webkit-tap-highlight-color: transparent;
     }
@@ -411,8 +416,37 @@
       bottom: 0;
       display: flex;
       flex-direction: column;
-      background: var(--paper);
+      background: linear-gradient(160deg, #0d1117 0%, #111827 30%, #0f2340 60%, #0a1628 100%);
       overflow: hidden;
+    }
+
+    /* Ambient colour orbs — the magic behind the frosted glass */
+    #app::before {
+      content: '';
+      position: absolute;
+      width: 280px; height: 280px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(14,165,233,.30) 0%, transparent 70%);
+      top: -60px; right: -60px;
+      pointer-events: none; z-index: 0;
+    }
+    #app::after {
+      content: '';
+      position: absolute;
+      width: 220px; height: 220px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(99,102,241,.22) 0%, transparent 70%);
+      bottom: 100px; left: -50px;
+      pointer-events: none; z-index: 0;
+    }
+    /* Third orb — teal-green, centre area */
+    #app .orb3 {
+      position: absolute;
+      width: 180px; height: 180px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(52,211,153,.16) 0%, transparent 70%);
+      top: 45%; right: -30px;
+      pointer-events: none; z-index: 0;
     }
 
     /* ── MOBILE (default): single column, max 480px centered ── */
@@ -427,7 +461,7 @@
     /* ── TABLET + DESKTOP: proper app layout ── */
     @media (min-width: 768px) {
       body {
-        background: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #0f172a 100%);
+        background: linear-gradient(135deg, #060a0f 0%, #0d1a2e 50%, #060a0f 100%);
         display: flex;
         align-items: center;
         justify-content: center;
@@ -435,12 +469,11 @@
 
       #app {
         position: relative;
-        /* not fixed on desktop — centered */
         width: 420px;
         height: 820px;
         max-height: 95vh;
         border-radius: 28px;
-        box-shadow: 0 32px 80px rgba(0, 0, 0, .5), 0 0 0 1px rgba(255, 255, 255, .08);
+        box-shadow: 0 40px 100px rgba(0,0,0,.7), 0 0 0 1px rgba(255,255,255,.08);
         overflow: hidden;
       }
     }
@@ -462,6 +495,7 @@
       display: none;
       flex-direction: column;
       overflow: hidden;
+      z-index: 1;
     }
 
     .pg.on {
@@ -473,7 +507,7 @@
    Works in sunlight, low light, all conditions
 ═══════════════════════════════════════════════════ */
     #pgSplash {
-      background: #ffffff;
+      background: linear-gradient(160deg, #0d1117 0%, #111827 40%, #0f2340 100%);
       align-items: center;
       justify-content: center;
       gap: 16px;
@@ -483,11 +517,14 @@
       width: 100px;
       height: 100px;
       border-radius: 28px;
-      background: linear-gradient(135deg, #e0f2fe 0%, #bae6fd 100%);
+      background: rgba(255,255,255,.10);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border: 1px solid rgba(255,255,255,.18);
       display: flex;
       align-items: center;
       justify-content: center;
-      box-shadow: 0 8px 32px rgba(14, 165, 233, .25);
+      box-shadow: 0 8px 40px rgba(14,165,233,.30);
       animation: logoPop 2s ease-in-out infinite;
     }
 
@@ -1095,9 +1132,12 @@
 
     /* ── TOP BAR ── */
     .topbar {
-      background: var(--ink);
+      background: rgba(14,165,233,.10);
+      backdrop-filter: var(--glass-blur);
+      -webkit-backdrop-filter: var(--glass-blur);
       padding: calc(var(--safe-t) + 16px) max(20px,var(--safe-r)) 20px max(20px,var(--safe-l));
       flex-shrink: 0;
+      border-bottom: 1px solid var(--glass-border);
     }
 
     .tb-row1 {
@@ -1236,6 +1276,7 @@
       display: none;
       flex-direction: column;
       overflow: hidden;
+      z-index: 1;
     }
 
     .scr.on {
@@ -1258,14 +1299,17 @@
 
     /* ── SCREEN HEADER ── */
     .shdr {
-      background: var(--card);
+      background: rgba(255,255,255,.08);
+      backdrop-filter: var(--glass-blur);
+      -webkit-backdrop-filter: var(--glass-blur);
       padding: 12px max(16px, var(--safe-r)) 12px max(16px, var(--safe-l));
       display: flex;
       align-items: center;
       gap: 10px;
-      border-bottom: 1px solid var(--fog);
+      border-bottom: 1px solid var(--glass-border);
       flex-shrink: 0;
       box-shadow: var(--sh);
+      z-index: 5;
     }
 
     .shdr-back {
@@ -1298,14 +1342,22 @@
 
     /* ── TAB BAR ── */
     #tabBar {
-      background: rgba(255,255,255,.95);
-      backdrop-filter: blur(20px);
-      -webkit-backdrop-filter: blur(20px);
-      border-top: 1px solid rgba(0,0,0,.06);
+      background: rgba(10,18,32,.65);
+      backdrop-filter: blur(32px) saturate(2);
+      -webkit-backdrop-filter: blur(32px) saturate(2);
+      border-top: 1px solid rgba(255,255,255,.10);
       display: flex;
       padding: 10px max(8px,var(--safe-r)) calc(var(--safe-b) + 8px) max(8px,var(--safe-l));
       flex-shrink: 0;
-      box-shadow: 0 -1px 0 rgba(0,0,0,.05);
+      position: relative;
+      z-index: 10;
+    }
+    /* glowing top line on tab bar */
+    #tabBar::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 10%; right: 10%; height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(56,189,248,.5), transparent);
     }
 
     .tab {
@@ -1325,7 +1377,7 @@
 
     .tab-gl {
       font-size: 22px;
-      opacity: .4;
+      opacity: .72;
       transition: opacity .15s, transform .15s;
     }
 
@@ -1336,8 +1388,8 @@
 
     .tab-lbl {
       font-size: 10px;
-      color: var(--mist);
-      font-weight: 500;
+      color: rgba(255,255,255,.60);
+      font-weight: 600;
       transition: color .15s, font-weight .15s;
     }
 
@@ -1386,15 +1438,20 @@
    HOME
 ═══════════════════════════════════════════════════ */
     .h-hero {
-      background: var(--ink);
+      background: rgba(14,165,233,.10);
+      backdrop-filter: var(--glass-blur);
+      -webkit-backdrop-filter: var(--glass-blur);
       padding: 0 max(20px,var(--safe-r)) 28px max(20px,var(--safe-l));
+      border-bottom: 1px solid var(--glass-border);
     }
 
     .h-total {
-      background: rgba(255, 255, 255, .06);
+      background: rgba(255,255,255,.08);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
       border-radius: 18px;
       padding: 18px 20px;
-      border: 1px solid rgba(255, 255, 255, .09);
+      border: 1px solid rgba(255,255,255,.14);
       margin-top: 12px;
     }
 
@@ -1416,7 +1473,7 @@
     }
 
     .h-body {
-      background: var(--paper);
+      background: transparent;
       border-radius: 24px 24px 0 0;
       margin-top: -18px;
       padding: 24px max(20px,var(--safe-r)) 20px max(20px,var(--safe-l));
@@ -1514,15 +1571,19 @@
       margin-bottom: 20px;
     }
     .bc-hero {
-      background: var(--card);
+      background: var(--glass-bg);
+      backdrop-filter: var(--glass-blur);
+      -webkit-backdrop-filter: var(--glass-blur);
       border-radius: var(--rXL);
       overflow: hidden;
-      border: 1.5px solid var(--fog);
-      box-shadow: 0 4px 24px rgba(0,0,0,.07);
+      border: 1px solid var(--glass-border);
+      box-shadow: var(--shM);
       cursor: pointer;
       transition: transform .1s;
       min-height: 130px;
+      position: relative;
     }
+    .bc-hero::before { content:''; position:absolute; inset:0; background: var(--glass-shimmer); pointer-events:none; border-radius:inherit; }
     .bc-hero:active { transform: scale(.985); }
     .bc-hero .bc-top { height: 5px; }
     .bc-hero .bc-body {
@@ -1562,15 +1623,19 @@
       gap: 8px;
     }
     .bc-compact {
-      background: var(--card);
+      background: var(--glass-bg);
+      backdrop-filter: var(--glass-blur);
+      -webkit-backdrop-filter: var(--glass-blur);
       border-radius: var(--rL);
       overflow: hidden;
-      border: 1.5px solid var(--fog);
+      border: 1px solid var(--glass-border);
       box-shadow: var(--sh);
       cursor: pointer;
       transition: transform .1s;
       padding: 10px;
+      position: relative;
     }
+    .bc-compact::before { content:''; position:absolute; inset:0; background: var(--glass-shimmer); pointer-events:none; border-radius:inherit; }
     .bc-compact:active { transform: scale(.94); }
     .bc-compact .bc-top { height: 3px; margin: -10px -10px 8px; }
     .bc-compact .bc-ic {
@@ -1590,13 +1655,16 @@
 
     /* Keep legacy .bc for any other usage */
     .bc {
-      background: var(--card);
+      background: var(--glass-bg);
+      backdrop-filter: var(--glass-blur);
+      -webkit-backdrop-filter: var(--glass-blur);
       border-radius: var(--rL);
       overflow: hidden;
-      border: 1.5px solid var(--fog);
+      border: 1px solid var(--glass-border);
       cursor: pointer;
       box-shadow: var(--sh);
       transition: transform .12s;
+      position: relative;
     }
 
     .bc:active {
@@ -1660,16 +1728,19 @@
     }
 
     .dc {
-      background: var(--card);
+      background: var(--glass-bg);
+      backdrop-filter: var(--glass-blur);
+      -webkit-backdrop-filter: var(--glass-blur);
       border-radius: var(--r);
       padding: 13px;
-      border: 1px solid var(--fog);
+      border: 1px solid var(--glass-border);
       display: flex;
       gap: 10px;
       align-items: center;
       margin-bottom: 10px;
       cursor: pointer;
       box-shadow: var(--sh);
+      position: relative;
     }
 
     .dc-ic {
@@ -1726,14 +1797,17 @@
    ADD SPEND
 ═══════════════════════════════════════════════════ */
     .amt-hero {
-      background: var(--card);
+      background: var(--glass-bg);
+      backdrop-filter: var(--glass-blur);
+      -webkit-backdrop-filter: var(--glass-blur);
       border-radius: var(--rL);
       padding: 20px;
       margin: 16px 16px 0;
       display: flex;
       align-items: center;
-      box-shadow: var(--sh);
-      border: 1px solid var(--fog);
+      box-shadow: var(--shM);
+      border: 1px solid var(--glass-border);
+      position: relative;
     }
 
     .amt-sym {
@@ -1772,14 +1846,14 @@
 
     .add-in {
       width: 100%;
-      background: var(--card);
-      border: 1.5px solid var(--fog);
+      background: rgba(255,255,255,.08);
+      border: 1px solid var(--glass-border);
       border-radius: var(--r);
       padding: 13px 15px;
       font-size: 15px;
       color: var(--ink);
       outline: none;
-      transition: border-color .2s;
+      transition: border-color .2s, background .2s;
       box-shadow: var(--sh);
       -webkit-user-select: text;
       user-select: text;
@@ -1787,6 +1861,7 @@
 
     .add-in:focus {
       border-color: var(--teal);
+      background: rgba(56,189,248,.08);
     }
 
     .srcs {
@@ -1804,8 +1879,8 @@
       gap: 4px;
       padding: 10px 6px;
       border-radius: var(--r);
-      border: 1.5px solid var(--fog);
-      background: var(--card);
+      border: 1px solid var(--glass-border);
+      background: rgba(255,255,255,.07);
       cursor: pointer;
       transition: all .12s;
       box-shadow: var(--sh);
@@ -1813,7 +1888,7 @@
 
     .src.on {
       border-color: var(--teal);
-      background: var(--tealL);
+      background: rgba(56,189,248,.18);
     }
 
     .src:active {
@@ -2063,15 +2138,18 @@
    MY MONTH
 ═══════════════════════════════════════════════════ */
     .mm-hero {
-      background: var(--ink);
+      background: rgba(14,165,233,.12);
+      backdrop-filter: var(--glass-blur);
+      -webkit-backdrop-filter: var(--glass-blur);
       padding: 20px max(16px, var(--safe-r)) 20px max(16px, var(--safe-l));
+      border-bottom: 1px solid var(--glass-border);
     }
 
     .mm-tc {
-      background: rgba(255, 255, 255, .07);
+      background: rgba(255,255,255,.08);
       border-radius: var(--rL);
       padding: 18px;
-      border: 1px solid rgba(255, 255, 255, .1);
+      border: 1px solid rgba(255,255,255,.14);
     }
 
     .mm-tl {
@@ -2100,7 +2178,7 @@
     }
 
     .mm-body {
-      background: var(--paper);
+      background: transparent;
       border-radius: 24px 24px 0 0;
       margin-top: -10px;
       padding: 22px max(16px, var(--safe-r)) 16px max(16px, var(--safe-l));
@@ -2126,18 +2204,21 @@
     }
 
     .brow {
-      background: var(--card);
+      background: var(--glass-bg);
+      backdrop-filter: var(--glass-blur);
+      -webkit-backdrop-filter: var(--glass-blur);
       border-radius: var(--rL);
       padding: 13px;
       display: flex;
       align-items: center;
       gap: 12px;
       margin-bottom: 10px;
-      border: 1px solid var(--fog);
+      border: 1px solid var(--glass-border);
       border-left: 4px solid;
       cursor: pointer;
       box-shadow: var(--sh);
       transition: transform .1s;
+      position: relative;
     }
 
     .brow:active {
@@ -2195,12 +2276,15 @@
     }
 
     .wk-card {
-      background: var(--card);
+      background: var(--glass-bg);
+      backdrop-filter: var(--glass-blur);
+      -webkit-backdrop-filter: var(--glass-blur);
       border-radius: var(--rL);
       padding: 16px;
       margin-bottom: 16px;
-      border: 1px solid var(--fog);
+      border: 1px solid var(--glass-border);
       box-shadow: var(--sh);
+      position: relative;
     }
 
     .wk-title {
@@ -2356,10 +2440,13 @@
    HISTORY
 ═══════════════════════════════════════════════════ */
     .hist-hdr {
-      background: var(--card);
+      background: rgba(255,255,255,.08);
+      backdrop-filter: var(--glass-blur);
+      -webkit-backdrop-filter: var(--glass-blur);
       padding: 12px max(16px, var(--safe-r)) 12px max(16px, var(--safe-l));
-      border-bottom: 1px solid var(--fog);
+      border-bottom: 1px solid var(--glass-border);
       flex-shrink: 0;
+      z-index: 5;
     }
 
     .hist-r1 {
@@ -2441,8 +2528,10 @@
     .fp {
       padding: 7px 13px;
       border-radius: 20px;
-      border: 1.5px solid var(--fog);
-      background: var(--card);
+      border: 1px solid var(--glass-border);
+      background: var(--glass-bg);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
       font-size: 11px;
       font-weight: 600;
       color: var(--slate);
@@ -2476,16 +2565,20 @@
     }
 
     .htxn {
-      background: var(--card);
+      background: var(--glass-bg);
+      backdrop-filter: var(--glass-blur);
+      -webkit-backdrop-filter: var(--glass-blur);
       border-radius: 14px;
       padding: 14px 16px;
       margin-bottom: 6px;
-      border: 1px solid var(--fog);
-      box-shadow: 0 1px 4px rgba(0,0,0,.04);
+      border: 1px solid var(--glass-border);
+      box-shadow: var(--sh);
       transition: transform .1s;
+      position: relative;
     }
+    .htxn::before { content:''; position:absolute; inset:0; border-radius:14px; background: var(--glass-shimmer); pointer-events:none; }
 
-    .htxn:active { transform: scale(.99); }
+
 
     .htxn-row {
       display: flex;
@@ -2497,8 +2590,8 @@
       width: 40px;
       height: 40px;
       border-radius: 12px;
-      background: var(--paper);
-      border: 1px solid var(--fog);
+      background: rgba(255,255,255,.10);
+      border: 1px solid rgba(255,255,255,.16);
       display: flex;
       align-items: center;
       justify-content: center;
@@ -2543,10 +2636,10 @@
     }
 
     /* Bucket badge colours */
-    .htxn-bkt-necessary { background: #f0fdf4; color: #16a34a; }
-    .htxn-bkt-committed { background: #eef2ff; color: #6366f1; }
-    .htxn-bkt-comfortable { background: #fffbeb; color: #d97706; }
-    .htxn-bkt-luxury { background: #fff1f2; color: #e11d48; }
+    .htxn-bkt-necessary  { background: rgba(52,211,153,.20);  color: #34d399; }
+    .htxn-bkt-committed  { background: rgba(129,140,248,.20); color: #a5b4fc; }
+    .htxn-bkt-comfortable{ background: rgba(251,191,36,.20);  color: #fbbf24; }
+    .htxn-bkt-luxury     { background: rgba(251,113,133,.20); color: #fb7185; }
 
     .htxn-right {
       text-align: right;
@@ -2557,9 +2650,10 @@
     .htxn-am {
       font-size: 17px;
       font-weight: 800;
-      color: var(--ink);
+      color: #fff;
       white-space: nowrap;
       letter-spacing: -.5px;
+      text-shadow: 0 0 12px rgba(255,255,255,.25);
     }
 
     .htxn-src {
@@ -2594,11 +2688,13 @@
     }
 
     .ie-box {
-      background: var(--paper);
+      background: rgba(255,255,255,.07);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
       border-radius: var(--r);
       padding: 10px;
       margin-top: 10px;
-      border: 1px solid var(--fog);
+      border: 1px solid var(--glass-border);
     }
 
     .ie-lbl {
@@ -2623,8 +2719,8 @@
       gap: 3px;
       padding: 8px 4px;
       border-radius: 10px;
-      border: 1.5px solid var(--fog);
-      background: var(--card);
+      border: 1px solid var(--glass-border);
+      background: rgba(255,255,255,.07);
       cursor: pointer;
       transition: all .1s;
     }
@@ -2814,20 +2910,21 @@
 
     .s-in {
       width: 100%;
-      background: var(--paper);
-      border: 1.5px solid var(--fog);
+      background: rgba(255,255,255,.08);
+      border: 1px solid var(--glass-border);
       border-radius: var(--r);
       padding: 11px 13px;
       font-size: 14px;
       color: var(--ink);
       outline: none;
-      transition: border-color .2s;
+      transition: border-color .2s, background .2s;
       -webkit-user-select: text;
       user-select: text;
     }
 
     .s-in:focus {
       border-color: var(--teal);
+      background: rgba(56,189,248,.08);
     }
 
     .s-ta {
@@ -2841,8 +2938,8 @@
       gap: 10px;
       padding: 11px 12px;
       border-radius: var(--r);
-      border: 1.5px solid var(--fog);
-      background: var(--paper);
+      border: 1px solid var(--glass-border);
+      background: rgba(255,255,255,.07);
       cursor: pointer;
       margin-bottom: 6px;
       transition: all .15s;
@@ -2850,7 +2947,7 @@
 
     .s-role.on {
       border-color: var(--teal);
-      background: var(--tealL);
+      background: rgba(56,189,248,.15);
     }
 
     .s-role-nm {
@@ -3060,9 +3157,9 @@
     #modal {
       position: fixed;
       inset: 0;
-      background: rgba(15,23,42,.65);
-      backdrop-filter: blur(4px);
-      -webkit-backdrop-filter: blur(4px);
+      background: rgba(5,10,20,.70);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
       z-index: 900;
       display: none;
       align-items: flex-end;
@@ -3075,8 +3172,11 @@
     }
 
     .m-box {
-      background: var(--card);
+      background: rgba(12,20,40,.80);
+      backdrop-filter: blur(40px) saturate(2);
+      -webkit-backdrop-filter: blur(40px) saturate(2);
       border-radius: 24px 24px 0 0;
+      border-top: 1px solid rgba(255,255,255,.14);
       padding: 8px 20px calc(20px + var(--safe-b));
       width: 100%;
       max-width: 480px;
@@ -3135,25 +3235,26 @@
     .mb-ok {
       background: var(--teal);
       color: #fff;
+      box-shadow: 0 4px 16px rgba(56,189,248,.35);
     }
 
     .mb-sec {
-      background: var(--paper);
+      background: rgba(255,255,255,.10);
       color: var(--ink);
-      border: 1.5px solid var(--fog);
+      border: 1px solid var(--glass-border);
     }
 
     .mb-err {
       background: var(--luxL);
       color: var(--err);
-      border: 1.5px solid var(--luxM);
+      border: 1px solid var(--luxM);
     }
 
     .mb-nil {
-      background: var(--paper);
+      background: rgba(255,255,255,.06);
       color: var(--slate);
     }
-    .mb-del { background: #fee2e2; color: #dc2626; }
+    .mb-del { background: rgba(251,113,133,.18); color: #fb7185; border: 1px solid rgba(251,113,133,.30); }
 
     /* ═══════════════════════════════════════════════════
    TOAST
@@ -3247,7 +3348,7 @@
    TRUST SCREEN — shown once on very first open
 ═══════════════════════════════════════════════════ */
     #pgTrust {
-      background: #ffffff;
+      background: linear-gradient(160deg, #0d1117 0%, #111827 40%, #0f2340 100%);
       overflow-y: auto;
       -webkit-overflow-scrolling: touch;
     }
@@ -3301,7 +3402,10 @@
 
     /* Big bold promise */
     .trust-promise {
-      background: var(--ink);
+      background: rgba(14,165,233,.12);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border: 1px solid rgba(56,189,248,.30);
       border-radius: var(--rXL);
       padding: 24px;
       width: 100%;
@@ -3341,10 +3445,12 @@
       display: flex;
       align-items: flex-start;
       gap: 14px;
-      background: var(--paper);
+      background: rgba(255,255,255,.08);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
       border-radius: var(--rL);
       padding: 16px;
-      border: 1.5px solid var(--fog);
+      border: 1px solid rgba(255,255,255,.14);
     }
 
     .trust-pillar-icon {
@@ -3374,8 +3480,10 @@
     /* Forgot password section */
     .trust-forgot-box {
       width: 100%;
-      background: #fffbeb;
-      border: 1.5px solid #fde68a;
+      background: rgba(251,191,36,.12);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1px solid rgba(251,191,36,.30);
       border-radius: var(--rL);
       padding: 18px;
       margin-bottom: 24px;
@@ -3384,7 +3492,7 @@
     .trust-forgot-title {
       font-size: 14px;
       font-weight: 800;
-      color: #92400e;
+      color: #fbbf24;
       margin-bottom: 8px;
       display: flex;
       align-items: center;
@@ -3393,21 +3501,23 @@
 
     .trust-forgot-text {
       font-size: 13px;
-      color: #78350f;
+      color: rgba(255,255,255,.75);
       line-height: 1.75;
     }
 
     .trust-forgot-text strong {
-      color: #92400e;
+      color: #fbbf24;
     }
 
     /* Owner note */
     .trust-owner-note {
       width: 100%;
-      background: var(--tealL);
+      background: rgba(56,189,248,.12);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
       border-radius: var(--rL);
       padding: 16px;
-      border: 1.5px solid var(--tealM);
+      border: 1px solid rgba(56,189,248,.25);
       margin-bottom: 28px;
       display: flex;
       align-items: flex-start;
@@ -3416,12 +3526,13 @@
 
     .trust-owner-note-text {
       font-size: 13px;
-      color: var(--tealD);
+      color: rgba(255,255,255,.80);
       line-height: 1.7;
     }
 
     .trust-owner-note-text strong {
       font-weight: 800;
+      color: #7dd3fc;
     }
 
     /* CTA */
@@ -3724,8 +3835,8 @@
       min-height: 44px;
       font-size: 12px;
       font-weight: 600;
-      border: 1.5px solid var(--fog);
-      background: var(--card);
+      border: 1px solid var(--glass-border);
+      background: rgba(255,255,255,.07);
       color: var(--slate);
       cursor: pointer;
       transition: all .12s;
@@ -3733,9 +3844,9 @@
     }
 
     .tag-chip.on {
-      background: var(--tealL);
+      background: rgba(56,189,248,.20);
       border-color: var(--teal);
-      color: var(--tealD);
+      color: var(--tealM);
     }
 
     .tag-chip:active {
@@ -3751,8 +3862,8 @@
 
     .tag-custom-in {
       flex: 1;
-      background: var(--card);
-      border: 1.5px solid var(--fog);
+      background: rgba(255,255,255,.08);
+      border: 1px solid var(--glass-border);
       border-radius: 20px;
       padding: 7px 13px;
       font-size: 13px;
@@ -3788,16 +3899,16 @@
       border-radius: 12px;
       font-size: 10px;
       font-weight: 700;
-      background: var(--tealL);
-      color: var(--tealD);
-      border: 1px solid var(--tealM);
+      background: rgba(56,189,248,.18);
+      color: #7dd3fc;
+      border: 1px solid rgba(56,189,248,.30);
     }
 
     .tag-pill-rm {
       background: none;
       border: none;
       cursor: pointer;
-      color: var(--tealD);
+      color: #7dd3fc;
       font-size: 11px;
       padding: 0;
       line-height: 1;
@@ -3806,18 +3917,20 @@
 
     /* Tag filter pill in history */
     .fp.tag-fp {
-      background: var(--tealL);
+      background: rgba(56,189,248,.18);
       border-color: var(--teal);
-      color: var(--tealD);
+      color: var(--tealM);
     }
 
     /* Tag summary card in Insights */
     .tag-sum-card {
-      background: var(--card);
+      background: var(--glass-bg);
+      backdrop-filter: var(--glass-blur);
+      -webkit-backdrop-filter: var(--glass-blur);
       border-radius: var(--rL);
       padding: 16px;
       margin-bottom: 12px;
-      border: 1px solid var(--fog);
+      border: 1px solid var(--glass-border);
       box-shadow: var(--sh);
     }
 
@@ -4293,7 +4406,11 @@
 
     /* ── SMART BANNER ── */
     #smartBanner {
-      background: var(--ink);
+      background: rgba(10,18,32,.70);
+      backdrop-filter: blur(24px) saturate(1.8);
+      -webkit-backdrop-filter: blur(24px) saturate(1.8);
+      border-top: 1px solid rgba(255,255,255,.08);
+      border-bottom: 1px solid rgba(255,255,255,.06);
       padding: 10px max(14px, var(--safe-r)) 10px max(14px, var(--safe-l));
       display: flex;
       align-items: center;
@@ -4482,49 +4599,49 @@
     }
   /* ── AI FEATURES CSS ─────────────────────────────────── */
   /* Smart Add bar */
-  .ai-add-bar{display:flex;align-items:center;gap:10px;background:var(--card);border:1.5px solid var(--fog);border-radius:16px;padding:12px 14px;margin:12px max(16px, var(--safe-r)) 0 max(16px, var(--safe-l));box-shadow:0 2px 8px rgba(0,0,0,.06)}
+  .ai-add-bar{display:flex;align-items:center;gap:10px;background:rgba(255,255,255,.10);backdrop-filter:blur(24px) saturate(1.8);-webkit-backdrop-filter:blur(24px) saturate(1.8);border:1px solid rgba(255,255,255,.16);border-radius:16px;padding:12px 14px;margin:12px max(16px, var(--safe-r)) 0 max(16px, var(--safe-l));box-shadow:0 4px 16px rgba(0,0,0,.25)}
   .ai-add-input{flex:1;border:none;background:none;font-size:15px;color:var(--ink);font-family:var(--ff);outline:none;min-width:0}
-  .ai-add-input::placeholder{color:var(--mist)}
+  .ai-add-input::placeholder{color:rgba(255,255,255,.35)}
   .ai-add-btn{width:36px;height:36px;border-radius:10px;border:none;background:var(--tealL);color:var(--tealD);font-size:16px;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:background .12s}
   .ai-add-btn:active{background:var(--teal);color:#fff}
   .ai-add-btn:disabled{opacity:.4;cursor:not-allowed}
   /* AI confirmation card */
-  .ai-confirm-card{margin:10px 16px;background:var(--card);border-radius:16px;border:1.5px solid var(--teal);overflow:hidden;animation:fadeUp .2s ease}
-  .ai-confirm-row{display:flex;align-items:center;gap:10px;padding:12px 14px;border-bottom:1px solid var(--fog)}
+  .ai-confirm-card{margin:10px 16px;background:rgba(255,255,255,.10);backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px);border-radius:16px;border:1px solid rgba(56,189,248,.35);overflow:hidden;animation:fadeUp .2s ease}
+  .ai-confirm-row{display:flex;align-items:center;gap:10px;padding:12px 14px;border-bottom:1px solid var(--glass-border)}
   .ai-confirm-row:last-child{border-bottom:none}
   .ai-confirm-label{font-size:10px;font-weight:700;color:var(--mist);letter-spacing:1.5px;text-transform:uppercase;width:64px;flex-shrink:0}
   .ai-confirm-value{flex:1;font-size:14px;font-weight:600;color:var(--ink)}
   .ai-confirm-edit{font-size:11px;color:var(--teal);font-weight:700;background:none;border:none;cursor:pointer;font-family:var(--ff);padding:0}
-  .ai-save-btn{display:block;width:calc(100% - 32px);margin:10px 16px;padding:14px;background:var(--teal);color:#fff;border:none;border-radius:14px;font-size:15px;font-weight:700;font-family:var(--ff);cursor:pointer;letter-spacing:.3px}
+  .ai-save-btn{display:block;width:calc(100% - 32px);margin:10px 16px;padding:14px;background:var(--teal);color:#fff;border:none;border-radius:14px;font-size:15px;font-weight:700;font-family:var(--ff);cursor:pointer;letter-spacing:.3px;box-shadow:0 4px 20px rgba(56,189,248,.35)}
   .ai-save-btn:active{opacity:.85}
   .ai-manual-toggle{text-align:center;padding:8px 0 4px;font-size:12px;color:var(--mist);cursor:pointer;font-family:var(--ff)}
   .ai-manual-toggle span{color:var(--teal);font-weight:600}
   /* AI status / thinking */
   .ai-status{font-size:12px;color:var(--mist);padding:6px 16px 0;min-height:20px;font-style:italic}
   /* Voice indicator */
-  .ai-voice-ring{display:inline-block;width:36px;height:36px;border-radius:10px;background:#fee2e2;color:#ef4444;border:none;font-size:18px;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all .15s}
+  .ai-voice-ring{display:inline-block;width:36px;height:36px;border-radius:10px;background:rgba(248,113,113,.18);color:#f87171;border:1px solid rgba(248,113,113,.30);font-size:18px;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all .15s}
   .ai-voice-ring.recording{background:#ef4444;color:#fff;animation:pulse 1s infinite}
   /* Photo scan */
-  .ai-photo-btn{width:36px;height:36px;border-radius:10px;background:#ede9fe;color:#7c3aed;border:none;font-size:16px;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+
   /* OCR progress */
   .ai-ocr-progress{margin:8px 16px;font-size:12px;color:var(--teal);font-weight:600;display:none}
   /* AI Insight card on Home */
-  .ai-insight-card{margin:0 max(16px, var(--safe-r)) 14px max(16px, var(--safe-l));background:linear-gradient(135deg,var(--tealL),#ede9fe22);border:1px solid var(--teal);border-radius:16px;padding:14px 16px;position:relative}
-  .ai-insight-eyebrow{font-size:9px;font-weight:800;color:var(--tealD);letter-spacing:2px;text-transform:uppercase;margin-bottom:5px}
+  .ai-insight-card{margin:0 max(16px, var(--safe-r)) 14px max(16px, var(--safe-l));background:rgba(56,189,248,.12);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border:1px solid rgba(56,189,248,.30);border-radius:16px;padding:14px 16px;position:relative}
+  .ai-insight-eyebrow{font-size:9px;font-weight:800;color:var(--tealM);letter-spacing:2px;text-transform:uppercase;margin-bottom:5px}
   .ai-insight-text{font-size:13px;color:var(--ink);font-weight:500;line-height:1.5}
   .ai-insight-close{position:absolute;top:10px;right:12px;background:none;border:none;font-size:14px;color:var(--mist);cursor:pointer;font-family:var(--ff)}
   /* AI Reaction toast — slightly taller */
   .ai-reaction{font-size:13px;line-height:1.4}
   /* Monthly Story card */
-  .ai-story-card{margin:12px max(16px, var(--safe-r)) 12px max(16px, var(--safe-l));background:var(--card);border-radius:16px;padding:16px;border-left:3px solid var(--teal)}
-  .ai-story-eyebrow{font-size:9px;font-weight:800;color:var(--tealD);letter-spacing:2px;margin-bottom:8px}
+  .ai-story-card{margin:8px 16px 24px;background:rgba(255,255,255,.08);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border-radius:16px;padding:16px;border-left:3px solid var(--teal);border-top:1px solid var(--glass-border);border-right:1px solid var(--glass-border);border-bottom:1px solid var(--glass-border)}
+  .ai-story-eyebrow{font-size:9px;font-weight:800;color:var(--tealM);letter-spacing:2px;margin-bottom:8px}
   .ai-story-text{font-size:13px;color:var(--ink);line-height:1.7}
   /* Honest Mirror card */
-  .ai-mirror-card{margin:12px max(16px, var(--safe-r)) 12px max(16px, var(--safe-l));background:#fffbeb;border-radius:16px;padding:16px;border:1px solid #fde68a}
-  .ai-mirror-text{font-size:13px;color:#92400e;line-height:1.6;margin-bottom:10px}
-  .ai-mirror-btn{background:#f59e0b;color:#fff;border:none;border-radius:10px;padding:9px 16px;font-size:13px;font-weight:700;cursor:pointer;font-family:var(--ff)}
+  .ai-mirror-card{margin:8px 16px 24px;background:rgba(251,191,36,.12);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border-radius:16px;padding:16px;border:1px solid rgba(251,191,36,.30)}
+  .ai-mirror-text{font-size:13px;color:#fbbf24;line-height:1.6;margin-bottom:10px}
+  .ai-mirror-btn{background:rgba(251,191,36,.25);color:#fbbf24;border:1px solid rgba(251,191,36,.40);border-radius:10px;padding:9px 16px;font-size:13px;font-weight:700;cursor:pointer;font-family:var(--ff)}
   /* Forecast card */
-  .ai-forecast-card{margin:0 max(16px, var(--safe-r)) 14px max(16px, var(--safe-l));background:var(--card);border-radius:16px;padding:14px 16px;border:1px solid var(--fog)}
+  .ai-forecast-card{margin:0 max(16px, var(--safe-r)) 14px max(16px, var(--safe-l));background:rgba(255,255,255,.08);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border-radius:16px;padding:14px 16px;border:1px solid var(--glass-border)}
   .ai-forecast-eyebrow{font-size:9px;font-weight:800;color:var(--mist);letter-spacing:2px;margin-bottom:6px}
   .ai-forecast-text{font-size:13px;color:var(--ink);line-height:1.5}
   .ai-forecast-bar{height:6px;background:var(--fog);border-radius:3px;margin-top:10px;overflow:hidden}
@@ -4810,18 +4927,6 @@
   /* ── REDESIGN v5.0: Tab bar .tab-add-slot hidden ── */
   .tab[data-t="add"] { display: none; }
 
-    /* BUG-9: Magnification effect on history cards — macOS dock style */
-    .htxn-wrap { transform-origin: center; transition: transform .18s cubic-bezier(.34,1.56,.64,1); }
-    .htxn-wrap:active { transform: scale(1.025); z-index: 2; }
-    /* On devices that support hover (desktop) */
-    @media (hover: hover) {
-      .htxn-wrap:hover { transform: scale(1.02); z-index: 2; box-shadow: 0 8px 32px rgba(0,0,0,.12); }
-      .htxn-wrap:hover .htxn { box-shadow: 0 4px 16px rgba(0,0,0,.08); }
-    }
-    /* Neighbour cards subtly shrink when one is active (dock illusion) */
-    .histList-container:has(.htxn-wrap:active) .htxn-wrap:not(:active) {
-      transform: scale(0.985);
-    }
 
   </style>
 </head>
@@ -4829,6 +4934,7 @@
 <body>
 
   <div id="app">
+    <div class="orb3"></div>
 
     <!-- ══════════════ SPLASH ══════════════ -->
     <div class="pg" id="pgSplash">
@@ -4870,49 +4976,49 @@
         <!-- Collapsible trust details -->
         <div id="trustAccordion" style="margin: 0 0 16px">
           <div onclick="APP.toggleTrustAccordion()"
-            style="display:flex;justify-content:space-between;align-items:center;padding:14px 20px;background:#f8fafc;border-radius:12px;cursor:pointer;border:1px solid #e2e8f0">
-            <span style="font-size:13px;font-weight:700;color:#0f172a">How does this work? ›</span>
+            style="display:flex;justify-content:space-between;align-items:center;padding:14px 20px;background:rgba(255,255,255,.08);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-radius:12px;cursor:pointer;border:1px solid rgba(255,255,255,.14)">
+            <span style="font-size:13px;font-weight:700;color:rgba(255,255,255,.92)">How does this work? ›</span>
             <span id="trustToggleIcon" style="font-size:12px;color:#0ea5e9;font-weight:700">expand</span>
           </div>
           <div id="trustDetails"
-            style="display:none;margin-top:8px;flex-direction:column;gap:0;background:#fff;border-radius:12px;border:1px solid #e2e8f0;overflow:hidden">
-            <div style="display:flex;align-items:center;gap:12px;padding:12px 16px;border-bottom:1px solid #f8fafc">
+            style="display:none;margin-top:8px;flex-direction:column;gap:0;background:rgba(255,255,255,.06);border-radius:12px;border:1px solid rgba(255,255,255,.12);overflow:hidden">
+            <div style="display:flex;align-items:center;gap:12px;padding:12px 16px;border-bottom:1px solid rgba(255,255,255,.08)">
               <div
-                style="width:32px;height:32px;border-radius:9px;background:#f0fdf4;display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0">
+                style="width:32px;height:32px;border-radius:9px;background:rgba(52,211,153,.18);display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0">
                 🔒</div>
               <div>
-                <div style="font-size:13px;font-weight:700;color:#0f172a">Stored only on your device</div>
-                <div style="font-size:11px;color:#64748b;margin-top:1px">No account, no cloud, no email. Just your
+                <div style="font-size:13px;font-weight:700;color:rgba(255,255,255,.92)">Stored only on your device</div>
+                <div style="font-size:11px;color:rgba(255,255,255,.50);margin-top:1px">No account, no cloud, no email. Just your
                   phone.</div>
               </div>
             </div>
-            <div style="display:flex;align-items:center;gap:12px;padding:12px 16px;border-bottom:1px solid #f8fafc">
+            <div style="display:flex;align-items:center;gap:12px;padding:12px 16px;border-bottom:1px solid rgba(255,255,255,.08)">
               <div
-                style="width:32px;height:32px;border-radius:9px;background:#eff6ff;display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0">
+                style="width:32px;height:32px;border-radius:9px;background:rgba(56,189,248,.18);display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0">
                 📡</div>
               <div>
-                <div style="font-size:13px;font-weight:700;color:#0f172a">Works fully offline</div>
-                <div style="font-size:11px;color:#64748b;margin-top:1px">No internet = no data risk. Works on a flight.
+                <div style="font-size:13px;font-weight:700;color:rgba(255,255,255,.92)">Works fully offline</div>
+                <div style="font-size:11px;color:rgba(255,255,255,.50);margin-top:1px">No internet = no data risk. Works on a flight.
                 </div>
               </div>
             </div>
-            <div style="display:flex;align-items:center;gap:12px;padding:12px 16px;border-bottom:1px solid #f8fafc">
+            <div style="display:flex;align-items:center;gap:12px;padding:12px 16px;border-bottom:1px solid rgba(255,255,255,.08)">
               <div
-                style="width:32px;height:32px;border-radius:9px;background:#fff7ed;display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0">
+                style="width:32px;height:32px;border-radius:9px;background:rgba(251,191,36,.18);display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0">
                 👁</div>
               <div>
-                <div style="font-size:13px;font-weight:700;color:#0f172a">Nobody can read your data</div>
-                <div style="font-size:11px;color:#64748b;margin-top:1px">We have no server. Not even the app owner can
+                <div style="font-size:13px;font-weight:700;color:rgba(255,255,255,.92)">Nobody can read your data</div>
+                <div style="font-size:11px;color:rgba(255,255,255,.50);margin-top:1px">We have no server. Not even the app owner can
                   see it.</div>
               </div>
             </div>
             <div style="display:flex;align-items:center;gap:12px;padding:12px 16px">
               <div
-                style="width:32px;height:32px;border-radius:9px;background:#fdf4ff;display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0">
+                style="width:32px;height:32px;border-radius:9px;background:rgba(129,140,248,.18);display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0">
                 🗂</div>
               <div>
-                <div style="font-size:13px;font-weight:700;color:#0f172a">You control the backup</div>
-                <div style="font-size:11px;color:#64748b;margin-top:1px">Save as JSON to your phone or Google Drive
+                <div style="font-size:13px;font-weight:700;color:rgba(255,255,255,.92)">You control the backup</div>
+                <div style="font-size:11px;color:rgba(255,255,255,.50);margin-top:1px">Save as JSON to your phone or Google Drive
                   anytime.</div>
               </div>
             </div>
@@ -4949,7 +5055,7 @@
           I understand — Let's begin →
         </button>
         <button onclick="APP.trustSkip()"
-          style="width:100%;background:#e0f2fe;border:none;border-radius:12px;padding:14px;font-size:14px;font-weight:700;color:#0369a1;cursor:pointer;margin-top:10px;font-family:var(--ff)">
+          style="width:100%;background:rgba(56,189,248,.25);backdrop-filter:blur(12px);border:1px solid rgba(56,189,248,.40);border-radius:12px;padding:14px;font-size:14px;font-weight:700;color:#7dd3fc;cursor:pointer;margin-top:10px;font-family:var(--ff)">
           📂 Already have an account? Load my data file
         </button>
 
@@ -5136,7 +5242,7 @@
         <!-- INSIGHTS -->
         <div class="scr" id="sInsights">
           <div
-            style="background:var(--card);padding:12px 16px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--fog);flex-shrink:0;box-shadow:var(--sh)">
+            style="background:rgba(255,255,255,.08);backdrop-filter:blur(24px) saturate(1.8);-webkit-backdrop-filter:blur(24px) saturate(1.8);padding:12px 16px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid rgba(255,255,255,.12);flex-shrink:0;box-shadow:var(--sh)">
             <div>
               <div style="font-size:22px;font-weight:800;color:var(--ink)">Insights</div>
               <div style="font-size:11px;color:var(--slate);margin-top:1px" id="insightsSub"></div>
@@ -5149,7 +5255,7 @@
         <!-- MY MONTH -->
         <div class="scr" id="sMonth">
           <div
-            style="background:var(--card);padding:12px 16px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--fog);flex-shrink:0">
+            style="background:rgba(255,255,255,.08);backdrop-filter:blur(24px) saturate(1.8);-webkit-backdrop-filter:blur(24px) saturate(1.8);padding:12px 16px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid rgba(255,255,255,.12);flex-shrink:0">
             <div>
               <div style="font-size:22px;font-weight:800;color:var(--ink)">My Month</div>
               <div style="font-size:11px;color:var(--slate);margin-top:1px" id="mmSub"></div>
@@ -5159,15 +5265,6 @@
               ↑</button>
           </div>
           <div class="scr-body" id="mmBody"></div>
-          <!-- AI cards for month screen -->
-          <div id="aiStoryCard" style="display:none" class="ai-story-card">
-            <div class="ai-story-eyebrow">📖 YOUR MONTH IN WORDS</div>
-            <div class="ai-story-text" id="aiStoryText"></div>
-          </div>
-          <div id="aiMirrorCard" style="display:none" class="ai-mirror-card">
-            <div class="ai-mirror-text" id="aiMirrorText"></div>
-            <button class="ai-mirror-btn" id="aiMirrorBtn" onclick="APP.aiMirrorAction()">Update Limit</button>
-          </div>
         </div>
 
         <!-- SLICE -->
@@ -5219,16 +5316,9 @@
                 onkeydown="if(event.key==='Enter'){event.preventDefault();APP.aiAddConfirm();}">
               <!-- Voice button -->
               <button class="ai-voice-ring" id="aiVoiceBtn" onclick="APP.aiVoiceToggle()" title="Voice input" aria-label="Voice input" aria-pressed="false">🎤</button>
-              <!-- Photo/scan button -->
-              <button class="ai-photo-btn" onclick="APP.aiPhotoTrigger()" title="Scan receipt" aria-label="Scan receipt with camera">📷</button>
+
             </div>
-            <!-- Hidden file inputs: camera capture and gallery pick -->
-            <input type="file" id="aiPhotoInput" accept="image/*" capture="environment"
-              style="display:none" onchange="APP.aiPhotoProcess(this)">
-            <input type="file" id="aiGalleryInput" accept="image/*"
-              style="display:none" onchange="APP.aiPhotoProcess(this)">
             <div class="ai-status" id="aiStatus"></div>
-            <div class="ai-ocr-progress" id="aiOcrProgress">📷 Reading receipt…</div>
 
             <!-- AI confirmation card (hidden until parsed) -->
             <div class="ai-confirm-card" id="aiConfirmCard" style="display:none">
@@ -5338,7 +5428,7 @@
         <!-- SOURCES -->
         <div class="scr" id="sSources">
           <div
-            style="background:var(--card);padding:12px 16px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--fog);flex-shrink:0;box-shadow:var(--sh)">
+            style="background:rgba(255,255,255,.08);backdrop-filter:blur(24px) saturate(1.8);-webkit-backdrop-filter:blur(24px) saturate(1.8);padding:12px 16px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid rgba(255,255,255,.12);flex-shrink:0;box-shadow:var(--sh)">
             <div>
               <div style="font-size:22px;font-weight:800;color:var(--ink)">Sources</div>
               <div style="font-size:11px;color:var(--slate);margin-top:1px" id="sourcesSub">Where your money comes from
@@ -5503,7 +5593,7 @@
     // ── AI CONFIG SYSTEM ──────────────────────────────────────────
     const AI_CONFIG_DEFAULT = {
       insight: true, forecast: true, streak: true,
-      voice: true, photo: true, reactions: true, mood: true, duplicate: true,
+      voice: true, reactions: true, mood: true, duplicate: true,
       whyBuyThis: true, smartSearch: true,
       story: true, mirror: true, spendTwin: true,
       weeklyDigest: true, budgetSuggest: true,
@@ -5944,7 +6034,7 @@
         modal(
           '🧭 One moment',
           `<div style="font-size:13px;line-height:1.7">
-        <div style="background:#fffbeb;border-radius:var(--r);padding:12px 14px;margin-bottom:14px;border:1px solid #fde68a">
+        <div style="background:rgba(251,191,36,.12);border-radius:var(--r);padding:12px 14px;margin-bottom:14px;border:1px solid rgba(251,191,36,.30)">
           <div style="font-size:12px;font-weight:700;color:#92400e;margin-bottom:4px">Browser recommendation</div>
           <div style="font-size:11px;color:#b45309">${browserMsg}</div>
         </div>
@@ -6279,7 +6369,7 @@
         modal(
           '💾 Backup reminder',
           `<div style="font-size:13px;color:var(--slate);line-height:1.7">
-        <div style="background:#fffbeb;border-radius:var(--r);padding:12px;margin-bottom:14px;border:1px solid #fde68a;color:#92400e;font-size:12px">${msg}</div>
+        <div style="background:rgba(251,191,36,.12);border-radius:var(--r);padding:12px;margin-bottom:14px;border:1px solid rgba(251,191,36,.30);color:#fbbf24;font-size:12px">${msg}</div>
         <div style="font-size:12px">Your data file is your backup AND your password recovery key. Save it regularly.</div>
       </div>`,
           [
@@ -6657,7 +6747,7 @@
         if (p.isIOS && p.isChromeIOS) {
           title = '💾 File saved — find it in Chrome';
           body = `<div style="font-size:13px;line-height:1.7">
-        <div style="background:#fffbeb;border-radius:var(--r);padding:12px;margin-bottom:12px;border:1px solid #fde68a">
+        <div style="background:rgba(251,191,36,.12);border-radius:var(--r);padding:12px;margin-bottom:12px;border:1px solid rgba(251,191,36,.30)">
           <div style="font-size:12px;font-weight:700;color:#92400e;margin-bottom:3px">⚠ Chrome hides downloads from the Files app</div>
           <div style="font-size:11px;color:#b45309">Your file is saved but only visible inside Chrome.</div>
         </div>
@@ -6982,6 +7072,14 @@
 </div>`;
 
         }).join('')}
+      </div>
+      <div id="aiStoryCard" style="display:none" class="ai-story-card">
+        <div class="ai-story-eyebrow">📖 YOUR MONTH IN WORDS</div>
+        <div class="ai-story-text" id="aiStoryText"></div>
+      </div>
+      <div id="aiMirrorCard" style="display:none" class="ai-mirror-card">
+        <div class="ai-mirror-text" id="aiMirrorText"></div>
+        <button class="ai-mirror-btn" id="aiMirrorBtn" onclick="APP.aiMirrorAction()">Update Limit</button>
       </div>`;
       },
       _mmNav(dir) {
@@ -7261,7 +7359,7 @@
         const txns = (D.transactions || []).filter(t => t.bucket);
         if (txns.length === 0) { toast('No sorted transactions to share yet'); return; }
         const total = sm.total;
-        const bCards = Object.entries(BUCKETS).map(([k, c]) => { const amt = sm[k] || 0, pct = total > 0 ? Math.round((amt / total) * 100) : 0, lim = D.limits[k] || 0, isOver = lim > 0 && amt > lim; return `<div style="flex:1;min-width:120px;background:${c.cl};border-radius:12px;padding:14px;border:2px solid ${isOver ? '#ef4444' : c.cm}"><div style="font-size:10px;color:${c.c};font-weight:700;letter-spacing:1px">${c.l.toUpperCase()}</div><div style="font-size:20px;font-weight:800;color:${isOver ? '#ef4444' : c.c};margin-top:6px">₹${amt.toLocaleString('en-IN')}</div><div style="font-size:11px;color:#64748b;margin-top:2px">${pct}%${lim > 0 ? ` of ₹${lim.toLocaleString('en-IN')} limit` : ''}</div>${isOver ? `<div style="font-size:10px;color:#ef4444;font-weight:700;margin-top:4px">⚠ OVER LIMIT</div>` : ''}</div>`; }).join('');
+        const bCards = Object.entries(BUCKETS).map(([k, c]) => { const amt = sm[k] || 0, pct = total > 0 ? Math.round((amt / total) * 100) : 0, lim = D.limits[k] || 0, isOver = lim > 0 && amt > lim; return `<div style="flex:1;min-width:120px;background:${c.cl};border-radius:12px;padding:14px;border:2px solid ${isOver ? '#ef4444' : c.cm}"><div style="font-size:10px;color:${c.c};font-weight:700;letter-spacing:1px">${c.l.toUpperCase()}</div><div style="font-size:20px;font-weight:800;color:${isOver ? '#ef4444' : c.c};margin-top:6px">₹${amt.toLocaleString('en-IN')}</div><div style="font-size:11px;color:rgba(255,255,255,.55);margin-top:2px">${pct}%${lim > 0 ? ` of ₹${lim.toLocaleString('en-IN')} limit` : ''}</div>${isOver ? `<div style="font-size:10px;color:#ef4444;font-weight:700;margin-top:4px">⚠ OVER LIMIT</div>` : ''}</div>`; }).join('');
         const rows = txns.map(t => { const cfg = BUCKETS[t.bucket]; return `<tr><td>${t.date}</td><td><strong>${t.merchant}</strong></td><td style="text-align:right;font-weight:700">₹${t.amount.toLocaleString('en-IN')}</td><td style="text-align:center"><span style="background:${cfg.cl};color:${cfg.c};font-size:11px;font-weight:700;padding:3px 8px;border-radius:6px">${cfg.l}</span></td></tr>`; }).join('');
         const html = `<!DOCTYPE html><html><head><meta charset="utf-8"><title>Spend-na — My Month ${month}</title><style>body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:#f8fafc;margin:0;padding:20px;-webkit-font-smoothing:antialiased}table{width:100%;border-collapse:collapse}td{padding:10px 12px;border-bottom:1px solid #f1f5f9;font-size:13px;color:#334155}.w{max-width:700px;margin:0 auto}</style></head><body><div class="w"><div style="background:linear-gradient(135deg,#0f172a,#1e293b);border-radius:20px;padding:28px;margin-bottom:20px"><div style="font-size:11px;color:#0ea5e9;font-weight:700;letter-spacing:2px;margin-bottom:6px">SPEND-NA · MY MONTH</div><div style="font-size:28px;font-weight:900;color:#fff;letter-spacing:-0.5px">${month}</div><div style="font-size:40px;font-weight:800;color:#0ea5e9;margin-top:12px">₹${total.toLocaleString('en-IN')}</div><div style="font-size:13px;color:#94a3b8;margin-top:4px">${txns.length} sorted transactions</div></div><div style="display:flex;flex-wrap:wrap;gap:10px;margin-bottom:20px">${bCards}</div><div style="background:white;border-radius:16px;overflow:hidden;margin-bottom:16px"><div style="padding:16px 20px;border-bottom:1px solid #f1f5f9"><strong>Transactions this month (${txns.length})</strong></div><table><tbody>${rows}</tbody></table></div><div style="text-align:center;padding:20px;color:#94a3b8;font-size:11px">Generated by Spend-na · 🔒 All data stays on your device · © Sandeep Hakki · hakki.in</div></div></body></html>`;
         const fname = `spend-na-my-month-${month.replace(/\s+/g, '-')}.html`;
@@ -7501,7 +7599,7 @@
         if (txns.length === 0) { toast('No transactions to export yet'); return; }
         const total = txns.filter(t => t.bucket).reduce((s, t) => s + t.amount, 0), month = new Date().toLocaleDateString('en-IN', { month: 'long', year: 'numeric' }), sm = summary();
         const rows = txns.map(t => { const cfg = t.bucket ? BUCKETS[t.bucket] : null; return `<tr><td>${t.date}</td><td><strong>${t.merchant}</strong></td><td style="text-align:right;font-weight:700">₹${t.amount.toLocaleString('en-IN')}</td><td style="text-align:center"><span style="background:${cfg ? cfg.cl : '#f1f5f9'};color:${cfg ? cfg.c : '#94a3b8'};font-size:11px;font-weight:700;padding:3px 8px;border-radius:6px">${cfg ? cfg.l : '—'}</span></td></tr>`; }).join('');
-        const bCards = Object.entries(BUCKETS).map(([k, c]) => { const amt = sm[k] || 0, pct = total > 0 ? Math.round((amt / total) * 100) : 0; return `<div style="flex:1;min-width:120px;background:${c.cl};border-radius:12px;padding:14px"><div style="font-size:10px;color:${c.c};font-weight:700">${c.l.toUpperCase()}</div><div style="font-size:20px;font-weight:800;color:${c.c};margin-top:6px">₹${amt.toLocaleString('en-IN')}</div><div style="font-size:11px;color:#64748b;margin-top:4px">${pct}%</div></div>`; }).join('');
+        const bCards = Object.entries(BUCKETS).map(([k, c]) => { const amt = sm[k] || 0, pct = total > 0 ? Math.round((amt / total) * 100) : 0; return `<div style="flex:1;min-width:120px;background:${c.cl};border-radius:12px;padding:14px"><div style="font-size:10px;color:${c.c};font-weight:700">${c.l.toUpperCase()}</div><div style="font-size:20px;font-weight:800;color:${c.c};margin-top:6px">₹${amt.toLocaleString('en-IN')}</div><div style="font-size:11px;color:rgba(255,255,255,.55);margin-top:4px">${pct}%</div></div>`; }).join('');
         const html = `<!DOCTYPE html><html><head><meta charset="utf-8"><title>Spend-na History — ${month}</title><style>body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:#f8fafc;margin:0;padding:20px;-webkit-font-smoothing:antialiased}table{width:100%;border-collapse:collapse}td{padding:10px 12px;border-bottom:1px solid #f1f5f9;font-size:13px;color:#334155}.w{max-width:700px;margin:0 auto}</style></head><body><div class="w"><div style="background:linear-gradient(135deg,#0f172a,#1e293b);border-radius:20px;padding:28px;margin-bottom:20px"><div style="font-size:11px;color:#0ea5e9;font-weight:700;letter-spacing:2px;margin-bottom:6px">SPEND-NA · HISTORY</div><div style="font-size:28px;font-weight:900;color:#fff;letter-spacing:-0.5px">${month}</div><div style="font-size:40px;font-weight:800;color:#0ea5e9;margin-top:12px">₹${total.toLocaleString('en-IN')}</div><div style="font-size:13px;color:#94a3b8;margin-top:4px">${txns.length} total records</div></div><div style="display:flex;flex-wrap:wrap;gap:10px;margin-bottom:20px">${bCards}</div><div style="background:white;border-radius:16px;overflow:hidden;margin-bottom:16px"><div style="padding:16px 20px;border-bottom:1px solid #f1f5f9"><strong>All Transactions (${txns.length} total records)</strong></div><table><tbody>${rows}</tbody></table></div><div style="text-align:center;padding:20px;color:#94a3b8;font-size:11px">Generated by Spend-na · 🔒 All data stays on your device · © Sandeep Hakki · hakki.in · 2026</div></div></body></html>`;
         const fname = `spend-na-history-${month.replace(/\s+/g, '-')}.html`;
         const blob = new Blob([html], { type: 'text/html' });
@@ -7721,7 +7819,14 @@
         const dmEl = document.getElementById('dataMgmtSaveInfo');
         if (dmEl) dmEl.textContent = `${D.transactions.length} total records · Last: ${D.lastSaved ? new Date(D.lastSaved).toLocaleDateString('en-IN', { day: '2-digit', month: 'short', hour: '2-digit', minute: '2-digit' }) : 'Never'}`;
       },
-      tgAcc(id) { document.getElementById(id).classList.toggle('open'); },
+      tgAcc(id) {
+        const el = document.getElementById(id);
+        const isOpen = el.classList.contains('open');
+        // Close all accordions first
+        document.querySelectorAll('.acc').forEach(a => a.classList.remove('open'));
+        // If it wasn't open, open it now (tap-to-toggle still works)
+        if (!isOpen) el.classList.add('open');
+      },
       sRole(k) { S.setRole = k; document.querySelectorAll('.s-role').forEach(el => el.classList.toggle('on', el.dataset.r === k)); },
       tglSet(k, id) { S.setToggles[k] = !S.setToggles[k]; document.getElementById(id).classList.toggle('on', S.setToggles[k]); },
 
@@ -7771,7 +7876,7 @@
           ${row('streak','Spend Streak 🔥','Under-budget day counter')}
           <div class="ai-cfg-section">ADD SPEND</div>
           ${row('voice','Voice Input 🎤','Speak to log a spend')}
-          ${row('photo','Photo Scan 📷','Photograph bills and receipts')}
+
           ${row('reactions','AI Reactions','Smart toast after each save')}
           ${row('mood','Mood Tagging 😊','How did this spend feel?')}
           ${row('duplicate','Duplicate Detector ⚠️','Catch accidental double entries')}
@@ -7880,7 +7985,7 @@
         } else if (step === 2) {
           if (p.isChromeIOS) {
             wrap.innerHTML = `${header}
-          <div class="mw-icon" style="background:#fff7ed">📁</div>
+          <div class="mw-icon" style="background:rgba(251,191,36,.18)">📁</div>
           <div class="mw-title">Step 2 — Move file to Files app</div>
           <div class="mw-sub">Your file is in Chrome's Downloads. Safari can't see it there. Move it to the Files app first.</div>
           <div class="mw-warn">
@@ -7904,7 +8009,7 @@
         } else if (step === 3) {
           const browserName = p.isIOS ? 'Safari' : 'your default browser';
           wrap.innerHTML = `${header}
-        <div class="mw-icon" style="background:#e0f2fe">🧭</div>
+        <div class="mw-icon" style="background:rgba(56,189,248,.18)">🧭</div>
         <div class="mw-title">Step 3 — Open in ${browserName}</div>
         <div class="mw-sub">${p.isIOS
               ? 'Open Safari and go to the Spend-na URL. Then add it to your home screen for the best experience.'
@@ -8130,6 +8235,13 @@
 
         // Rebuild filter bar so new tag pills appear (BUG-07)
         document.getElementById('fBar').innerHTML = '';
+        // BUG-FIX: if active filter is a tag filter, check it still matches at least one transaction.
+        // If not, clear the filter so the list doesn't go blank.
+        if (S.histF && S.histF.startsWith('tag:')) {
+          const activeTag = S.histF.slice(4);
+          const hasMatch = (D.transactions || []).some(t => (t.tags || []).includes(activeTag));
+          if (!hasMatch) { S.histF = null; }
+        }
         this.r_history();
         // Re-open the edit box that r_history just re-rendered closed (BUG-01 core fix)
         const ieEl = document.getElementById('ie_' + txnId);
@@ -9095,115 +9207,9 @@
         try { rec.start(); } catch(e) { AI.voiceActive = false; if (btn) { btn.classList.remove('recording'); btn.textContent = '🎤'; } }
       };
 
-      // ── aiPhotoTrigger — open camera ──
-      APP.aiPhotoTrigger = function() {
-        if (!getAIConfig().photo) { toast('Photo scan is disabled in AI Settings'); return; }
-        // BUG-14: show choice between camera and gallery
-        modal('Scan a bill', 'Choose how to add your receipt image:', [
-          { l: '❌ Cancel', c: 'mb-nil', a: () => this.cm() },
-          { l: '🖼️ Gallery', c: 'mb-nil', a: () => {
-              this.cm();
-              const g = document.getElementById('aiGalleryInput');
-              if (g) { g.value=''; g.click(); }
-          }},
-          { l: '📷 Camera', c: 'mb-ok', a: () => {
-              this.cm();
-              const c = document.getElementById('aiPhotoInput');
-              if (c) { c.value=''; c.click(); }
-          }},
-        ]);
-      };
 
-      // ── aiPhotoProcess — OCR the selected image ──
-      APP.aiPhotoProcess = async function(inputEl) {
-        const file = inputEl && inputEl.files && inputEl.files[0];
-        if (!file) return;
-        const progress = document.getElementById('aiOcrProgress');
-        const status = document.getElementById('aiStatus');
-        if (progress) progress.style.display = 'block';
-        if (status) status.textContent = '📷 Loading scanner…';
-        try {
-          // OCR-FIX-004: Try Tesseract 5 first, fall back to 4 on load failure
-          if (!window.Tesseract) {
-            const tryLoad = (url) => new Promise((res, rej) => {
-              const s = document.createElement('script');
-              s.src = url;
-              s.crossOrigin = 'anonymous';
-              s.onload = res;
-              s.onerror = rej;
-              document.head.appendChild(s);
-            });
-            try {
-              await tryLoad('https://cdnjs.cloudflare.com/ajax/libs/tesseract.js/5.1.1/tesseract.min.js');
-            } catch(e1) {
-              try {
-                // Fallback to v4
-                await tryLoad('https://cdnjs.cloudflare.com/ajax/libs/tesseract.js/4.1.4/tesseract.min.js');
-              } catch(e2) {
-                throw new Error('Tesseract load failed');
-              }
-            }
-          }
-          if (status) status.textContent = '📷 Reading receipt…';
 
-          // OCR-FIX-005: Use createWorker API (v4+) with graceful fallback to old API
-          let text = '';
-          try {
-            if (Tesseract.createWorker) {
-              const worker = await Tesseract.createWorker('eng', 1, {
-                logger: m => {
-                  if (status && m.status === 'recognizing text')
-                    status.textContent = '📷 Reading… ' + Math.round((m.progress||0)*100) + '%';
-                }
-              });
-              const result = await worker.recognize(file);
-              text = result.data.text;
-              await worker.terminate();
-            } else {
-              // Legacy API (Tesseract v2/v3)
-              const result = await Tesseract.recognize(file, 'eng', {
-                logger: m => {
-                  if (status && m.status === 'recognizing text')
-                    status.textContent = '📷 Reading… ' + Math.round((m.progress||0)*100) + '%';
-                }
-              });
-              text = result.data ? result.data.text : result.text || '';
-            }
-          } catch(ocrErr) {
-            console.error('[Spend-na] OCR engine error:', ocrErr);
-            throw ocrErr;
-          }
 
-          if (progress) progress.style.display = 'none';
-          if (status) status.textContent = '';
-
-          // OCR-FIX-006: log raw text in dev for debugging
-          console.log('[Spend-na] OCR raw text:', text);
-
-          const parsed = aiParseOCR(text);
-          if (parsed) {
-            const inp = document.getElementById('aiAddInput');
-            if (inp) inp.value = parsed.amt + ' ' + parsed.desc;
-            aiShowConfirm(parsed);
-            toast('Receipt scanned ✓ — check details and save');
-          } else {
-            toast('Could not read amount — please type it manually', 3500);
-          }
-        } catch(e) {
-          if (progress) progress.style.display = 'none';
-          if (status) status.textContent = '';
-          console.error('[Spend-na] aiPhotoProcess error:', e);
-          const msg = e.message === 'Tesseract load failed'
-            ? '📡 Scanner needs internet to load — please connect and try again'
-            : '📷 Scan failed — try a clearer, well-lit image or type manually';
-          toast(msg, 4000);
-        }
-        // Reset so same file can be re-selected
-        if (inputEl) inputEl.value = '';
-      };
-
-      // ── aiParseOCR — parse raw OCR text from receipts ──
-      APP.aiParseOCR = function(text) { return aiParseOCR(text); };
 
       // ── aiRenderInsight — render on home screen ──
       APP.aiRenderInsight = function() {
